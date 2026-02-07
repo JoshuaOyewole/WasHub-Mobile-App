@@ -1,3 +1,10 @@
+import { ToastOverlay } from "@/components/ui/ToastOverlay";
+import { BookingProvider } from "@/contexts/BookingContext";
+import { ToastProvider } from "@/contexts/ToastContext";
+import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useDeepLink } from "@/hooks/useDeepLinks";
+import { bootstrapAuth } from "@/lib/auth/bootstrapAuth";
+import { useAuthStore } from "@/store/useAuthStore";
 import {
   DarkTheme,
   DefaultTheme,
@@ -8,11 +15,6 @@ import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
-
-import { useColorScheme } from "@/hooks/use-color-scheme";
-import { useDeepLink } from "@/hooks/useDeepLinks";
-import { bootstrapAuth } from "@/lib/auth/bootstrapAuth";
-import { useAuthStore } from "@/store/useAuthStore";
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -84,10 +86,7 @@ function AppContent() {
       <Stack.Screen name="(screens)" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="modal"
-        options={{ presentation: "modal", title: "Modal" }}
-      />
+      <Stack.Screen name="(modals)" options={{ headerShown: false }} />
     </Stack>
   );
 }
@@ -97,10 +96,17 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <AppContent />
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <ToastProvider>
+        <BookingProvider>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <AppContent />
+            <StatusBar style="auto" />
+            <ToastOverlay />
+          </ThemeProvider>
+        </BookingProvider>
+      </ToastProvider>
     </QueryClientProvider>
   );
 }

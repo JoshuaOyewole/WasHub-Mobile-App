@@ -1,5 +1,8 @@
 // Mock data for multiple statuses
 
+import { WashRequest } from "@/app/(tabs)/request";
+import { Car } from "@/components/ui/car-card";
+
 const statusData = [
   {
     id: "1",
@@ -44,5 +47,45 @@ const outletsData = [
   },
 ];
 
-export { outletsData, statusData };
+// Mock data - replace with actual data from your backend/state management
+const MOCK_CARS: Car[] = [
+  {
+    id: "1",
+    image: require("@/assets/images/eko_car_wash_otlet.png"),
+    brand: "Toyota",
+    model: "Prado",
+    licensePlate: "LX207AF2",
+    washProgress: 75,
+    isSelected: false,
+  },
+  {
+    id: "2",
+    image: require("@/assets/images/eko_car_wash_otlet.png"),
+    brand: "Toyota",
+    model: "Prado",
+    licensePlate: "LX207AF2",
+    washProgress: 45,
+    isSelected: false,
+  },
+  {
+    id: "3",
+    image: require("@/assets/images/eko_car_wash_otlet.png"),
+    brand: "Toyota",
+    model: "Prado",
+    licensePlate: "LX207AF2",
+    washProgress: 90,
+    isSelected: false,
+  },
+];
+// Mock data for demonstration
+const MOCK_WASH_REQUESTS: WashRequest[] = [
+  {
+    id: "1",
+    title: "Eko car wash - Basic Wash",
+    date: "12th Sep, 2025. 10:14 - Ajah Lekki",
+    location: "Ajah Lekki",
+    status: "pending",
+  },
+];
+export { MOCK_CARS, MOCK_WASH_REQUESTS, outletsData, statusData };
 

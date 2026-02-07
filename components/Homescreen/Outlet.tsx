@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -15,7 +16,15 @@ export default function Outlet({
   };
 }) {
   return (
-    <TouchableOpacity style={styles.outletCard}>
+    <TouchableOpacity
+      style={styles.outletCard}
+      onPress={() =>
+        router.push({
+          pathname: "/(screens)/outlet-details",
+          params: { outletId: outlet.id },
+        })
+      }
+    >
       <Image source={outlet.image} style={styles.outletImage} />
       <View style={styles.outletCardContent}>
         <Text style={styles.outletName}>{outlet.name}</Text>
@@ -60,7 +69,7 @@ const styles = StyleSheet.create({
   outletImage: {
     width: "100%",
     height: 120,
-    resizeMode: "contain",
+    resizeMode: "cover",
   },
   outletCardContent: {
     padding: 12,

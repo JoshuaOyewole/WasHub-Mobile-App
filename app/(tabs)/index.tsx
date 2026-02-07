@@ -1,8 +1,10 @@
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
+  Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -15,8 +17,11 @@ import Carousel from "react-native-reanimated-carousel";
 import Outlet from "@/components/Homescreen/Outlet";
 import StatusCard from "@/components/Homescreen/StatusCard";
 import { useTheme } from "@/hooks/useTheme";
-import { outletsData, statusData } from "@/lib/data";
+import { fetchOutlets, IOutlet } from "@/lib/api";
+import { statusData } from "@/lib/data";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
@@ -24,6 +29,14 @@ export default function HomeScreen() {
   const colors = useTheme();
   const [currentIndex, setCurrentIndex] = useState(0);
   const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
+  // Fetch outlets from API
+  const { data: outletsData, isLoading: outletsLoading } = useQuery({
+    queryKey: ["outlets"],
+    queryFn: fetchOutlets,
+  });
+
+  const outlets = outletsData?.data ?? [];
 
   function handleLogout() {
     logout();
@@ -43,7 +56,11 @@ export default function HomeScreen() {
         <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
             <Image
-              source={require("@/assets/images/avatar.png")}
+              source={
+                user?.profileImage
+                  ? { uri: user?.profileImage }
+                  : require("@/assets/images/avatar.png")
+              }
               style={styles.avatar}
             />
           </View>
@@ -106,14 +123,20 @@ export default function HomeScreen() {
 
           {/* Action Buttons */}
           <View style={styles.actionsRow}>
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => router.push("/(screens)/select-car")}
+            >
               <Ionicons name="car" size={32} color={colors.secondary} />
               <Text style={[styles.actionText, { color: colors.secondary }]}>
                 Book
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => router.push("/(screens)/outlets")}
+            >
               <Entypo name="location" size={24} color={colors.secondary} />
               <Text style={[styles.actionText, { color: colors.secondary }]}>
                 Outlets
@@ -179,20 +202,42 @@ export default function HomeScreen() {
             <Text style={[styles.outletHeading, { color: colors.secondary }]}>
               Outlets near you
             </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/(screens)/outlets")}>
               <Text style={styles.viewAllText}>View all</Text>
             </TouchableOpacity>
           </View>
 
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.outletsScrollContent}
-          >
-            {outletsData.map((outlet) => (
-              <Outlet key={outlet.id} outlet={outlet} />
-            ))}
-          </ScrollView>
+          {outletsLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color="#F77C0B" />
+            </View>
+          ) : outlets.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No outlets available</Text>
+            </View>
+          ) : (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.outletsScrollContent}
+            >
+              {outlets.slice(0, 5).map((outlet: IOutlet) => (
+                <Outlet
+                  key={outlet._id}
+                  outlet={{
+                    id: outlet._id,
+                    name: outlet.name,
+                    location: `${outlet.address},  ${outlet.location}`,
+                    info: `${outlet.activeWashes || 0} car${outlet.activeWashes !== 1 ? "s" : ""} being washed now`,
+                    rating: outlet.rating || 5,
+                    image: outlet.image
+                      ? { uri: outlet.image }
+                      : require("@/assets/images/eko_car_wash_otlet.png"),
+                  }}
+                />
+              ))}
+            </ScrollView>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -207,7 +252,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingTop: 16,
     paddingBottom: 16,
   },
@@ -249,7 +294,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF3B30",
   },
   slideshowContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     marginTop: 8,
   },
   slideshowImage: {
@@ -259,7 +304,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   quickActionsCard: {
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     marginTop: 16,
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
@@ -349,7 +394,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
     marginBottom: 12,
-    marginLeft: 20,
+    marginLeft: 10,
   },
   dotIndicatorContainer: {
     flexDirection: "row",
@@ -373,12 +418,13 @@ const styles = StyleSheet.create({
   outletsSection: {
     marginTop: 24,
     marginBottom: 20,
+    paddingBottom: Platform.OS === "android" ? 40 : 10,
   },
   outletHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     marginBottom: 16,
   },
   outletHeading: {
@@ -391,7 +437,20 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   outletsScrollContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     gap: 16,
+    paddingBottom: Platform.OS === "android" ? 10 : 5,
+  },
+  loadingContainer: {
+    paddingVertical: 40,
+    alignItems: "center",
+  },
+  emptyContainer: {
+    paddingVertical: 40,
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 14,
+    color: "#666",
   },
 });

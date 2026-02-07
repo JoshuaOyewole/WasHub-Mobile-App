@@ -1,9 +1,11 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import * as Linking from "expo-linking";
+import { useRouter } from "expo-router";
 import { useEffect } from "react";
 
 export const useDeepLink = () => {
   const { setAuthStep } = useAuthStore();
+  const router = useRouter();
 
   useEffect(() => {
     const handleUrl = async ({ url }: { url: string }) => {
@@ -11,6 +13,17 @@ export const useDeepLink = () => {
 
       if (data.path === "auth/otp") {
         await setAuthStep("OTP");
+      } else if (data.path === "auth/setupPassword") {
+        // Extract token from query params
+        const token = data.queryParams?.token as string;
+
+        if (token) {
+          // Navigate to setupPassword with token
+          router.push({
+            pathname: "/(auth)/setupPassword",
+            params: { token },
+          });
+        }
       }
     };
 

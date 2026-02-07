@@ -16,6 +16,9 @@ export interface User {
   email: string;
   role: string;
   name?: string;
+  profileImage?: string;
+  phoneNumber?: string;
+  dob?: string | null;
 }
 
 interface AuthState {
@@ -32,7 +35,9 @@ interface AuthState {
   setUser: (user: User | null) => void;
   setAuthStep: (step: AuthStep) => void;
   setInitialized: () => void;
-  clearAuth: () => Promise<void>;
+  saveCredentials: (email: string) => Promise<void>;
+  getCredentials: () => Promise<{ email: string } | null>;
+  clearCredentials: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -47,19 +52,41 @@ export const useAuthStore = create<AuthState>()(
       setAuthStep: (step) => set({ authStep: step }),
       setInitialized: () => set({ isInitialized: true }),
 
-      clearAuth: async () => {
+      saveCredentials: async (email: string) => {
         try {
-          await SecureStore.deleteItemAsync("auth_token");
-          set({ user: null });
-          console.log("✅ Auth token cleared from SecureStore");
+          await SecureStore.setItemAsync("saved_email", email);
+          console.log("✅ Credentials saved for auto-fill");
         } catch (error) {
-          console.error("❌ Error clearing auth token:", error);
+          console.error("❌ Error saving credentials:", error);
+        }
+      },
+
+      getCredentials: async () => {
+        try {
+          const email = await SecureStore.getItemAsync("saved_email");
+          if (email) {
+            return { email };
+          }
+          return null;
+        } catch (error) {
+          console.error("❌ Error getting credentials:", error);
+          return null;
+        }
+      },
+
+      clearCredentials: async () => {
+        try {
+          await SecureStore.deleteItemAsync("saved_email");
+          console.log("✅ Saved credentials cleared");
+        } catch (error) {
+          console.error("❌ Error clearing credentials:", error);
         }
       },
 
       logout: async () => {
         try {
           await SecureStore.deleteItemAsync("auth_token");
+          // Don't clear saved credentials on logout - they persist for remember me
           set({ user: null, authStep: "LOGIN" });
           console.log("✅ User logged out");
         } catch (error) {

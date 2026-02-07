@@ -10,8 +10,6 @@ export const bootstrapAuth = async () => {
   const { setUser, setInitialized } = useAuthStore.getState();
 
   try {
-    console.log("🔄 Bootstrapping auth...");
-
     // Step 1: Read token from SecureStore
     let token: string | null = null;
     try {
@@ -29,7 +27,7 @@ export const bootstrapAuth = async () => {
       return;
     }
 
-    // Step 3: If token exists, call /me endpoint
+    // Step 3: If token exists, call /me endpoint to validate it
     console.log("✅ Token found, fetching user profile");
     try {
       const response = await fetchUserProfile();
@@ -40,7 +38,9 @@ export const bootstrapAuth = async () => {
         console.log("✅ User profile loaded:", response.data.user);
       } else {
         // API responded but with invalid data
-        console.warn("⚠️ Invalid response from /me endpoint, clearing token");
+        console.warn(
+          "⚠️ Invalid response from auth/me endpoint, clearing token",
+        );
         try {
           await SecureStore.deleteItemAsync("auth_token");
         } catch (deleteError) {

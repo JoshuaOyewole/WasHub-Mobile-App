@@ -3,18 +3,19 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import * as SecureStore from "expo-secure-store";
 
 interface ApiSuccessResponse<T = any> {
-  data: DataType<T>;
+  data: T;
   status: boolean;
   statusCode: number;
+  message?: string;
 }
 interface ApiFailureResponse {
   status: boolean;
   error: string;
   statusCode: number;
 }
-interface DataType<T = any> {
+/* interface DataType<T = any> {
   message?: T;
-}
+} */
 
 type ApiError = AxiosError<ApiFailureResponse>;
 

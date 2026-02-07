@@ -1,4 +1,5 @@
 // LoginScreen.tsx
+import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import { useLoginMutation } from "@/lib/api/useAuthMutations";
 import { loginSchema, LoginSchema } from "@/lib/schema/validationSchema";
@@ -8,29 +9,30 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Checkbox from "expo-checkbox";
 import { Link, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-    Controller,
-    useForm,
-    type Resolver,
-    type SubmitHandler,
+  Controller,
+  useForm,
+  type Resolver,
+  type SubmitHandler,
 } from "react-hook-form";
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    Pressable,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import FormInput from "../ui/text-input";
 
 const LoginScreen = () => {
   const colors = useTheme();
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
-  const { setUser } = useAuthStore();
+  const { setUser, saveCredentials, getCredentials, clearCredentials } =
+    useAuthStore();
   const router = useRouter();
   // Use React Query mutation hook
   const { mutate: login, isPending, isError } = useLoginMutation();
@@ -38,10 +40,29 @@ const LoginScreen = () => {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema) as Resolver<LoginSchema, any>,
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
   });
+
+  // Load saved credentials on mount
+  useEffect(() => {
+    const loadSavedCredentials = async () => {
+      const credentials = await getCredentials();
+      if (credentials) {
+        setValue("email", credentials.email);
+        setValue("rememberMe", true);
+        console.log("✅ Loaded saved credentials");
+      }
+    };
+    loadSavedCredentials();
+  }, []);
 
   const handleGoogleSignin = () => {
     console.log("Google Signin initiated");
@@ -57,13 +78,20 @@ const LoginScreen = () => {
           console.log("Login response:", res);
 
           if (res.statusCode && res.statusCode !== 200) {
-            return Alert.alert("Login Failed", "An error occurred");
+            return toast("error", "Login Failed", "An error occurred");
           }
 
           // ✅ Store token in SecureStore ONLY
           if (res.data?.token) {
             await SecureStore.setItemAsync("auth_token", res.data.token);
             console.log("✅ Token saved to SecureStore");
+          }
+
+          // ✅ Save credentials if remember me is checked
+          if (data.rememberMe) {
+            await saveCredentials(data.email);
+          } else {
+            await clearCredentials();
           }
 
           // ✅ Store user in Zustand memory ONLY
@@ -78,12 +106,14 @@ const LoginScreen = () => {
         onError: (error: any) => {
           console.log("login error=>", JSON.stringify(error).toString());
           if (error?.statusCode === 401) {
-            return Alert.alert(
-              error.error,
-              "Your email or password is incorrect. Try again or reset your password.",
+            toast(
+              "error",
+              "Login Failed",
+              error.error || "Your email or password is incorrect.",
             );
+          } else {
+            toast("error", "Login Failed", error.error || "An error occurred.");
           }
-          Alert.alert("Login Failed", error?.error || "An error occurred");
         },
       },
     );
@@ -99,6 +129,10 @@ const LoginScreen = () => {
             <FormInput
               label="Email Address"
               handleChange={onChange}
+              value={value}
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect={false}
               onBlur={onBlur}
               placeholder="john.doe@example.com"
               keyboardType="email-address"

@@ -62,7 +62,7 @@ export default function StatusCard({ item }: { item: (typeof statusData)[0] }) {
 
 const styles = StyleSheet.create({
   carouselItemContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   statusCard: {
     backgroundColor: "#FFFFFF",
@@ -125,8 +125,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   stepCircle: {
-    width: 32,
-    height: 32,
+    width: 28,
+    height: 28,
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",

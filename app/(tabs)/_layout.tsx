@@ -22,11 +22,12 @@ export default function TabLayout() {
         tabBarStyle: {
           borderTopLeftRadius: 15,
           borderTopRightRadius: 15,
-          backgroundColor: "#ffffff",
+          backgroundColor: "#FFFFFF",
           // borderTopColor: "green",
           //borderTopWidth: 1,
-          paddingTop: 10,
-          height: Platform.OS === "ios" ? 85 : 60,
+          paddingTop: 5,
+          marginBottom: 1,
+          height: Platform.OS === "ios" ? 85 : 65,
         },
         tabBarLabelStyle: {
           fontSize: Platform.OS === "ios" ? 14 : 12,

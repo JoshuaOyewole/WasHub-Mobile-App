@@ -18,3 +18,8 @@ export function removeItem(key: string): void {
     localStorage.removeItem(`${DATA_PREFIX}${key}`);
   }
 }
+
+export function capitalizeFirstLetter(str: string): string {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

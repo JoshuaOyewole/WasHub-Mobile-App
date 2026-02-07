@@ -2,6 +2,7 @@ import { useColorScheme } from "react-native";
 
 // Shared colors across themes
 const sharedColors = {
+  primary: "#F77C0B",
   secondary: "#1F2D33",
   black: "#000000",
   gray500: "#A6A6A6",

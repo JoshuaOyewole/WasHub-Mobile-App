@@ -1,10 +1,16 @@
 import FormInput from "@/components/ui/text-input";
+import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
+import { checkEmail, sendOTP } from "@/lib/api";
+import { useAuthStore } from "@/store/useAuthStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useMutation } from "@tanstack/react-query";
 import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
+  ActivityIndicator,
   Image,
   Pressable,
   ScrollView,
@@ -18,6 +24,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Register() {
   const colors = useTheme();
   const router = useRouter();
+  const { setAuthStep } = useAuthStore();
+  const { toast } = useToast();
   const [form, setForm] = React.useState({
     firstName: "",
     lastName: "",
@@ -27,15 +35,119 @@ export default function Register() {
     phoneNumber: "",
   });
   const [showPassword, setShowPassword] = React.useState(false);
+
+  // Mutation for checking if email exists
+  const checkEmailMutation = useMutation({
+    mutationFn: (email: string) => checkEmail({ email }),
+    onSuccess: async (response) => {
+      if (response.status && response.data) {
+        if (response.data.exists) {
+          toast(
+            "error",
+            "Email Already Registered",
+            "This email is already registered. Please use a different email or login to your account."
+          );
+          setTimeout(() => {
+            setAuthStep("LOGIN");
+            router.push("/(auth)/login");
+          }, 2000);
+        } else {
+          // Email doesn't exist, proceed with storing data and sending OTP
+          try {
+            await AsyncStorage.setItem(
+              "pendingRegistration",
+              JSON.stringify(form),
+            );
+            sendOTPMutation.mutate(form.email);
+          } catch (error) {
+            console.error("Error saving registration data:", error);
+            toast("error", "Error", "Failed to save registration data");
+          }
+        }
+      }
+    },
+    onError: (error: any) => {
+      console.error("Error checking email:", error);
+      toast(
+        "error",
+        "Error",
+        error?.response?.data?.error || "Failed to validate email"
+      );
+    },
+  });
+
+  // Mutation for sending OTP
+  const sendOTPMutation = useMutation({
+    mutationFn: (email: string) => sendOTP({ email }),
+    onSuccess: (response) => {
+      if (response.status) {
+        // Store registration data temporarily in authStore or AsyncStorage
+        toast(
+          "success",
+          "OTP Sent",
+          `A verification code has been sent to ${form.email}`
+        );
+        // Navigate to OTP screen and set auth step
+        setTimeout(() => {
+          setAuthStep("OTP");
+          router.push("/(auth)/otp");
+        }, 1500);
+      } else {
+        console.error(
+          "Error sending OTP:",
+          response.message || "Failed to send OTP",
+        );
+        toast("error", "Error", response.message || "Failed to send OTP");
+      }
+    },
+    onError: (error: any) => {
+      console.error("Error sending OTP:", error);
+      toast(
+        "error",
+        "Error",
+        error?.response?.data?.message || "Failed to send OTP"
+      );
+    },
+  });
   const handleChange = (field: string, value: string) => {
     setForm({ ...form, [field]: value });
   };
 
-  const handleSubmit = () => {
-    console.log("Register form submitted:");
-    // Implement registration logic here
-    console.log("Form submitted:", form);
-    router.push("/otp");
+  const handleSubmit = async () => {
+    // Validate form
+    if (
+      !form.firstName ||
+      !form.lastName ||
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword ||
+      !form.phoneNumber
+    ) {
+      toast("error", "Error", "Please fill in all fields");
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      toast("error", "Error", "Please enter a valid email address");
+      return;
+    }
+
+    // Validate password match
+    if (form.password !== form.confirmPassword) {
+      toast("error", "Error", "Passwords do not match");
+      return;
+    }
+
+    // Validate password length
+    if (form.password.length < 6) {
+      toast("error", "Error", "Password must be at least 6 characters");
+      return;
+    }
+
+    // Check if email already exists before sending OTP
+    checkEmailMutation.mutate(form.email);
   };
   const hanldeTermsPress = () => {
     //display a modal here
@@ -156,6 +268,7 @@ export default function Register() {
             style={{
               flexDirection: "row",
               flexWrap: "wrap",
+              width: "100%",
               justifyContent: "center",
             }}
           >
@@ -200,8 +313,7 @@ export default function Register() {
                 },
               ]}
             >
-              {" "}
-              and{" "}
+              and
             </Text>
             <Pressable
               onPress={handlePrivacyPress}
@@ -220,7 +332,7 @@ export default function Register() {
                 }}
               >
                 {" "}
-                Privacy Policy{" "}
+                Privacy Policy
               </Text>
             </Pressable>
           </View>
@@ -231,19 +343,28 @@ export default function Register() {
               style.submitBtn,
               {
                 backgroundColor: colors.secondaryButton,
+                opacity:
+                  checkEmailMutation.isPending || sendOTPMutation.isPending
+                    ? 0.7
+                    : 1,
               },
             ]}
+            disabled={checkEmailMutation.isPending || sendOTPMutation.isPending}
           >
-            <Text
-              style={{
-                fontWeight: "600",
-                fontSize: 16,
-                color: colors.buttonText,
-              }}
-            >
-              {" "}
-              Proceed
-            </Text>
+            {checkEmailMutation.isPending || sendOTPMutation.isPending ? (
+              <ActivityIndicator size="small" color={colors.buttonText} />
+            ) : (
+              <Text
+                style={{
+                  fontWeight: "600",
+                  fontSize: 16,
+                  color: colors.buttonText,
+                }}
+              >
+                {" "}
+                Proceed
+              </Text>
+            )}
           </Pressable>
           <View
             style={{

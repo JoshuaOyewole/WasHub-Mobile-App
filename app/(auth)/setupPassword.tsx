@@ -1,11 +1,14 @@
 import FormInput from "@/components/ui/text-input";
+import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
+import { resetPassword } from "@/lib/api";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useRouter } from "expo-router";
+import { useMutation } from "@tanstack/react-query";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
-  Alert,
+  ActivityIndicator,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -18,22 +21,93 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function SetupPassword() {
   const colors = useTheme();
   const router = useRouter();
+  const params = useLocalSearchParams();
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = React.useState(false);
   const [form, setForm] = React.useState({
     pwd: "",
     confirmPwd: "",
   });
+
+  // Get token from URL params
+  const resetToken = params.token as string;
+
+  // Mutation for resetting password
+  const resetPasswordMutation = useMutation({
+    mutationFn: (password: string) =>
+      resetPassword({ token: resetToken, password }),
+    onSuccess: (response) => {
+      if (response.status) {
+        toast(
+          "success",
+          "Success",
+          "Your password has been reset successfully. Please login with your new password."
+        );
+        setTimeout(() => router.replace("/(auth)/login"), 2000);
+      } else {
+        toast(
+          "error",
+          "Error",
+          response.error || "Failed to reset password. Please try again."
+        );
+      }
+    },
+    onError: (error: any) => {
+      toast(
+        "error",
+        "Error",
+        error.message || "An error occurred. Please try again."
+      );
+    },
+  });
+
   const handleChange = (field: string, value: string | boolean) => {
     setForm({ ...form, [field]: value });
   };
 
   const handleSubmit = () => {
-    if (form.pwd !== form.confirmPwd) {
-      Alert.alert("Oooop", "Passwords do not match");
+    if (!form.pwd || !form.confirmPwd) {
+      toast("error", "Required", "Please fill in all password fields");
       return;
     }
-    console.log("Form submitted:", form);
+
+    if (form.pwd.length < 6) {
+      toast(
+        "error",
+        "Invalid Password",
+        "Password must be at least 6 characters long"
+      );
+      return;
+    }
+
+    if (form.pwd !== form.confirmPwd) {
+      toast("error", "Password Mismatch", "Passwords do not match");
+      return;
+    }
+
+    if (!resetToken) {
+      toast(
+        "error",
+        "Invalid Link",
+        "Reset token is missing. Please use the link from your email."
+      );
+      return;
+    }
+
+    resetPasswordMutation.mutate(form.pwd);
   };
+
+  // Check if token exists
+  React.useEffect(() => {
+    if (!resetToken) {
+      toast(
+        "error",
+        "Invalid Link",
+        "This password reset link is invalid. Please request a new one."
+      );
+      setTimeout(() => router.push("/(auth)/forgetPassword"), 2000);
+    }
+  }, [resetToken]);
 
   return (
     <SafeAreaView
@@ -75,7 +149,10 @@ export default function SetupPassword() {
         {/* Header */}
         <View style={style.formHeader}>
           <Text style={[style.header, { color: colors.formHeading }]}>
-            Kindly set-up your password
+            Set New Password
+          </Text>
+          <Text style={[style.formSubHeader, { color: colors.text }]}>
+            Please enter your new password
           </Text>
         </View>
         {/* Form */}
@@ -87,6 +164,7 @@ export default function SetupPassword() {
             value={form.pwd}
             secureTextEntry={!showPassword}
             placeholderTextColor={colors.text}
+            editable={!resetPasswordMutation.isPending}
             rightIcon={
               <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                 <Ionicons
@@ -111,6 +189,7 @@ export default function SetupPassword() {
             value={form.confirmPwd}
             secureTextEntry={!showPassword}
             placeholderTextColor={colors.text}
+            editable={!resetPasswordMutation.isPending}
             rightIcon={
               <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                 <Ionicons
@@ -131,23 +210,29 @@ export default function SetupPassword() {
 
           <Pressable
             onPress={handleSubmit}
+            disabled={resetPasswordMutation.isPending}
             style={[
               style.submitBtn,
               {
-                backgroundColor: colors.secondaryButton,
+                backgroundColor: resetPasswordMutation.isPending
+                  ? colors.text + "40"
+                  : colors.secondaryButton,
               },
             ]}
           >
-            <Text
-              style={{
-                fontWeight: "600",
-                fontSize: 16,
-                color: colors.buttonText,
-              }}
-            >
-              {" "}
-              Submit
-            </Text>
+            {resetPasswordMutation.isPending ? (
+              <ActivityIndicator color={colors.buttonText} />
+            ) : (
+              <Text
+                style={{
+                  fontWeight: "600",
+                  fontSize: 16,
+                  color: colors.buttonText,
+                }}
+              >
+                Submit
+              </Text>
+            )}
           </Pressable>
         </View>
       </ScrollView>
@@ -171,7 +256,7 @@ const style = StyleSheet.create({
   formSubHeader: {
     fontSize: 16,
     marginTop: 10,
-    alignSelf: "center",
+    // alignSelf: "center",
   },
   formContainer: {
     gap: 15,
