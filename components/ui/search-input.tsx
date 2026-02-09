@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import { Feather } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
@@ -14,15 +15,21 @@ export default function SearchInput({
   placeholder = "Search",
   ...props
 }: SearchInputProps) {
+  const colors = useTheme();
   return (
-    <View style={styles.container}>
-      <Feather name="search" size={20} color="#B0B0B0" style={styles.icon} />
+    <View style={[styles.container, { backgroundColor: colors.card }]}>
+      <Feather
+        name="search"
+        size={20}
+        color={colors.textPlaceholder}
+        style={styles.icon}
+      />
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#B0B0B0"
-        style={styles.input}
+        placeholderTextColor={colors.textPlaceholder}
+        style={[styles.input, { color: colors.text }]}
         {...props}
       />
     </View>
@@ -33,7 +40,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
     borderRadius: 8,
     paddingHorizontal: 12,
     height: 48,
@@ -44,7 +50,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 14,
-    color: "#1F2D33",
     paddingVertical: 0,
     height: "100%",
   },

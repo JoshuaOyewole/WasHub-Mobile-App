@@ -63,24 +63,31 @@ const Outlets = () => {
       style={[styles.container, { backgroundColor: colors.background }]}
       edges={["top", "bottom"]}
     >
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={colors.statusBarStyle} />
 
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
-          style={styles.backButton}
+          style={[
+            styles.backButton,
+            { backgroundColor: colors.card, shadowColor: colors.shadow },
+          ]}
           onPress={() => router.back()}
         >
-          <Ionicons name="chevron-back" size={24} color="#F77C0B" />
+          <Ionicons name="chevron-back" size={24} color={colors.primary} />
         </TouchableOpacity>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Car Wash Outlets</Text>
+          <Text style={[styles.title, { color: colors.text }]}>
+            Car Wash Outlets
+          </Text>
         </View>
         <View style={styles.placeholder} />
       </View>
 
       {/* Search Field */}
-      <View style={styles.searchContainer}>
+      <View
+        style={[styles.searchContainer, { backgroundColor: colors.background }]}
+      >
         <View style={{ flex: 1 }}>
           <SearchInput
             value={searchQuery}
@@ -88,8 +95,10 @@ const Outlets = () => {
             placeholder="Search for car wash spot"
           />
         </View>
-        <TouchableOpacity style={styles.filterButton}>
-          <Ionicons name="options-outline" size={20} color="#FFFFFF" />
+        <TouchableOpacity
+          style={[styles.filterButton, { backgroundColor: colors.surface }]}
+        >
+          <Ionicons name="options-outline" size={20} color={colors.white} />
         </TouchableOpacity>
       </View>
 
@@ -100,14 +109,14 @@ const Outlets = () => {
           <RefreshControl
             refreshing={isRefetching}
             onRefresh={() => refetch()}
-            tintColor="#F77C0B"
+            tintColor={colors.primary}
           />
         }
       >
         {/* Outlets List */}
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#F77C0B" />
+            <ActivityIndicator size="large" color={colors.primary} />
           </View>
         ) : filteredOutlets.length <= 0 ? (
           <EmptyState
@@ -147,7 +156,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "transparent",
   },
   backButton: {
     width: 40,
@@ -155,9 +164,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    //Add some shadow
-    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -173,7 +179,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   placeholder: {
     width: 40,
@@ -183,19 +188,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 10,
     gap: 12,
-    backgroundColor: "#F8F8F8",
     alignItems: "center",
   },
   filterButton: {
     width: 43,
     height: 43,
-    backgroundColor: "#1F2D33",
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
   },
   scrollContent: {
-    backgroundColor: "#F8F8F8",
     flexGrow: 1,
     paddingHorizontal: 20,
   },

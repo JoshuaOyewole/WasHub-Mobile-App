@@ -1,6 +1,5 @@
 import { HapticTab } from "@/components/haptic-tab";
-import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useTheme } from "@/hooks/useTheme";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -9,22 +8,19 @@ import React from "react";
 import { Platform, Text } from "react-native";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  console.log("TabLayout colorScheme:", colorScheme);
+  const colors = useTheme();
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        tabBarInactiveTintColor: Colors[colorScheme ?? "light"].inactiveTint,
+        tabBarActiveTintColor: colors.tint,
+        tabBarInactiveTintColor: colors.inactiveTint,
 
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
           borderTopLeftRadius: 15,
           borderTopRightRadius: 15,
-          backgroundColor: "#FFFFFF",
-          // borderTopColor: "green",
-          //borderTopWidth: 1,
+          backgroundColor: colors.tabBar,
           paddingTop: 5,
           marginBottom: 1,
           height: Platform.OS === "ios" ? 85 : 65,
@@ -34,9 +30,7 @@ export default function TabLayout() {
           fontWeight: Platform.OS === "ios" ? "400" : "600",
         },
         headerStyle: {
-          backgroundColor: Colors[colorScheme ?? "light"].background,
-          //borderButtomColor: Colors[colorScheme ?? "light"].border,
-          //  borderButtomWidth: 1,
+          backgroundColor: colors.background,
         },
       }}
     >

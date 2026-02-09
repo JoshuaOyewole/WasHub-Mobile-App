@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
@@ -15,9 +16,13 @@ export default function Outlet({
     image: any;
   };
 }) {
+  const colors = useTheme();
   return (
     <TouchableOpacity
-      style={styles.outletCard}
+      style={[
+        styles.outletCard,
+        { backgroundColor: colors.card, shadowColor: colors.shadow },
+      ]}
       onPress={() =>
         router.push({
           pathname: "/(screens)/outlet-details",
@@ -27,14 +32,26 @@ export default function Outlet({
     >
       <Image source={outlet.image} style={styles.outletImage} />
       <View style={styles.outletCardContent}>
-        <Text style={styles.outletName}>{outlet.name}</Text>
+        <Text style={[styles.outletName, { color: colors.text }]}>
+          {outlet.name}
+        </Text>
         <View style={styles.outletInfoRow}>
-          <Ionicons name="location-outline" size={14} color="#666" />
-          <Text style={styles.outletLocation}>{outlet.location}</Text>
+          <Ionicons
+            name="location-outline"
+            size={14}
+            color={colors.textSecondary}
+          />
+          <Text
+            style={[styles.outletLocation, { color: colors.textSecondary }]}
+          >
+            {outlet.location}
+          </Text>
         </View>
         <View style={styles.outletInfoRow}>
-          <Ionicons name="car-outline" size={14} color="#666" />
-          <Text style={styles.outletInfo}>{outlet.info}</Text>
+          <Ionicons name="car-outline" size={14} color={colors.textSecondary} />
+          <Text style={[styles.outletInfo, { color: colors.textSecondary }]}>
+            {outlet.info}
+          </Text>
         </View>
         <View style={styles.ratingContainer}>
           {[1, 2, 3, 4, 5].map((star) => (
@@ -42,7 +59,11 @@ export default function Outlet({
               key={star}
               name="star"
               size={16}
-              color={star <= outlet.rating ? "#FF8C00" : "#E0E0E0"}
+              color={
+                star <= outlet.rating
+                  ? colors.primaryLight
+                  : colors.stepInactive
+              }
             />
           ))}
         </View>
@@ -54,10 +75,8 @@ export default function Outlet({
 const styles = StyleSheet.create({
   outletCard: {
     width: 220,
-    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     overflow: "hidden",
-    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -77,7 +96,6 @@ const styles = StyleSheet.create({
   outletName: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#000",
     marginBottom: 8,
   },
   outletInfoRow: {
@@ -88,11 +106,9 @@ const styles = StyleSheet.create({
   },
   outletLocation: {
     fontSize: 13,
-    color: "#666",
   },
   outletInfo: {
     fontSize: 13,
-    color: "#666",
   },
   ratingContainer: {
     flexDirection: "row",

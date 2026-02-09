@@ -2,6 +2,7 @@ import { ThemedText } from "@/components/themed-text";
 import Button from "@/components/ui/button";
 import { Fonts } from "@/constants/theme";
 import { useToast } from "@/contexts/ToastContext";
+import { useTheme } from "@/hooks/useTheme";
 import { changePassword } from "@/lib/api";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useRouter } from "expo-router";
@@ -22,6 +23,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function ChangePassword() {
   const router = useRouter();
   const { toast } = useToast();
+  const colors = useTheme();
   const [isSaving, setIsSaving] = useState(false);
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
@@ -75,17 +77,32 @@ export default function ChangePassword() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
-      <StatusBar barStyle="dark-content" />
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      edges={["top"]}
+    >
+      <StatusBar barStyle={colors.statusBarStyle} />
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <View style={styles.header}>
-          <Pressable style={styles.backButton} onPress={() => router.back()}>
-            <MaterialIcons name="arrow-back-ios" size={18} color="#F77C0B" />
+          <Pressable
+            style={[
+              styles.backButton,
+              { backgroundColor: colors.card, shadowColor: colors.shadow },
+            ]}
+            onPress={() => router.back()}
+          >
+            <MaterialIcons
+              name="arrow-back-ios"
+              size={18}
+              color={colors.primary}
+            />
           </Pressable>
-          <ThemedText style={styles.headerTitle}>Change Password</ThemedText>
+          <ThemedText style={[styles.headerTitle, { color: colors.title }]}>
+            Change Password
+          </ThemedText>
           <View style={styles.headerSpacer} />
         </View>
 
@@ -95,16 +112,25 @@ export default function ChangePassword() {
         >
           <View style={styles.fieldBlock}>
             <View style={styles.labelRow}>
-              <ThemedText style={styles.label}>Current Password</ThemedText>
+              <ThemedText style={[styles.label, { color: colors.text }]}>
+                Current Password
+              </ThemedText>
             </View>
             <View style={styles.inputWrap}>
               <TextInput
                 value={form.currentPassword}
                 onChangeText={(value) => handleChange("currentPassword", value)}
                 placeholder="********"
-                placeholderTextColor="#B0B0B0"
+                placeholderTextColor={colors.textPlaceholder}
                 secureTextEntry={!showCurrent}
-                style={[styles.input, styles.inputWithIcon]}
+                style={[
+                  styles.input,
+                  styles.inputWithIcon,
+                  {
+                    backgroundColor: colors.inputBackground,
+                    color: colors.text,
+                  },
+                ]}
               />
               <Pressable
                 onPress={() => router.push("/(auth)/forgetPassword")}
@@ -122,22 +148,31 @@ export default function ChangePassword() {
                 <MaterialIcons
                   name={showCurrent ? "visibility" : "visibility-off"}
                   size={18}
-                  color="#8B8B8B"
+                  color={colors.icon}
                 />
               </Pressable>
             </View>
           </View>
 
           <View style={styles.fieldBlock}>
-            <ThemedText style={styles.label}>New Password</ThemedText>
+            <ThemedText style={[styles.label, { color: colors.text }]}>
+              New Password
+            </ThemedText>
             <View style={styles.inputWrap}>
               <TextInput
                 value={form.newPassword}
                 onChangeText={(value) => handleChange("newPassword", value)}
                 placeholder="********"
-                placeholderTextColor="#B0B0B0"
+                placeholderTextColor={colors.textPlaceholder}
                 secureTextEntry={!showNew}
-                style={[styles.input, styles.inputWithIcon]}
+                style={[
+                  styles.input,
+                  styles.inputWithIcon,
+                  {
+                    backgroundColor: colors.inputBackground,
+                    color: colors.text,
+                  },
+                ]}
               />
               <Pressable
                 onPress={() => setShowNew((prev) => !prev)}
@@ -149,22 +184,31 @@ export default function ChangePassword() {
                 <MaterialIcons
                   name={showNew ? "visibility" : "visibility-off"}
                   size={18}
-                  color="#8B8B8B"
+                  color={colors.icon}
                 />
               </Pressable>
             </View>
           </View>
 
           <View style={styles.fieldBlock}>
-            <ThemedText style={styles.label}>Confirm New Password</ThemedText>
+            <ThemedText style={[styles.label, { color: colors.text }]}>
+              Confirm New Password
+            </ThemedText>
             <View style={styles.inputWrap}>
               <TextInput
                 value={form.confirmPassword}
                 onChangeText={(value) => handleChange("confirmPassword", value)}
                 placeholder="********"
-                placeholderTextColor="#B0B0B0"
+                placeholderTextColor={colors.textPlaceholder}
                 secureTextEntry={!showConfirm}
-                style={[styles.input, styles.inputWithIcon]}
+                style={[
+                  styles.input,
+                  styles.inputWithIcon,
+                  {
+                    backgroundColor: colors.inputBackground,
+                    color: colors.text,
+                  },
+                ]}
               />
               <Pressable
                 onPress={() => setShowConfirm((prev) => !prev)}
@@ -176,7 +220,7 @@ export default function ChangePassword() {
                 <MaterialIcons
                   name={showConfirm ? "visibility" : "visibility-off"}
                   size={18}
-                  color="#8B8B8B"
+                  color={colors.icon}
                 />
               </Pressable>
             </View>
@@ -192,7 +236,7 @@ export default function ChangePassword() {
 
           {isSaving && (
             <View style={styles.spinnerRow}>
-              <ActivityIndicator size="small" color="#1F2D33" />
+              <ActivityIndicator size="small" color={colors.text} />
             </View>
           )}
         </ScrollView>
@@ -207,7 +251,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
   },
   header: {
     flexDirection: "row",
@@ -220,10 +263,8 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 10,
@@ -255,7 +296,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 13,
-    color: "#1F2D33",
     fontWeight: "400",
   },
   linkText: {
@@ -267,12 +307,10 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   input: {
-    backgroundColor: "#F5F5F5",
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 14,
-    color: "#1F2D33",
     height: 48,
   },
   inputWrap: {

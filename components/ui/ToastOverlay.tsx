@@ -1,4 +1,5 @@
 import { useToast } from "@/contexts/ToastContext";
+import { useTheme } from "@/hooks/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import React, { useEffect, useRef } from "react";
@@ -6,6 +7,7 @@ import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
 export const ToastOverlay: React.FC = () => {
   const { isVisible, config, dismiss } = useToast();
+  const colors = useTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.9)).current;
 
@@ -90,7 +92,16 @@ export const ToastOverlay: React.FC = () => {
           },
         ]}
       >
-        <View style={[styles.toast, { borderLeftColor: getToastColor() }]}>
+        <View
+          style={[
+            styles.toast,
+            {
+              borderLeftColor: getToastColor(),
+              backgroundColor: colors.card,
+              shadowColor: colors.shadow,
+            },
+          ]}
+        >
           <View style={styles.iconContainer}>
             <Ionicons
               name={getToastIcon() as any}
@@ -99,13 +110,17 @@ export const ToastOverlay: React.FC = () => {
             />
           </View>
           <View style={styles.textContainer}>
-            <Text style={styles.title}>{config?.title}</Text>
+            <Text style={[styles.title, { color: colors.text }]}>
+              {config?.title}
+            </Text>
             {config?.message && (
-              <Text style={styles.message}>{config.message}</Text>
+              <Text style={[styles.message, { color: colors.textSecondary }]}>
+                {config.message}
+              </Text>
             )}
           </View>
           <Pressable onPress={dismiss} style={styles.closeButton}>
-            <Ionicons name="close" size={20} color="#666" />
+            <Ionicons name="close" size={20} color={colors.textSecondary} />
           </Pressable>
         </View>
       </Animated.View>
@@ -139,13 +154,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   toast: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     borderLeftWidth: 5,
     padding: 16,
     flexDirection: "row",
     alignItems: "center",
-    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -164,12 +177,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#000",
     marginBottom: 4,
   },
   message: {
     fontSize: 14,
-    color: "#666",
     lineHeight: 20,
   },
   closeButton: {

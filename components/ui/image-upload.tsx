@@ -1,29 +1,32 @@
-import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import { useToast } from "@/contexts/ToastContext";
+import { useTheme } from "@/hooks/useTheme";
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 type ImageUploadProps = {
   label: string;
   value: string | null;
   onImageSelected: (uri: string) => void;
+  uploadFn: (localUri: string, oldImageUrl?: string) => Promise<string>;
 };
 
 export default function ImageUpload({
   label,
   value,
   onImageSelected,
+  uploadFn,
 }: ImageUploadProps) {
   const { toast } = useToast();
+  const colors = useTheme();
   const [uploading, setUploading] = useState(false);
 
   const pickImage = async () => {
@@ -33,7 +36,7 @@ export default function ImageUpload({
       toast(
         "error",
         "Permission Required",
-        "Sorry, we need camera roll permissions to upload photos."
+        "Sorry, we need camera roll permissions to upload photos.",
       );
       return;
     }
@@ -41,7 +44,7 @@ export default function ImageUpload({
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [4, 4],
       quality: 0.8,
     });
 
@@ -51,17 +54,17 @@ export default function ImageUpload({
       try {
         setUploading(true);
 
-        // Upload to Cloudinary
-        const cloudinaryUrl = await uploadImageToCloudinary(localUri);
+        // Upload via the provided upload function, passing old URL for cleanup
+        const imageUrl = await uploadFn(localUri, value || undefined);
 
-        // Pass the Cloudinary URL back
-        onImageSelected(cloudinaryUrl);
+        // Pass the uploaded URL back
+        onImageSelected(imageUrl);
       } catch (error) {
         console.error("Error uploading image:", error);
         toast(
           "error",
           "Upload Failed",
-          "Failed to upload image. Please try again."
+          "Failed to upload image. Please try again.",
         );
       } finally {
         setUploading(false);
@@ -71,24 +74,28 @@ export default function ImageUpload({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
       <TouchableOpacity
-        style={styles.uploadArea}
+        style={[styles.uploadArea, { backgroundColor: colors.inputBackground }]}
         onPress={pickImage}
         activeOpacity={0.7}
         disabled={uploading}
       >
         {uploading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#F77C0B" />
-            <Text style={styles.uploadingText}>Uploading...</Text>
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={[styles.uploadingText, { color: colors.primary }]}>
+              Uploading...
+            </Text>
           </View>
         ) : value ? (
           <Image source={{ uri: value }} style={styles.previewImage} />
         ) : (
           <View style={styles.placeholder}>
-            <View style={styles.iconContainer}>
-              <Feather name="image" size={32} color="#B0B0B0" />
+            <View
+              style={[styles.iconContainer, { backgroundColor: colors.border }]}
+            >
+              <Feather name="image" size={32} color={colors.textPlaceholder} />
             </View>
           </View>
         )}
@@ -103,7 +110,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 13,
-    color: "#1F2D33",
     marginBottom: 8,
     fontWeight: "400",
   },
@@ -114,12 +120,9 @@ const styles = StyleSheet.create({
   uploadingText: {
     marginTop: 8,
     fontSize: 14,
-    color: "#F77C0B",
     fontWeight: "500",
   },
   uploadArea: {
-    backgroundColor: "#F5F5F5",
-
     borderRadius: 8,
     height: 120,
     justifyContent: "center",
@@ -134,7 +137,6 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 8,
-    backgroundColor: "#E8E8E8",
     justifyContent: "center",
     alignItems: "center",
   },

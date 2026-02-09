@@ -2,7 +2,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { Link } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Onboarding() {
   const colors = useTheme();
@@ -22,7 +22,13 @@ export default function Onboarding() {
           </Text>
         </View>
         <View>
-          <Link href="/register" style={style.button}>
+          <Link
+            href="/register"
+            style={[
+              style.button,
+              { backgroundColor: colors.surface, color: colors.white },
+            ]}
+          >
             Get Started
           </Link>
           <View
@@ -71,23 +77,19 @@ const style = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    color: "#1C1C1E",
     fontWeight: "700",
     textAlign: "center",
   },
   subTitle: {
     fontSize: 16,
-    color: "#4A4A4A",
     textAlign: "center",
     marginTop: 10,
     paddingLeft: 20,
     paddingRight: 20,
   },
   button: {
-    backgroundColor: "#1F2D33",
     padding: 15,
     borderRadius: 30,
-    color: "#FFFFFF",
     marginTop: 30,
     width: 250,
     height: 47,

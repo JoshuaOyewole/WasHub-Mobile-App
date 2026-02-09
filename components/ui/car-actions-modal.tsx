@@ -1,5 +1,6 @@
 import Button from "@/components/ui/button";
 import { Car } from "@/components/ui/car-card";
+import { useTheme } from "@/hooks/useTheme";
 import React, { useRef } from "react";
 import {
     Animated,
@@ -25,6 +26,7 @@ export default function CarActionsModal({
   onWashCar,
   onViewDetails,
 }: CarActionsModalProps) {
+  const colors = useTheme();
   const translateY = useRef(new Animated.Value(0)).current;
 
   const panResponder = useRef(
@@ -81,13 +83,14 @@ export default function CarActionsModal({
       onRequestClose={onClose}
     >
       <TouchableOpacity
-        style={styles.modalOverlay}
+        style={[styles.modalOverlay, { backgroundColor: colors.modalOverlay }]}
         activeOpacity={1}
         onPress={onClose}
       >
         <Animated.View
           style={[
             styles.modalContent,
+            { backgroundColor: colors.card },
             {
               transform: [{ translateY }],
             },
@@ -96,7 +99,9 @@ export default function CarActionsModal({
         >
           <TouchableOpacity activeOpacity={1}>
             {/* Handle Bar */}
-            <View style={styles.handleBar} />
+            <View
+              style={[styles.handleBar, { backgroundColor: colors.divider }]}
+            />
 
             {/* Action Buttons */}
             <View style={styles.buttonContainer}>
@@ -123,10 +128,8 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 30,
@@ -134,7 +137,6 @@ const styles = StyleSheet.create({
   handleBar: {
     width: 40,
     height: 4,
-    backgroundColor: "#E0E0E0",
     borderRadius: 2,
     alignSelf: "center",
     marginTop: 12,

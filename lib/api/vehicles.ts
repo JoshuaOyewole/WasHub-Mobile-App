@@ -114,3 +114,43 @@ export const removeVehicleFromWash = async (id: string) => {
   const response = await makeRequest(config);
   return response as VehicleResponse;
 };
+
+export const uploadVehicleImage = async (
+  imageUri: string,
+  oldImageUrl?: string,
+): Promise<string> => {
+  const formData = new FormData();
+  const fileExtension = imageUri.split(".").pop()?.toLowerCase() || "jpg";
+  const mimeType = `image/${fileExtension === "jpg" ? "jpeg" : fileExtension}`;
+
+  formData.append("image", {
+    uri: imageUri,
+    type: mimeType,
+    name: `vehicle_${Date.now()}.${fileExtension}`,
+  } as any);
+
+  if (oldImageUrl) {
+    formData.append("oldImageUrl", oldImageUrl);
+  }
+
+  const config: AxiosRequestConfig = {
+    method: "POST",
+    url: `/vehicles/upload-image`,
+    data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+
+  const response = (await makeRequest(config)) as {
+    status: boolean;
+    data: { imageUrl: string };
+    message: string;
+  };
+
+  if (!response.status) {
+    throw new Error("Failed to upload vehicle image");
+  }
+
+  return response.data.imageUrl;
+};

@@ -114,20 +114,25 @@ export default function CarWashOutletsScreen() {
       style={[
         styles.container,
         {
-          backgroundColor: "#F8F8F8",
+          backgroundColor: colors.background,
           paddingBottom: Platform.OS === "ios" ? 20 : 0,
         },
       ]}
       edges={["top"]}
     >
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={colors.statusBarStyle} />
 
       {/* Header */}
-      <View style={styles.header}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F2D33" />
+      <View style={[styles.header, { backgroundColor: colors.background }]}>
+        <Pressable
+          onPress={() => router.back()}
+          style={[styles.backButton, { backgroundColor: colors.card }]}
+        >
+          <Ionicons name="chevron-back" size={24} color={colors.text} />
         </Pressable>
-        <Text style={styles.title}>Step 2 of 4 - Select wash Outlet</Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          Step 2 of 4 - Select wash Outlet
+        </Text>
       </View>
 
       {/* Search Field with Continue Button */}
@@ -149,7 +154,7 @@ export default function CarWashOutletsScreen() {
       >
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#F77C0B" />
+            <ActivityIndicator size="large" color={colors.primary} />
           </View>
         ) : filteredOutlets.length === 0 ? (
           <EmptyState
@@ -182,7 +187,15 @@ export default function CarWashOutletsScreen() {
                   <TouchableOpacity
                     style={[
                       styles.outletCard,
+                      {
+                        backgroundColor: colors.card,
+                        shadowColor: colors.shadow,
+                      },
                       isPreselected && styles.preselectedCard,
+                      isPreselected && {
+                        borderColor: colors.primary,
+                        backgroundColor: colors.surfaceAlt,
+                      },
                     ]}
                     onPress={() => handleOutletSelect(outlet)}
                     activeOpacity={0.7}
@@ -193,7 +206,7 @@ export default function CarWashOutletsScreen() {
                         <Ionicons
                           name="checkmark-circle"
                           size={28}
-                          color="#F77C0B"
+                          color={colors.primary}
                         />
                       </View>
                     )}
@@ -208,10 +221,15 @@ export default function CarWashOutletsScreen() {
                       resizeMode="cover"
                     />
                     <View style={styles.outletInfo}>
-                      <Text style={styles.outletName}>
+                      <Text style={[styles.outletName, { color: colors.text }]}>
                         {outlet.name}
                         {isPreselected && (
-                          <Text style={styles.preselectedBadge}>
+                          <Text
+                            style={[
+                              styles.preselectedBadge,
+                              { color: colors.primary },
+                            ]}
+                          >
                             {" "}
                             (Previously Selected)
                           </Text>
@@ -221,15 +239,29 @@ export default function CarWashOutletsScreen() {
                         <Ionicons
                           name="location-outline"
                           size={16}
-                          color="#666"
+                          color={colors.textSecondary}
                         />
-                        <Text style={styles.outletLocation}>
+                        <Text
+                          style={[
+                            styles.outletLocation,
+                            { color: colors.textSecondary },
+                          ]}
+                        >
                           {outlet.address}, {outlet.state}
                         </Text>
                       </View>
                       <View style={styles.outletMeta}>
-                        <Ionicons name="car-outline" size={16} color="#666" />
-                        <Text style={styles.outletActivity}>
+                        <Ionicons
+                          name="car-outline"
+                          size={16}
+                          color={colors.textSecondary}
+                        />
+                        <Text
+                          style={[
+                            styles.outletActivity,
+                            { color: colors.textSecondary },
+                          ]}
+                        >
                           {outlet.activeWashes} cars being washed now
                         </Text>
                       </View>
@@ -258,16 +290,29 @@ export default function CarWashOutletsScreen() {
 
       {/* Continue Button - Absolute at bottom */}
       {preselectedOutletId && !searchQuery && (
-        <View style={styles.bottomButtonContainer}>
+        <View
+          style={[
+            styles.bottomButtonContainer,
+            {
+              backgroundColor: colors.background,
+              borderTopColor: colors.border,
+            },
+          ]}
+        >
           <TouchableOpacity
-            style={styles.continueButton}
+            style={[
+              styles.continueButton,
+              { backgroundColor: colors.button, shadowColor: colors.shadow },
+            ]}
             onPress={handleContinue}
             activeOpacity={0.8}
           >
-            <Text style={styles.continueButtonText}>
+            <Text
+              style={[styles.continueButtonText, { color: colors.buttonText }]}
+            >
               Continue with Selected Outlet
             </Text>
-            <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
+            <Ionicons name="arrow-forward" size={20} color={colors.white} />
           </TouchableOpacity>
         </View>
       )}
@@ -281,7 +326,6 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    backgroundColor: "#F8F8F8",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
@@ -291,7 +335,6 @@ const styles = StyleSheet.create({
   backButton: {
     width: 35,
     height: 35,
-    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 100,
@@ -299,7 +342,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   searchContainer: {
     paddingHorizontal: 20,
@@ -312,12 +354,9 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: "#F8F8F8",
     borderTopWidth: 1,
-    borderTopColor: "#E0E0E0",
   },
   continueButton: {
-    backgroundColor: "#1F2D33",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -325,7 +364,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 100,
     gap: 8,
-    shadowColor: "#1F2D33",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -334,7 +372,6 @@ const styles = StyleSheet.create({
   continueButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#FFFFFF",
   },
   scrollContent: {
     flexGrow: 1,
@@ -345,11 +382,9 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   outletCard: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 12,
     flexDirection: "row",
-    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -358,8 +393,6 @@ const styles = StyleSheet.create({
   },
   preselectedCard: {
     borderWidth: 2,
-    borderColor: "#F77C0B",
-    backgroundColor: "#FFF8F3",
   },
   checkboxContainer: {
     position: "absolute",
@@ -381,13 +414,11 @@ const styles = StyleSheet.create({
   outletName: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1F2D33",
     marginBottom: 4,
   },
   preselectedBadge: {
     fontSize: 12,
     fontWeight: "500",
-    color: "#F77C0B",
   },
   outletMeta: {
     flexDirection: "row",
@@ -396,12 +427,10 @@ const styles = StyleSheet.create({
   },
   outletLocation: {
     fontSize: 14,
-    color: "#666",
     marginTop: -2,
   },
   outletActivity: {
     fontSize: 14,
-    color: "#666",
   },
   ratingContainer: {
     flexDirection: "row",

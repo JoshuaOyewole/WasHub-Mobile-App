@@ -127,30 +127,33 @@ export default function Booking() {
       style={[
         styles.container,
         {
-          backgroundColor: "#F8F8F8",
+          backgroundColor: colors.background,
           paddingBottom: Platform.OS === "ios" ? 0 : 0,
         },
       ]}
       edges={["top"]}
     >
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={colors.statusBarStyle} />
       {/* Header */}
       <View style={styles.header}>
-        <View style={styles.dottedButton}>
+        <View style={[styles.dottedButton, { backgroundColor: colors.card }]}>
           <MaterialCommunityIcons
             name="dots-horizontal"
             size={24}
-            color="#BCBCBC"
+            color={colors.textPlaceholder}
           />
         </View>
         <View>
-          <Text style={styles.title}>Your Car</Text>
+          <Text style={[styles.title, { color: colors.text }]}>Your Car</Text>
         </View>
         <TouchableOpacity
-          style={styles.addCarButton}
+          style={[
+            styles.addCarButton,
+            { backgroundColor: colors.card, shadowColor: colors.shadow },
+          ]}
           onPress={openAddVehicleModal}
         >
-          <FontAwesome6 name="plus" size={24} color={"#F77C0B"} />
+          <FontAwesome6 name="plus" size={24} color={colors.primary} />
         </TouchableOpacity>
       </View>
 
@@ -228,7 +231,6 @@ const styles = StyleSheet.create({
   dottedButton: {
     width: 35,
     height: 35,
-    backgroundColor: "#FFFFFF",
     flex: 0,
     justifyContent: "center",
     alignItems: "center",
@@ -237,13 +239,10 @@ const styles = StyleSheet.create({
   addCarButton: {
     width: 35,
     height: 35,
-    backgroundColor: "#FFFFFF",
     flex: 0,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 100,
-    // Box shadow: 0px 4px 4px 0px #00000026 (bottom only)
-    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -255,7 +254,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   searchContainer: {
     paddingHorizontal: 20,

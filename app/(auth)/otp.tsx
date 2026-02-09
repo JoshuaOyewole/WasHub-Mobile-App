@@ -8,13 +8,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import {
-  ActivityIndicator,
-  Keyboard,
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
+    ActivityIndicator,
+    Keyboard,
+    Pressable,
+    StatusBar,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import OTPTextView from "react-native-otp-textinput";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -211,7 +211,7 @@ export default function OTP() {
             handleTextChange={handleTextChange}
             inputCount={6}
             keyboardType="numeric"
-            tintColor={"#1F2D33"}
+            tintColor={Colors.text}
             offTintColor={Colors.border}
             style={[
               style.otpInput,

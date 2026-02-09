@@ -6,25 +6,33 @@ import { useTheme } from "@/hooks/useTheme";
 import { fetchVehicles, type Vehicle } from "@/lib/api/vehicles";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Platform,
-    Pressable,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Platform,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SelectCarScreen() {
   const colors = useTheme();
   const router = useRouter();
-  const { setCarId } = useBooking();
+  const { setCarId, setOutletId } = useBooking();
+  const params = useLocalSearchParams<{ outletId?: string }>();
   const [searchQuery, setSearchQuery] = useState("");
+
+  // If navigating from outlet-details, set the outletId in booking context
+  useEffect(() => {
+    if (params.outletId) {
+      setOutletId(params.outletId);
+    }
+  }, [params.outletId]);
 
   const { data: vehiclesResponse, isLoading } = useQuery({
     queryKey: ["vehicles"],
@@ -55,7 +63,15 @@ export default function SelectCarScreen() {
 
   const handleCarSelect = (car: Car) => {
     setCarId(car.id);
-    router.push("/(screens)/car-wash-outlets");
+    if (params.outletId) {
+      // Outlet already selected (came from outlet-details), skip to wash details
+      router.push({
+        pathname: "/(screens)/car-wash-details",
+        params: { outletId: params.outletId },
+      });
+    } else {
+      router.push("/(screens)/car-wash-outlets");
+    }
   };
 
   return (
@@ -63,20 +79,25 @@ export default function SelectCarScreen() {
       style={[
         styles.container,
         {
-          backgroundColor: "#F8F8F8",
+          backgroundColor: colors.background,
           paddingBottom: Platform.OS === "ios" ? 20 : 0,
         },
       ]}
       edges={["top"]}
     >
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={colors.statusBarStyle} />
 
       {/* Header */}
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F2D33" />
+        <Pressable
+          onPress={() => router.back()}
+          style={[styles.backButton, { backgroundColor: colors.card }]}
+        >
+          <Ionicons name="chevron-back" size={24} color={colors.text} />
         </Pressable>
-        <Text style={styles.title}>Step 1 of 4 - Select car</Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          Step 1 of 4 - Select car
+        </Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -95,7 +116,7 @@ export default function SelectCarScreen() {
       >
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#F77C0B" />
+            <ActivityIndicator size="large" color={colors.primary} />
           </View>
         ) : filteredCars.length === 0 ? (
           <EmptyState
@@ -130,7 +151,6 @@ const styles = StyleSheet.create({
   backButton: {
     width: 35,
     height: 35,
-    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 100,
@@ -141,7 +161,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   searchContainer: {
     paddingHorizontal: 20,

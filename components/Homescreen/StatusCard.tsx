@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import { statusData } from "@/lib/data";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
@@ -5,22 +6,47 @@ import { Dimensions, StyleSheet, Text, View } from "react-native";
 
 export default function StatusCard({ item }: { item: (typeof statusData)[0] }) {
   const { width: SCREEN_WIDTH } = Dimensions.get("window");
+  const colors = useTheme();
 
   return (
     <View style={[styles.carouselItemContainer, { width: SCREEN_WIDTH }]}>
-      <View style={styles.statusCard}>
+      <View
+        style={[
+          styles.statusCard,
+          {
+            backgroundColor: colors.card,
+            shadowColor: colors.shadow,
+            borderLeftColor: colors.cardBorderLeft,
+          },
+        ]}
+      >
         {/* Service Info Row */}
         <View style={styles.serviceInfoRow}>
-          <View style={styles.serviceIconContainer}>
-            <Ionicons name="car-sport" size={24} color="#FF8C00" />
+          <View
+            style={[
+              styles.serviceIconContainer,
+              { backgroundColor: colors.surfaceAlt },
+            ]}
+          >
+            <Ionicons name="car-sport" size={24} color={colors.primaryLight} />
           </View>
           <View style={styles.serviceDetails}>
-            <Text style={styles.serviceName}>{item.serviceName}</Text>
-            <Text style={styles.vehicleInfo}>{item.vehicleInfo}</Text>
+            <Text style={[styles.serviceName, { color: colors.text }]}>
+              {item.serviceName}
+            </Text>
+            <Text style={[styles.vehicleInfo, { color: colors.textSecondary }]}>
+              {item.vehicleInfo}
+            </Text>
           </View>
 
-          {/*TODO: Make more enquire during the meeting*/}
-          <Text style={styles.washNowText}>Wash now</Text>
+          <Text
+            style={[
+              styles.washNowText,
+              { backgroundColor: colors.primaryLight, color: colors.white },
+            ]}
+          >
+            Wash now
+          </Text>
         </View>
 
         {/* Progress Steps */}
@@ -36,21 +62,27 @@ export default function StatusCard({ item }: { item: (typeof statusData)[0] }) {
                   style={[
                     styles.stepCircle,
                     isActive || isCompleted
-                      ? styles.stepActive
-                      : styles.stepInactive,
+                      ? [styles.stepActive, { backgroundColor: colors.primary }]
+                      : [
+                          styles.stepInactive,
+                          { backgroundColor: colors.stepInactive },
+                        ],
                   ]}
                 >
                   <Text
-                    style={
+                    style={[
                       isActive || isCompleted
                         ? styles.stepNumberActive
-                        : styles.stepNumberInactive
-                    }
+                        : styles.stepNumberInactive,
+                      { color: colors.white },
+                    ]}
                   >
                     {stepNumber}
                   </Text>
                 </View>
-                <Text style={styles.stepLabel}>{step}</Text>
+                <Text style={[styles.stepLabel, { color: colors.text }]}>
+                  {step}
+                </Text>
               </View>
             );
           })}
@@ -65,12 +97,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   statusCard: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     borderLeftWidth: 6,
-    borderLeftColor: "#3A3A3A",
     padding: 16,
-    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -88,7 +117,6 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#FFF5E6",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
@@ -99,16 +127,12 @@ const styles = StyleSheet.create({
   serviceName: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#000",
     marginBottom: 4,
   },
   vehicleInfo: {
     fontSize: 13,
-    color: "#666",
   },
   washNowText: {
-    color: "#FFFFFF",
-    backgroundColor: "#FF8C00",
     fontSize: 12,
     borderRadius: 20,
     paddingVertical: 10,
@@ -131,25 +155,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  stepActive: {
-    backgroundColor: "#F77C0B",
-  },
-  stepInactive: {
-    backgroundColor: "#D3D3D3",
-  },
+  stepActive: {},
+  stepInactive: {},
   stepNumberActive: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#fff",
   },
   stepNumberInactive: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#fff",
   },
   stepLabel: {
     fontSize: 12,
-    color: "#000",
     fontWeight: "500",
   },
 });

@@ -2,9 +2,11 @@ import Button from "@/components/ui/button";
 import FormField from "@/components/ui/form-field";
 import ImageUpload from "@/components/ui/image-upload";
 import { useToast } from "@/contexts/ToastContext";
+import { useTheme } from "@/hooks/useTheme";
 import {
   fetchVehicleById,
   updateVehicle,
+  uploadVehicleImage,
   type Vehicle,
 } from "@/lib/api/vehicles";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -40,6 +42,7 @@ export default function EditCarDetailsModal() {
   const params = useLocalSearchParams<{ vehicleId: string }>();
   const { user } = useAuthStore();
   const { toast } = useToast();
+  const colors = useTheme();
   const queryClient = useQueryClient();
   const translateY = useRef(new Animated.Value(0)).current;
 
@@ -185,20 +188,33 @@ export default function EditCarDetailsModal() {
   // Loading state
   if (isLoading) {
     return (
-      <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, styles.loadingContainer]}>
-          <ActivityIndicator size="large" color="#F77C0B" />
-          <Text style={styles.loadingText}>Loading vehicle details...</Text>
+      <View
+        style={[styles.modalOverlay, { backgroundColor: colors.modalOverlay }]}
+      >
+        <View
+          style={[
+            styles.modalContent,
+            styles.loadingContainer,
+            { backgroundColor: colors.card },
+          ]}
+        >
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            Loading vehicle details...
+          </Text>
         </View>
       </View>
     );
   }
 
   return (
-    <View style={styles.modalOverlay}>
+    <View
+      style={[styles.modalOverlay, { backgroundColor: colors.modalOverlay }]}
+    >
       <Animated.View
         style={[
           styles.modalContent,
+          { backgroundColor: colors.card },
           {
             transform: [{ translateY }],
           },
@@ -209,16 +225,23 @@ export default function EditCarDetailsModal() {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           {/* Header */}
-          <View style={styles.header} {...panResponder.panHandlers}>
-            <View style={styles.headerHandle} />
+          <View
+            style={[styles.header, { borderBottomColor: colors.borderLight }]}
+            {...panResponder.panHandlers}
+          >
+            <View
+              style={[styles.headerHandle, { backgroundColor: colors.divider }]}
+            />
             <View style={styles.headerContent}>
-              <Text style={styles.headerTitle}>Edit Car details</Text>
+              <Text style={[styles.headerTitle, { color: colors.text }]}>
+                Edit Car details
+              </Text>
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={handleClose}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Feather name="x" size={24} color="#F77C0B" />
+                <Feather name="x" size={24} color={colors.primary} />
               </TouchableOpacity>
             </View>
           </View>
@@ -275,11 +298,12 @@ export default function EditCarDetailsModal() {
               onImageSelected={(uri) =>
                 setFormData({ ...formData, photo: uri })
               }
+              uploadFn={uploadVehicleImage}
             />
           </ScrollView>
 
           {/* Footer */}
-          <View style={styles.footer}>
+          <View style={[styles.footer, { borderTopColor: colors.borderLight }]}>
             <Button
               title={updateMutation.isPending ? "Saving..." : "Save"}
               onPress={handleSave}
@@ -297,11 +321,9 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
     height: "90%",
-    backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: "hidden",
@@ -314,12 +336,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
   },
   headerHandle: {
     width: 40,
     height: 4,
-    backgroundColor: "#E0E0E0",
     borderRadius: 2,
     alignSelf: "center",
     marginBottom: 16,
@@ -333,7 +353,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   closeButton: {
     position: "absolute",
@@ -355,7 +374,6 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: Platform.OS === "ios" ? 30 : 20,
     borderTopWidth: 1,
-    borderTopColor: "#F0F0F0",
   },
   loadingContainer: {
     justifyContent: "center",
@@ -364,6 +382,5 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: "#666",
   },
 });

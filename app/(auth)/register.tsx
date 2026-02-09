@@ -10,14 +10,14 @@ import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
-  ActivityIndicator,
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Image,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -45,7 +45,7 @@ export default function Register() {
           toast(
             "error",
             "Email Already Registered",
-            "This email is already registered. Please use a different email or login to your account."
+            "This email is already registered. Please use a different email or login to your account.",
           );
           setTimeout(() => {
             setAuthStep("LOGIN");
@@ -71,7 +71,7 @@ export default function Register() {
       toast(
         "error",
         "Error",
-        error?.response?.data?.error || "Failed to validate email"
+        error?.response?.data?.error || "Failed to validate email",
       );
     },
   });
@@ -85,7 +85,7 @@ export default function Register() {
         toast(
           "success",
           "OTP Sent",
-          `A verification code has been sent to ${form.email}`
+          `A verification code has been sent to ${form.email}`,
         );
         // Navigate to OTP screen and set auth step
         setTimeout(() => {
@@ -105,7 +105,7 @@ export default function Register() {
       toast(
         "error",
         "Error",
-        error?.response?.data?.message || "Failed to send OTP"
+        error?.response?.data?.message || "Failed to send OTP",
       );
     },
   });
@@ -277,7 +277,7 @@ export default function Register() {
                 {
                   fontWeight: "600",
                   fontSize: 14,
-                  color: "#17143380",
+                  color: colors.textMuted,
                   lineHeight: 20,
                 },
               ]}
@@ -294,7 +294,7 @@ export default function Register() {
             >
               <Text
                 style={{
-                  color: "#17143380",
+                  color: colors.textMuted,
                   fontWeight: "600",
                   fontSize: 14,
                   textDecorationLine: "underline",
@@ -309,7 +309,7 @@ export default function Register() {
                 {
                   fontWeight: "600",
                   fontSize: 14,
-                  color: "#17143380",
+                  color: colors.textMuted,
                 },
               ]}
             >
@@ -325,7 +325,7 @@ export default function Register() {
             >
               <Text
                 style={{
-                  color: "#17143380",
+                  color: colors.textMuted,
                   fontWeight: "600",
                   fontSize: 14,
                   textDecorationLine: "underline",
@@ -379,7 +379,7 @@ export default function Register() {
                 {
                   fontWeight: "600",
                   fontSize: 14,
-                  color: "#17143380",
+                  color: colors.textMuted,
                 },
               ]}
             >
@@ -412,8 +412,8 @@ export default function Register() {
             style={[
               style.submitBtn,
               {
-                backgroundColor: "#fff",
-                borderColor: "#007AFF38",
+                backgroundColor: colors.card,
+                borderColor: colors.borderLight,
                 borderWidth: 1,
                 height: 50,
                 marginTop: 0,

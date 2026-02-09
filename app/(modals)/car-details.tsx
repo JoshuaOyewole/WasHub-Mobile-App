@@ -1,26 +1,28 @@
+import { useTheme } from "@/hooks/useTheme";
 import { fetchVehicleById } from "@/lib/api/vehicles";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef } from "react";
 import {
-  ActivityIndicator,
-  Animated,
-  Image,
-  KeyboardAvoidingView,
-  PanResponder,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Animated,
+    Image,
+    KeyboardAvoidingView,
+    PanResponder,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 export default function CarDetailsModal() {
   const router = useRouter();
   const params = useLocalSearchParams<{ vehicleId: string }>();
   const { user } = useAuthStore();
+  const colors = useTheme();
   const translateY = useRef(new Animated.Value(0)).current;
 
   const panResponder = useRef(
@@ -99,10 +101,13 @@ export default function CarDetailsModal() {
   }
 
   return (
-    <View style={styles.modalOverlay}>
+    <View
+      style={[styles.modalOverlay, { backgroundColor: colors.modalOverlay }]}
+    >
       <Animated.View
         style={[
           styles.modalContent,
+          { backgroundColor: colors.card },
           {
             transform: [{ translateY }],
           },
@@ -113,16 +118,27 @@ export default function CarDetailsModal() {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           {/* Header */}
-          <View style={styles.header} {...panResponder.panHandlers}>
-            <View style={styles.headerHandle} />
+          <View
+            style={[styles.header, { borderBottomColor: colors.borderLight }]}
+            {...panResponder.panHandlers}
+          >
+            <View
+              style={[styles.headerHandle, { backgroundColor: colors.divider }]}
+            />
             <View style={styles.headerContent}>
-              <Text style={styles.headerTitle}>Car details</Text>
+              <Text style={[styles.headerTitle, { color: colors.text }]}>
+                Car details
+              </Text>
               <TouchableOpacity
                 style={styles.editButton}
                 onPress={handleEdit}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Text style={styles.editButtonText}>Edit</Text>
+                <Text
+                  style={[styles.editButtonText, { color: colors.primary }]}
+                >
+                  Edit
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -141,9 +157,18 @@ export default function CarDetailsModal() {
               <>
                 {/* Car Make */}
                 <View style={styles.fieldContainer}>
-                  <Text style={styles.fieldLabel}>Car Make</Text>
-                  <View style={styles.fieldValue}>
-                    <Text style={styles.fieldText}>
+                  <Text
+                    style={[styles.fieldLabel, { color: colors.textSecondary }]}
+                  >
+                    Car Make
+                  </Text>
+                  <View
+                    style={[
+                      styles.fieldValue,
+                      { backgroundColor: colors.inputBackground },
+                    ]}
+                  >
+                    <Text style={[styles.fieldText, { color: colors.text }]}>
                       {carDetails.vehicleMake}
                     </Text>
                   </View>
@@ -151,9 +176,18 @@ export default function CarDetailsModal() {
 
                 {/* Car Model */}
                 <View style={styles.fieldContainer}>
-                  <Text style={styles.fieldLabel}>Car Model</Text>
-                  <View style={styles.fieldValue}>
-                    <Text style={styles.fieldText}>
+                  <Text
+                    style={[styles.fieldLabel, { color: colors.textSecondary }]}
+                  >
+                    Car Model
+                  </Text>
+                  <View
+                    style={[
+                      styles.fieldValue,
+                      { backgroundColor: colors.inputBackground },
+                    ]}
+                  >
+                    <Text style={[styles.fieldText, { color: colors.text }]}>
                       {carDetails.vehicleModel}
                     </Text>
                   </View>
@@ -161,9 +195,18 @@ export default function CarDetailsModal() {
 
                 {/* Car Year */}
                 <View style={styles.fieldContainer}>
-                  <Text style={styles.fieldLabel}>Car Year</Text>
-                  <View style={styles.fieldValue}>
-                    <Text style={styles.fieldText}>
+                  <Text
+                    style={[styles.fieldLabel, { color: colors.textSecondary }]}
+                  >
+                    Car Year
+                  </Text>
+                  <View
+                    style={[
+                      styles.fieldValue,
+                      { backgroundColor: colors.inputBackground },
+                    ]}
+                  >
+                    <Text style={[styles.fieldText, { color: colors.text }]}>
                       {carDetails.vehicleYear}
                     </Text>
                   </View>
@@ -171,9 +214,18 @@ export default function CarDetailsModal() {
 
                 {/* Car Color */}
                 <View style={styles.fieldContainer}>
-                  <Text style={styles.fieldLabel}>Car Color</Text>
-                  <View style={styles.fieldValue}>
-                    <Text style={styles.fieldText}>
+                  <Text
+                    style={[styles.fieldLabel, { color: colors.textSecondary }]}
+                  >
+                    Car Color
+                  </Text>
+                  <View
+                    style={[
+                      styles.fieldValue,
+                      { backgroundColor: colors.inputBackground },
+                    ]}
+                  >
+                    <Text style={[styles.fieldText, { color: colors.text }]}>
                       {carDetails.vehicleColor || "N/A"}
                     </Text>
                   </View>
@@ -181,9 +233,18 @@ export default function CarDetailsModal() {
 
                 {/* Plate Number */}
                 <View style={styles.fieldContainer}>
-                  <Text style={styles.fieldLabel}>Plate Number</Text>
-                  <View style={styles.fieldValue}>
-                    <Text style={styles.fieldText}>
+                  <Text
+                    style={[styles.fieldLabel, { color: colors.textSecondary }]}
+                  >
+                    Plate Number
+                  </Text>
+                  <View
+                    style={[
+                      styles.fieldValue,
+                      { backgroundColor: colors.inputBackground },
+                    ]}
+                  >
+                    <Text style={[styles.fieldText, { color: colors.text }]}>
                       {carDetails.plateNumber}
                     </Text>
                   </View>
@@ -191,9 +252,18 @@ export default function CarDetailsModal() {
 
                 {/* Vehicle Type */}
                 <View style={styles.fieldContainer}>
-                  <Text style={styles.fieldLabel}>Vehicle Type</Text>
-                  <View style={styles.fieldValue}>
-                    <Text style={styles.fieldText}>
+                  <Text
+                    style={[styles.fieldLabel, { color: colors.textSecondary }]}
+                  >
+                    Vehicle Type
+                  </Text>
+                  <View
+                    style={[
+                      styles.fieldValue,
+                      { backgroundColor: colors.inputBackground },
+                    ]}
+                  >
+                    <Text style={[styles.fieldText, { color: colors.text }]}>
                       {carDetails.vehicleType}
                     </Text>
                   </View>
@@ -201,7 +271,12 @@ export default function CarDetailsModal() {
 
                 {/* Photo */}
                 {carDetails.image && (
-                  <View style={styles.photoContainer}>
+                  <View
+                    style={[
+                      styles.photoContainer,
+                      { backgroundColor: colors.inputBackground },
+                    ]}
+                  >
                     <Image
                       source={{ uri: carDetails.image }}
                       style={styles.carPhoto}
@@ -221,11 +296,9 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
     height: "90%",
-    backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: "hidden",
@@ -238,12 +311,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
   },
   headerHandle: {
     width: 40,
     height: 4,
-    backgroundColor: "#E0E0E0",
     borderRadius: 2,
     alignSelf: "center",
     marginBottom: 16,
@@ -257,7 +328,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   editButton: {
     position: "absolute",
@@ -265,7 +335,6 @@ const styles = StyleSheet.create({
   },
   editButtonText: {
     fontSize: 16,
-    color: "#F77C0B",
     fontWeight: "500",
   },
   scrollView: {
@@ -286,12 +355,10 @@ const styles = StyleSheet.create({
   },
   fieldLabel: {
     fontSize: 13,
-    color: "#1F2D33",
     marginBottom: 8,
     fontWeight: "400",
   },
   fieldValue: {
-    backgroundColor: "#F5F5F5",
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -300,10 +367,8 @@ const styles = StyleSheet.create({
   },
   fieldText: {
     fontSize: 14,
-    color: "#1F2D33",
   },
   photoContainer: {
-    backgroundColor: "#F5F5F5",
     borderRadius: 8,
     overflow: "hidden",
     height: 200,

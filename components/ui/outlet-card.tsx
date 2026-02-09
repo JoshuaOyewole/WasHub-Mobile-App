@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import { IOutlet } from "@/lib/api";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
@@ -19,17 +20,23 @@ type OutletCardProps = {
 };
 
 export default function OutletCard({ outlet, onPress }: OutletCardProps) {
+  const colors = useTheme();
   const rating = outlet.rating ?? 5;
   const activeWashes = outlet.activeWashes ?? 0;
 
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={[
+        styles.container,
+        { backgroundColor: colors.card, shadowColor: colors.shadow },
+      ]}
       onPress={() => onPress?.(outlet)}
       activeOpacity={0.7}
     >
       {/* Outlet Image */}
-      <View style={styles.imageContainer}>
+      <View
+        style={[styles.imageContainer, { backgroundColor: colors.surface }]}
+      >
         <Image
           source={
             outlet.image
@@ -43,18 +50,25 @@ export default function OutletCard({ outlet, onPress }: OutletCardProps) {
 
       {/* Outlet Details */}
       <View style={styles.detailsContainer}>
-        <Text style={styles.name}>{outlet.name}</Text>
+        <Text style={[styles.name, { color: colors.text }]}>{outlet.name}</Text>
 
         <View style={styles.infoRow}>
-          <Ionicons name="location-outline" size={14} color="#7D7D7D" />
-          <Text style={styles.location} numberOfLines={1}>
+          <Ionicons
+            name="location-outline"
+            size={14}
+            color={colors.textMuted}
+          />
+          <Text
+            style={[styles.location, { color: colors.textMuted }]}
+            numberOfLines={1}
+          >
             {outlet.address}, {outlet.state}
           </Text>
         </View>
 
         <View style={styles.infoRow}>
-          <Ionicons name="car-outline" size={14} color="#7D7D7D" />
-          <Text style={styles.statusText}>
+          <Ionicons name="car-outline" size={14} color={colors.textMuted} />
+          <Text style={[styles.statusText, { color: colors.textMuted }]}>
             {activeWashes} car{activeWashes !== 1 ? "s" : ""} being washed now
           </Text>
         </View>
@@ -66,7 +80,7 @@ export default function OutletCard({ outlet, onPress }: OutletCardProps) {
               key={star}
               name="star"
               size={16}
-              color={star <= rating ? "#FFC107" : "#E0E0E0"}
+              color={star <= rating ? "#FFC107" : colors.stepInactive}
             />
           ))}
         </View>
@@ -78,11 +92,9 @@ export default function OutletCard({ outlet, onPress }: OutletCardProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 12,
     marginBottom: 12,
-    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -96,7 +108,6 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 8,
     overflow: "hidden",
-    backgroundColor: "#F5F5F5",
   },
   image: {
     width: "100%",
@@ -110,7 +121,6 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1F2D33",
     marginBottom: 4,
   },
   infoRow: {
@@ -121,12 +131,10 @@ const styles = StyleSheet.create({
   },
   location: {
     fontSize: 13,
-    color: "#7D7D7D",
     flex: 1,
   },
   statusText: {
     fontSize: 13,
-    color: "#7D7D7D",
   },
   ratingContainer: {
     flexDirection: "row",

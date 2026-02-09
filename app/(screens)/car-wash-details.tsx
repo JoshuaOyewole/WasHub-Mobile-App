@@ -132,9 +132,11 @@ export default function CarWashDetailsScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: "#F8F8F8" }]}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: colors.background }]}
+      >
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#F77C0B" />
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       </SafeAreaView>
     );
@@ -142,9 +144,11 @@ export default function CarWashDetailsScreen() {
 
   if (!outlet) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: "#F8F8F8" }]}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: colors.background }]}
+      >
         <View style={styles.loadingContainer}>
-          <Text>Outlet not found</Text>
+          <Text style={{ color: colors.text }}>Outlet not found</Text>
         </View>
       </SafeAreaView>
     );
@@ -155,20 +159,25 @@ export default function CarWashDetailsScreen() {
       style={[
         styles.container,
         {
-          backgroundColor: "#F8F8F8",
+          backgroundColor: colors.background,
           paddingBottom: Platform.OS === "ios" ? 20 : 0,
         },
       ]}
       edges={["top"]}
     >
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={colors.statusBarStyle} />
 
       {/* Header */}
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F2D33" />
+        <Pressable
+          onPress={() => router.back()}
+          style={[styles.backButton, { backgroundColor: colors.card }]}
+        >
+          <Ionicons name="chevron-back" size={24} color={colors.text} />
         </Pressable>
-        <Text style={styles.title}>Step 3 of 4 - Wash Details</Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          Step 3 of 4 - Wash Details
+        </Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -189,7 +198,9 @@ export default function CarWashDetailsScreen() {
 
         {/* Outlet Info */}
         <View style={styles.outletHeader}>
-          <Text style={styles.outletName}>{outlet.name}</Text>
+          <Text style={[styles.outletName, { color: colors.text }]}>
+            {outlet.name}
+          </Text>
           <View style={styles.ratingContainer}>
             {[...Array(5)].map((_, index) => (
               <Ionicons
@@ -205,12 +216,25 @@ export default function CarWashDetailsScreen() {
         {/* Services */}
         {outlet.services && outlet.services.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Service</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              Service
+            </Text>
             <View style={styles.servicesGrid}>
               {outlet.services.map((service: string, index: number) => (
                 <View key={index} style={styles.serviceItem}>
-                  <Ionicons name="checkmark-circle" size={20} color="#F77C0B" />
-                  <Text style={styles.serviceText}>{service}</Text>
+                  <Ionicons
+                    name="checkmark-circle"
+                    size={20}
+                    color={colors.primary}
+                  />
+                  <Text
+                    style={[
+                      styles.serviceText,
+                      { color: colors.textSecondary },
+                    ]}
+                  >
+                    {service}
+                  </Text>
                 </View>
               ))}
             </View>
@@ -219,8 +243,10 @@ export default function CarWashDetailsScreen() {
 
         {/* Description */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Description</Text>
-          <Text style={styles.description}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+            Description
+          </Text>
+          <Text style={[styles.description, { color: colors.textSecondary }]}>
             A vehicle cleaning service focused on providing fast, high quality
             washes that restore shine, preserve appearance, and protect your car
             using modern equipment and eco-friendly practices.
@@ -230,34 +256,48 @@ export default function CarWashDetailsScreen() {
         {/* Location */}
         <View style={styles.section}>
           <View style={styles.locationHeader}>
-            <Text style={styles.sectionTitle}>Location</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              Location
+            </Text>
             <TouchableOpacity>
-              <Text style={styles.viewMap}>View Map</Text>
+              <Text style={[styles.viewMap, { color: colors.primary }]}>
+                View Map
+              </Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.locationText}>
+          <Text style={[styles.locationText, { color: colors.textSecondary }]}>
             {outlet.address}, {outlet.state}
           </Text>
         </View>
 
         {/* Wash Options */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Wash options</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+            Wash options
+          </Text>
           <TouchableOpacity
-            style={styles.dropdown}
+            style={[
+              styles.dropdown,
+              { backgroundColor: colors.card, borderColor: colors.border },
+            ]}
             onPress={() => setShowWashOptions(!showWashOptions)}
           >
-            <Text style={styles.dropdownText}>
+            <Text style={[styles.dropdownText, { color: colors.text }]}>
               {booking.washType || "Select wash option"}
             </Text>
             <Ionicons
               name={showWashOptions ? "chevron-up" : "chevron-down"}
               size={20}
-              color="#666"
+              color={colors.textSecondary}
             />
           </TouchableOpacity>
           {showWashOptions && (
-            <View style={styles.dropdownMenu}>
+            <View
+              style={[
+                styles.dropdownMenu,
+                { backgroundColor: colors.card, borderColor: colors.border },
+              ]}
+            >
               {WASH_OPTIONS.map((option) => {
                 const priceMap = {
                   "Quick Wash": outlet?.pricing?.quickWash || 2500,
@@ -271,13 +311,29 @@ export default function CarWashDetailsScreen() {
                     onPress={() => handleWashOptionSelect(option)}
                   >
                     <View style={styles.dropdownItemContent}>
-                      <Text style={styles.dropdownItemText}>{option}</Text>
-                      <Text style={styles.dropdownPriceText}>
+                      <Text
+                        style={[
+                          styles.dropdownItemText,
+                          { color: colors.text },
+                        ]}
+                      >
+                        {option}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.dropdownPriceText,
+                          { color: colors.primary },
+                        ]}
+                      >
                         ₦{priceMap[option].toLocaleString()}
                       </Text>
                     </View>
                     {booking.washType === option && (
-                      <Ionicons name="checkmark" size={20} color="#F77C0B" />
+                      <Ionicons
+                        name="checkmark"
+                        size={20}
+                        color={colors.primary}
+                      />
                     )}
                   </TouchableOpacity>
                 );
@@ -286,8 +342,12 @@ export default function CarWashDetailsScreen() {
           )}
           {booking.washType && booking.price > 0 && (
             <View style={styles.priceDisplay}>
-              <Text style={styles.priceLabel}>Selected Price:</Text>
-              <Text style={styles.priceValue}>
+              <Text
+                style={[styles.priceLabel, { color: colors.textSecondary }]}
+              >
+                Selected Price:
+              </Text>
+              <Text style={[styles.priceValue, { color: colors.primary }]}>
                 ₦{booking.price.toLocaleString()}
               </Text>
             </View>
@@ -296,28 +356,30 @@ export default function CarWashDetailsScreen() {
 
         {/* Select Date */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Select Date</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+            Select Date
+          </Text>
           <Calendar
             onDayPress={(day) => handleDateSelect(day.dateString)}
             markedDates={{
               [selectedDate || ""]: {
                 selected: true,
-                selectedColor: "#F77C0B",
+                selectedColor: colors.primary,
               },
             }}
             theme={{
-              backgroundColor: "#FFFFFF",
-              calendarBackground: "#FFFFFF",
-              textSectionTitleColor: "#666",
-              selectedDayBackgroundColor: "#F77C0B",
-              selectedDayTextColor: "#FFFFFF",
-              todayTextColor: "#F77C0B",
-              dayTextColor: "#1F2D33",
-              textDisabledColor: "#D3D3D3",
-              dotColor: "#F77C0B",
-              selectedDotColor: "#FFFFFF",
-              arrowColor: "#F77C0B",
-              monthTextColor: "#1F2D33",
+              backgroundColor: colors.card,
+              calendarBackground: colors.card,
+              textSectionTitleColor: colors.textSecondary,
+              selectedDayBackgroundColor: colors.primary,
+              selectedDayTextColor: colors.white,
+              todayTextColor: colors.primary,
+              dayTextColor: colors.text,
+              textDisabledColor: colors.textPlaceholder,
+              dotColor: colors.primary,
+              selectedDotColor: colors.white,
+              arrowColor: colors.primary,
+              monthTextColor: colors.text,
               textDayFontWeight: "400",
               textMonthFontWeight: "600",
               textDayHeaderFontWeight: "500",
@@ -333,21 +395,31 @@ export default function CarWashDetailsScreen() {
 
         {/* Select Time */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Select Time</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+            Select Time
+          </Text>
           <View style={styles.timeSlotsGrid}>
             {TIME_SLOTS.map((time) => (
               <TouchableOpacity
                 key={time}
                 style={[
                   styles.timeSlot,
-                  selectedTime === time && styles.selectedTimeSlot,
+                  { borderColor: colors.border, backgroundColor: colors.card },
+                  selectedTime === time && {
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary,
+                  },
                 ]}
                 onPress={() => handleTimeSelect(time)}
               >
                 <Text
                   style={[
                     styles.timeSlotText,
-                    selectedTime === time && styles.selectedTimeSlotText,
+                    { color: colors.text },
+                    selectedTime === time && {
+                      color: colors.white,
+                      fontWeight: "500",
+                    },
                   ]}
                 >
                   {time}
@@ -361,12 +433,17 @@ export default function CarWashDetailsScreen() {
         <TouchableOpacity
           style={[
             styles.proceedButton,
-            !isBookingValid() && styles.proceedButtonDisabled,
+            { backgroundColor: colors.button },
+            !isBookingValid() && { backgroundColor: colors.textPlaceholder },
           ]}
           onPress={handleProceed}
           disabled={!isBookingValid()}
         >
-          <Text style={styles.proceedButtonText}>Proceed</Text>
+          <Text
+            style={[styles.proceedButtonText, { color: colors.buttonText }]}
+          >
+            Proceed
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -387,7 +464,6 @@ const styles = StyleSheet.create({
   backButton: {
     width: 35,
     height: 35,
-    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 100,
@@ -398,7 +474,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -416,7 +491,6 @@ const styles = StyleSheet.create({
   outletName: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#1F2D33",
     marginBottom: 8,
   },
   ratingContainer: {
@@ -429,7 +503,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1F2D33",
     marginBottom: 12,
   },
   servicesGrid: {
@@ -445,11 +518,9 @@ const styles = StyleSheet.create({
   },
   serviceText: {
     fontSize: 14,
-    color: "#666",
   },
   description: {
     fontSize: 14,
-    color: "#666",
     lineHeight: 20,
   },
   locationHeader: {
@@ -460,35 +531,28 @@ const styles = StyleSheet.create({
   },
   viewMap: {
     fontSize: 14,
-    color: "#F77C0B",
     fontWeight: "500",
   },
   locationText: {
     fontSize: 14,
-    color: "#666",
     lineHeight: 20,
   },
   dropdown: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
     borderRadius: 8,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
   },
   dropdownText: {
     fontSize: 14,
-    color: "#1F2D33",
   },
   dropdownMenu: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 8,
     marginTop: 8,
     padding: 8,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
   },
   dropdownItem: {
     flexDirection: "row",
@@ -505,12 +569,10 @@ const styles = StyleSheet.create({
   },
   dropdownItemText: {
     fontSize: 14,
-    color: "#1F2D33",
     fontWeight: "500",
   },
   dropdownPriceText: {
     fontSize: 14,
-    color: "#F77C0B",
     fontWeight: "600",
   },
   priceDisplay: {
@@ -526,12 +588,10 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     fontSize: 14,
-    color: "#666",
     fontWeight: "500",
   },
   priceValue: {
     fontSize: 18,
-    color: "#F77C0B",
     fontWeight: "700",
   },
   calendar: {
@@ -553,36 +613,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
-    backgroundColor: "#FFFFFF",
     alignItems: "center",
   },
-  selectedTimeSlot: {
-    backgroundColor: "#F77C0B",
-    borderColor: "#F77C0B",
-  },
+  selectedTimeSlot: {},
   timeSlotText: {
     fontSize: 14,
-    color: "#1F2D33",
   },
   selectedTimeSlotText: {
-    color: "#FFFFFF",
     fontWeight: "500",
   },
   proceedButton: {
-    backgroundColor: "#1F2D33",
     borderRadius: 100,
     paddingVertical: 16,
     alignItems: "center",
     marginTop: 20,
   },
-  proceedButtonDisabled: {
-    backgroundColor: "#CCCCCC",
-  },
+  proceedButtonDisabled: {},
   proceedButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#FFFFFF",
   },
   loadingContainer: {
     flex: 1,

@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
@@ -25,6 +26,7 @@ export default function ReviewModal({
   onSubmit,
   isSubmitting = false,
 }: ReviewModalProps) {
+  const colors = useTheme();
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>("");
 
@@ -46,16 +48,18 @@ export default function ReviewModal({
       animationType="fade"
       onRequestClose={handleClose}
     >
-      <View style={styles.overlay}>
-        <View style={styles.modalContent}>
+      <View style={[styles.overlay, { backgroundColor: colors.modalOverlay }]}>
+        <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
           {/* Header */}
-          <View style={styles.header}>
-            <Ionicons name="star" size={40} color="#F77C0B" />
+          <View style={[styles.header, { backgroundColor: colors.surfaceAlt }]}>
+            <Ionicons name="star" size={40} color={colors.primary} />
           </View>
 
           {/* Title */}
-          <Text style={styles.title}>How was your wash?</Text>
-          <Text style={styles.subtitle}>
+          <Text style={[styles.title, { color: colors.text }]}>
+            How was your wash?
+          </Text>
+          <Text style={[styles.subtitle, { color: colors.textMuted }]}>
             Share your feedback for {outletName}
           </Text>
 
@@ -71,7 +75,7 @@ export default function ReviewModal({
                 <Ionicons
                   name={star <= rating ? "star" : "star-outline"}
                   size={40}
-                  color={star <= rating ? "#F77C0B" : "#D1D5DB"}
+                  color={star <= rating ? colors.primary : colors.dash}
                 />
               </TouchableOpacity>
             ))}
@@ -79,9 +83,12 @@ export default function ReviewModal({
 
           {/* Review Text Input */}
           <TextInput
-            style={styles.textInput}
+            style={[
+              styles.textInput,
+              { borderColor: colors.border, color: colors.text },
+            ]}
             placeholder="Write your review (optional)"
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor={colors.textPlaceholder}
             multiline
             numberOfLines={4}
             maxLength={500}
@@ -93,11 +100,17 @@ export default function ReviewModal({
           {/* Action Buttons */}
           <View style={styles.actions}>
             <TouchableOpacity
-              style={[styles.button, styles.cancelButton]}
+              style={[
+                styles.button,
+                styles.cancelButton,
+                { backgroundColor: colors.surface },
+              ]}
               onPress={handleClose}
               disabled={isSubmitting}
             >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={[styles.cancelButtonText, { color: colors.text }]}>
+                Cancel
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -126,13 +139,11 @@ export default function ReviewModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
   modalContent: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 24,
     width: "100%",
@@ -143,7 +154,6 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: "#FFF8F3",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 16,
@@ -151,13 +161,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#1F2D33",
     marginBottom: 8,
     textAlign: "center",
   },
   subtitle: {
     fontSize: 14,
-    color: "#7D7D7D",
     textAlign: "center",
     marginBottom: 24,
   },
@@ -172,11 +180,9 @@ const styles = StyleSheet.create({
   textInput: {
     width: "100%",
     borderWidth: 1,
-    borderColor: "#E5E7EB",
     borderRadius: 8,
     padding: 12,
     fontSize: 14,
-    color: "#1F2D33",
     minHeight: 100,
     marginBottom: 24,
   },
@@ -192,13 +198,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  cancelButton: {
-    backgroundColor: "#F5F5F5",
-  },
+  cancelButton: {},
   cancelButtonText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   submitButton: {
     backgroundColor: "#F77C0B",

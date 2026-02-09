@@ -2,14 +2,18 @@ import { ThemedText } from "@/components/themed-text";
 import FormField from "@/components/ui/form-field";
 import { Fonts } from "@/constants/theme";
 import { useToast } from "@/contexts/ToastContext";
+import { useTheme } from "@/hooks/useTheme";
 import {
-  deleteAccount,
-  fetchUserProfile,
-  updateUserProfile,
-  uploadProfileImage,
+    deleteAccount,
+    fetchUserProfile,
+    updateUserProfile,
+    uploadProfileImage,
 } from "@/lib/api";
 import { useAuthStore } from "@/store/useAuthStore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import DateTimePicker, {
+    type DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -34,9 +38,11 @@ export default function EditProfile() {
   const router = useRouter();
   const { user, setUser, logout } = useAuthStore();
   const { toast } = useToast();
+  const colors = useTheme();
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const nameParts = useMemo(() => {
     const split = (user?.name || "").trim().split(" ").filter(Boolean);
@@ -87,6 +93,29 @@ export default function EditProfile() {
     };
   }, []);
 
+  const parsedDob = useMemo(() => {
+    if (!form.dob) return new Date(2000, 0, 1);
+    const d = new Date(form.dob);
+    return isNaN(d.getTime()) ? new Date(2000, 0, 1) : d;
+  }, [form.dob]);
+
+  const formattedDob = useMemo(() => {
+    if (!form.dob) return "";
+    const d = new Date(form.dob);
+    if (isNaN(d.getTime())) return form.dob;
+    return d.toISOString().split("T")[0]; // YYYY-MM-DD
+  }, [form.dob]);
+
+  const handleDateChange = (
+    event: DateTimePickerEvent,
+    selectedDate?: Date,
+  ) => {
+    setShowDatePicker(Platform.OS === "ios");
+    if (selectedDate) {
+      handleChange("dob", selectedDate.toISOString());
+    }
+  };
+
   const handleChange = (key: keyof typeof form, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
@@ -121,7 +150,8 @@ export default function EditProfile() {
               ...user!,
               name: response.data.user.name,
               email: response.data.user.email,
-              profileImage: response.data.user.profileImage ?? response.data.url,
+              profileImage:
+                response.data.user.profileImage ?? response.data.url,
               phoneNumber: response.data.user.phoneNumber,
               dob: response.data.user.dob,
             });
@@ -129,7 +159,11 @@ export default function EditProfile() {
         }
       } catch (error: any) {
         console.error("Error uploading image:", error);
-        toast("error", "Upload Failed", error?.error || "Could not upload image.");
+        toast(
+          "error",
+          "Upload Failed",
+          error?.error || "Could not upload image.",
+        );
       } finally {
         setIsUploading(false);
       }
@@ -150,11 +184,7 @@ export default function EditProfile() {
 
     const digitsOnly = form.phoneNumber.replace(/\D/g, "");
     if (form.phoneNumber && digitsOnly.length !== 11) {
-      toast(
-        "error",
-        "Invalid Phone Number",
-        "Phone number must be 11 digits.",
-      );
+      toast("error", "Invalid Phone Number", "Phone number must be 11 digits.");
       return;
     }
 
@@ -221,17 +251,32 @@ export default function EditProfile() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
-      <StatusBar barStyle="dark-content" />
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      edges={["top"]}
+    >
+      <StatusBar barStyle={colors.statusBarStyle} />
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <View style={styles.header}>
-          <Pressable style={styles.backButton} onPress={() => router.back()}>
-            <MaterialIcons name="arrow-back-ios" size={18} color="#F77C0B" />
+          <Pressable
+            style={[
+              styles.backButton,
+              { backgroundColor: colors.card, shadowColor: colors.shadow },
+            ]}
+            onPress={() => router.back()}
+          >
+            <MaterialIcons
+              name="arrow-back-ios"
+              size={18}
+              color={colors.primary}
+            />
           </Pressable>
-          <ThemedText style={styles.headerTitle}>Edit Profile</ThemedText>
+          <ThemedText style={[styles.headerTitle, { color: colors.title }]}>
+            Edit Profile
+          </ThemedText>
           <Pressable
             onPress={handleSave}
             disabled={isSaving || isUploading}
@@ -242,7 +287,7 @@ export default function EditProfile() {
             ]}
           >
             {isSaving ? (
-              <ActivityIndicator size="small" color="#F77C0B" />
+              <ActivityIndicator size="small" color={colors.primary} />
             ) : (
               <ThemedText style={styles.saveText}>Save</ThemedText>
             )}
@@ -257,16 +302,19 @@ export default function EditProfile() {
             <View style={styles.avatarWrap}>
               <Image
                 source={{ uri: form.profileImage || FALLBACK_AVATAR }}
-                style={styles.avatar}
+                style={[styles.avatar, { backgroundColor: colors.border }]}
               />
-              <Pressable style={styles.cameraButton} onPress={pickImage}>
+              <Pressable
+                style={[styles.cameraButton, { borderColor: colors.card }]}
+                onPress={pickImage}
+              >
                 {isUploading ? (
-                  <ActivityIndicator size="small" color="#FFFFFF" />
+                  <ActivityIndicator size="small" color={colors.white} />
                 ) : (
                   <MaterialIcons
                     name="photo-camera"
                     size={16}
-                    color="#FFFFFF"
+                    color={colors.white}
                   />
                 )}
               </Pressable>
@@ -278,9 +326,11 @@ export default function EditProfile() {
             value={form.firstname}
             style={{
               borderWidth: 1,
-              borderColor: "#e7e5e5",
+              borderColor: colors.inputBorder,
               borderRadius: 5,
-              paddingHorizontal: 10,
+              padding: 10,
+              backgroundColor: colors.inputBackground,
+              color: colors.text,
             }}
             onChangeText={(value) => handleChange("firstname", value)}
             placeholder="Ibale"
@@ -290,9 +340,11 @@ export default function EditProfile() {
             value={form.lastname}
             style={{
               borderWidth: 1,
-              borderColor: "#e7e5e5",
+              borderColor: colors.inputBorder,
               borderRadius: 5,
-              paddingHorizontal: 10,
+              padding: 10,
+              backgroundColor: colors.inputBackground,
+              color: colors.text,
             }}
             onChangeText={(value) => handleChange("lastname", value)}
             placeholder="Matthew"
@@ -300,11 +352,14 @@ export default function EditProfile() {
           <FormField
             label="Email Address"
             value={form.email}
+            editable={false}
             style={{
               borderWidth: 1,
-              borderColor: "#e7e5e5",
+              backgroundColor: colors.surface,
+              borderColor: colors.inputBorder,
               borderRadius: 5,
-              paddingHorizontal: 10,
+              padding: 10,
+              color: colors.textSecondary,
             }}
             onChangeText={(value) => handleChange("email", value)}
             placeholder="Ibalematthew@gmail.com"
@@ -316,26 +371,56 @@ export default function EditProfile() {
             value={form.phoneNumber}
             style={{
               borderWidth: 1,
-              borderColor: "#e7e5e5",
+              borderColor: colors.inputBorder,
               borderRadius: 5,
-              paddingHorizontal: 10,
+              padding: 10,
+              backgroundColor: colors.inputBackground,
+              color: colors.text,
             }}
             onChangeText={(value) => handleChange("phoneNumber", value)}
             placeholder="08148062417"
             keyboardType="phone-pad"
           />
-          <FormField
-            label="Date of Birth"
-            value={form.dob}
-            style={{
-              borderWidth: 1,
-              borderColor: "#e7e5e5",
-              borderRadius: 5,
-              paddingHorizontal: 10,
-            }}
-            onChangeText={(value) => handleChange("dob", value)}
-            placeholder="18-September"
-          />
+          <View style={styles.dobContainer}>
+            <ThemedText style={[styles.dobLabel, { color: colors.text }]}>
+              Date of Birth
+            </ThemedText>
+            <Pressable
+              style={[
+                styles.dobField,
+                {
+                  borderColor: colors.inputBorder,
+                  backgroundColor: colors.card,
+                },
+              ]}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <ThemedText
+                style={[
+                  styles.dobValue,
+                  { color: colors.text },
+                  !formattedDob && { color: colors.textPlaceholder },
+                ]}
+              >
+                {formattedDob || "YYYY-MM-DD"}
+              </ThemedText>
+              <MaterialIcons
+                name="calendar-today"
+                size={18}
+                color={colors.textMuted}
+              />
+            </Pressable>
+            {showDatePicker && (
+              <DateTimePicker
+                value={parsedDob}
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"}
+                maximumDate={new Date()}
+                minimumDate={new Date(1920, 0, 1)}
+                onChange={handleDateChange}
+              />
+            )}
+          </View>
 
           <Pressable
             onPress={confirmDelete}
@@ -361,7 +446,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#F8F8F8",
   },
   header: {
     flexDirection: "row",
@@ -374,10 +458,8 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 10,
@@ -425,7 +507,6 @@ const styles = StyleSheet.create({
     width: 110,
     height: 110,
     borderRadius: 55,
-    backgroundColor: "#E8E8E8",
   },
   cameraButton: {
     position: "absolute",
@@ -438,7 +519,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
-    borderColor: "#FFFFFF",
+  },
+  dobContainer: {
+    marginBottom: 16,
+  },
+  dobLabel: {
+    fontSize: 13,
+    marginBottom: 6,
+    fontWeight: "400",
+  },
+  dobField: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    minHeight: 44,
+  },
+  dobValue: {
+    fontSize: 14,
   },
   deleteButton: {
     marginTop: 24,

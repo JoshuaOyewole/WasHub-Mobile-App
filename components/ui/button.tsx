@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import React from "react";
 import {
     ActivityIndicator,
@@ -23,6 +24,7 @@ export default function Button({
   disabled = false,
   ...props
 }: ButtonProps) {
+  const colors = useTheme();
   const isPrimary = variant === "primary";
   const isLink = variant === "link";
   return (
@@ -30,10 +32,13 @@ export default function Button({
       style={[
         styles.button,
         isPrimary
-          ? styles.primaryButton
+          ? [styles.primaryButton, { backgroundColor: colors.button }]
           : isLink
             ? styles.linkButton
-            : styles.secondaryButton,
+            : [
+                styles.secondaryButton,
+                { backgroundColor: colors.card, borderColor: colors.secondary },
+              ],
         (disabled || loading) && styles.disabledButton,
       ]}
       onPress={onPress}
@@ -42,16 +47,18 @@ export default function Button({
       {...props}
     >
       {loading ? (
-        <ActivityIndicator color={isPrimary ? "#FFFFFF" : "#F77C0B"} />
+        <ActivityIndicator
+          color={isPrimary ? colors.buttonText : colors.primary}
+        />
       ) : (
         <Text
           style={[
             styles.buttonText,
             isPrimary
-              ? styles.primaryButtonText
+              ? [styles.primaryButtonText, { color: colors.buttonText }]
               : isLink
-                ? styles.linkButtonText
-                : styles.secondaryButtonText,
+                ? [styles.linkButtonText, { color: colors.text }]
+                : [styles.secondaryButtonText, { color: colors.secondary }],
           ]}
         >
           {title}
@@ -69,13 +76,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 24,
   },
-  primaryButton: {
-    backgroundColor: "#1F2D33",
-  },
+  primaryButton: {},
   secondaryButton: {
-    backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#1F2D33",
   },
   disabledButton: {
     opacity: 0.5,
@@ -84,17 +87,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-  primaryButtonText: {
-    color: "#FFFFFF",
-  },
-  secondaryButtonText: {
-    color: "#1F2D33",
-  },
+  primaryButtonText: {},
+  secondaryButtonText: {},
   linkButton: {
     backgroundColor: "transparent",
   },
   linkButtonText: {
-    color: "#1F2D33",
     fontWeight: "400",
   },
 });

@@ -14,26 +14,28 @@ import {
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Fonts } from "@/constants/theme";
+import { useTheme } from "@/hooks/useTheme";
 import { useAuthStore } from "@/store/useAuthStore";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Profile() {
   const router = useRouter();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { user, logout } = useAuthStore();
+  const colors = useTheme();
   return (
     <SafeAreaView
       style={[
         styles.container,
         {
-          backgroundColor: "#F8F8F8",
+          backgroundColor: colors.background,
           paddingBottom: Platform.OS === "ios" ? 0 : 0,
         },
       ]}
       edges={["top"]}
     >
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={colors.statusBarStyle} />
 
       <ScrollView
         contentContainerStyle={styles.content}
@@ -45,16 +47,19 @@ export default function Profile() {
 
         <ThemedView
           style={styles.profileCard}
-          lightColor="#FFFFFF"
-          darkColor="#1C1F22"
+          lightColor={colors.card}
+          darkColor={colors.card}
         >
-          <Image source={{ uri: user?.profileImage }} style={styles.avatar} />
+          <Image
+            source={{ uri: user?.profileImage ?? "" }}
+            style={[styles.avatar, { backgroundColor: colors.border }]}
+          />
           <View style={styles.profileInfo}>
             <ThemedText style={styles.profileName}>{user?.name}</ThemedText>
             <ThemedText
               style={styles.profileEmail}
-              lightColor="#8B8B8B"
-              darkColor="#9BA1A6"
+              lightColor={colors.textMuted}
+              darkColor={colors.textMuted}
             >
               {user?.email}
             </ThemedText>
@@ -63,10 +68,10 @@ export default function Profile() {
 
         <ThemedView
           style={styles.sectionCard}
-          lightColor="#FFFFFF"
-          darkColor="#1C1F22"
+          lightColor={colors.card}
+          darkColor={colors.card}
         >
-          <ThemedText style={styles.sectionLabel} lightColor="#757171">
+          <ThemedText style={styles.sectionLabel} lightColor={colors.textMuted}>
             General
           </ThemedText>
           <SettingRow
@@ -92,10 +97,10 @@ export default function Profile() {
 
         <ThemedView
           style={styles.sectionCard}
-          lightColor="#FFFFFF"
-          darkColor="#1C1F22"
+          lightColor={colors.card}
+          darkColor={colors.card}
         >
-          <ThemedText style={styles.sectionLabel} lightColor="#757171">
+          <ThemedText style={styles.sectionLabel} lightColor={colors.textMuted}>
             Preferences
           </ThemedText>
           <SettingRow
@@ -106,7 +111,10 @@ export default function Profile() {
               <Switch
                 value={notificationsEnabled}
                 onValueChange={setNotificationsEnabled}
-                trackColor={{ false: "#E5E7EB", true: "#F39C4C" }}
+                trackColor={{
+                  false: colors.switchTrackOff,
+                  true: colors.switchTrackOn,
+                }}
                 thumbColor={notificationsEnabled ? "#FFFFFF" : "#FFFFFF"}
               />
             }
@@ -131,7 +139,7 @@ export default function Profile() {
             subtitle="Securely log out your account"
             titleColor="#E25D5D"
             iconColor="#E25D5D"
-            iconBackground="#FDECEC"
+            iconBackground={colors.errorBg}
             onPress={logout}
           />
         </ThemedView>
@@ -160,16 +168,24 @@ function SettingRow({
   rightElement,
   hideChevron,
   titleColor,
-  iconColor = "#F28B3C",
-  iconBackground = "#FFF2E7",
+  iconColor,
+  iconBackground,
 }: SettingRowProps) {
+  const colors = useTheme();
+  const resolvedIconBackground = iconBackground ?? colors.primaryLight;
   return (
     <Pressable
       onPress={onPress}
       style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
     >
-      <View style={[styles.iconWrap, { backgroundColor: iconBackground }]}>
-        <MaterialIcons name={icon as any} size={20} color={iconColor} />
+      <View
+        style={[styles.iconWrap, { backgroundColor: resolvedIconBackground }]}
+      >
+        <MaterialIcons
+          name={icon as any}
+          size={20}
+          color={colors.resolvedIconColor}
+        />
       </View>
       <View style={styles.rowText}>
         <ThemedText
@@ -177,7 +193,11 @@ function SettingRow({
         >
           {title}
         </ThemedText>
-        <ThemedText style={styles.rowSubtitle} lightColor="#757171">
+        <ThemedText
+          style={styles.rowSubtitle}
+          lightColor="#757171"
+          darkColor="#8E8E93"
+        >
           {subtitle}
         </ThemedText>
       </View>
@@ -185,7 +205,11 @@ function SettingRow({
         {rightElement ? (
           rightElement
         ) : hideChevron ? null : (
-          <MaterialIcons name="chevron-right" size={22} color="#C7C7CC" />
+          <MaterialIcons
+            name="chevron-right"
+            size={22}
+            color={colors.chevron}
+          />
         )}
       </View>
     </Pressable>
@@ -193,7 +217,10 @@ function SettingRow({
 }
 
 function Divider() {
-  return <View style={styles.divider} />;
+  const colors = useTheme();
+  return (
+    <View style={[styles.divider, { backgroundColor: colors.borderLight }]} />
+  );
 }
 
 const styles = StyleSheet.create({
@@ -218,13 +245,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
-    /* shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.05,
-    shadowRadius: 16,
-    elevation: 3, */
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
@@ -236,7 +257,6 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#E8E8E8",
   },
   profileInfo: {
     flex: 1,
@@ -254,7 +274,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   sectionCard: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 18,
     paddingHorizontal: 16,
     paddingTop: 12,
@@ -270,7 +289,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
 
     paddingVertical: 14,
-    backgroundColor: "#FFFFFF",
   },
   rowPressed: {
     opacity: 0.7,

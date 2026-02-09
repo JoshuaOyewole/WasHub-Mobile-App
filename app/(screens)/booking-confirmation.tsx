@@ -4,9 +4,9 @@ import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import { fetchOutletById, IOutlet } from "@/lib/api";
 import {
-  fetchVehicleById,
-  removeVehicleFromWash,
-  Vehicle,
+    fetchVehicleById,
+    removeVehicleFromWash,
+    Vehicle,
 } from "@/lib/api/vehicles";
 import { createWashRequest } from "@/lib/api/washRequests";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,15 +14,15 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  ActivityIndicator,
-  Image,
-  Platform,
-  Pressable,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
+    ActivityIndicator,
+    Image,
+    Platform,
+    Pressable,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -151,9 +151,11 @@ export default function BookingConfirmationScreen() {
 
   if (isLoadingVehicle || isLoadingOutlet) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: "#F8F8F8" }]}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: colors.background }]}
+      >
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#F77C0B" />
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       </SafeAreaView>
     );
@@ -161,9 +163,13 @@ export default function BookingConfirmationScreen() {
 
   if (!vehicle || !outlet) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: "#F8F8F8" }]}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: colors.background }]}
+      >
         <View style={styles.loadingContainer}>
-          <Text style={styles.errorText}>Booking information not found</Text>
+          <Text style={[styles.errorText, { color: colors.textSecondary }]}>
+            Booking information not found
+          </Text>
           <Button
             title="Go Back"
             onPress={() => router.replace("/(tabs)")}
@@ -179,20 +185,25 @@ export default function BookingConfirmationScreen() {
       style={[
         styles.container,
         {
-          backgroundColor: "#F8F8F8",
+          backgroundColor: colors.background,
           paddingBottom: Platform.OS === "ios" ? 20 : 0,
         },
       ]}
       edges={["top"]}
     >
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={colors.statusBarStyle} />
 
       {/* Header */}
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#1F2D33" />
+        <Pressable
+          onPress={() => router.back()}
+          style={[styles.backButton, { backgroundColor: colors.card }]}
+        >
+          <Ionicons name="chevron-back" size={24} color={colors.text} />
         </Pressable>
-        <Text style={styles.title}>Confirm Booking</Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          Confirm Booking
+        </Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -202,36 +213,59 @@ export default function BookingConfirmationScreen() {
       >
         {/* Success Icon */}
         <View style={styles.iconContainer}>
-          <Text style={styles.successSubtitle}>
+          <Text
+            style={[styles.successSubtitle, { color: colors.textSecondary }]}
+          >
             Review your booking details below
           </Text>
         </View>
 
         {/* Booking Summary Card */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Booking Summary</Text>
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: colors.card, shadowColor: colors.shadow },
+          ]}
+        >
+          <Text style={[styles.cardTitle, { color: colors.text }]}>
+            Booking Summary
+          </Text>
 
           {/* Vehicle Info */}
           <View style={styles.infoSection}>
             <View style={styles.infoHeader}>
-              <Ionicons name="car-outline" size={20} color="#F77C0B" />
-              <Text style={styles.infoHeaderText}>Vehicle</Text>
+              <Ionicons name="car-outline" size={20} color={colors.primary} />
+              <Text style={[styles.infoHeaderText, { color: colors.text }]}>
+                Vehicle
+              </Text>
             </View>
             <View style={styles.vehicleInfo}>
               {vehicle.image && (
                 <Image
                   source={{ uri: vehicle.image }}
-                  style={styles.vehicleImage}
+                  style={[
+                    styles.vehicleImage,
+                    { backgroundColor: colors.surfaceAlt },
+                  ]}
                   resizeMode="cover"
                 />
               )}
               <View style={styles.vehicleDetails}>
-                <Text style={styles.vehicleName}>
+                <Text style={[styles.vehicleName, { color: colors.text }]}>
                   {vehicle.vehicleMake} {vehicle.vehicleModel}
                 </Text>
-                <Text style={styles.vehiclePlate}>{vehicle.plateNumber}</Text>
+                <Text
+                  style={[styles.vehiclePlate, { color: colors.textSecondary }]}
+                >
+                  {vehicle.plateNumber}
+                </Text>
                 {vehicle.vehicleColor && (
-                  <Text style={styles.vehicleColor}>
+                  <Text
+                    style={[
+                      styles.vehicleColor,
+                      { color: colors.textSecondary },
+                    ]}
+                  >
                     {vehicle.vehicleColor}
                   </Text>
                 )}
@@ -242,11 +276,19 @@ export default function BookingConfirmationScreen() {
           {/* Outlet Info */}
           <View style={styles.infoSection}>
             <View style={styles.infoHeader}>
-              <Ionicons name="location-outline" size={20} color="#F77C0B" />
-              <Text style={styles.infoHeaderText}>Wash Location</Text>
+              <Ionicons
+                name="location-outline"
+                size={20}
+                color={colors.primary}
+              />
+              <Text style={[styles.infoHeaderText, { color: colors.text }]}>
+                Wash Location
+              </Text>
             </View>
-            <Text style={styles.infoText}>{outlet.name}</Text>
-            <Text style={styles.infoSubtext}>
+            <Text style={[styles.infoText, { color: colors.text }]}>
+              {outlet.name}
+            </Text>
+            <Text style={[styles.infoSubtext, { color: colors.textSecondary }]}>
               {outlet.address}, {outlet.city}, {outlet.state}
             </Text>
           </View>
@@ -254,37 +296,59 @@ export default function BookingConfirmationScreen() {
           {/* Wash Type */}
           <View style={styles.infoSection}>
             <View style={styles.infoHeader}>
-              <Ionicons name="water-outline" size={20} color="#F77C0B" />
-              <Text style={styles.infoHeaderText}>Wash Type</Text>
+              <Ionicons name="water-outline" size={20} color={colors.primary} />
+              <Text style={[styles.infoHeaderText, { color: colors.text }]}>
+                Wash Type
+              </Text>
             </View>
-            <Text style={styles.infoSubtext}>{booking.washType} Car wash</Text>
+            <Text style={[styles.infoSubtext, { color: colors.textSecondary }]}>
+              {booking.washType} Car wash
+            </Text>
           </View>
 
           {/* Date & Time */}
           <View style={styles.infoSection}>
             <View style={styles.infoHeader}>
-              <Ionicons name="calendar-outline" size={20} color="#F77C0B" />
-              <Text style={styles.infoHeaderText}>Date & Time</Text>
+              <Ionicons
+                name="calendar-outline"
+                size={20}
+                color={colors.primary}
+              />
+              <Text style={[styles.infoHeaderText, { color: colors.text }]}>
+                Date & Time
+              </Text>
             </View>
-            <Text style={styles.infoSubtext}>{formatDate(booking.date)}</Text>
-            <Text style={styles.infoSubtext}>{booking.time}</Text>
+            <Text style={[styles.infoSubtext, { color: colors.textSecondary }]}>
+              {formatDate(booking.date)}
+            </Text>
+            <Text style={[styles.infoSubtext, { color: colors.textSecondary }]}>
+              {booking.time}
+            </Text>
           </View>
 
           {/* Price */}
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: colors.divider }]} />
           <View style={styles.priceSection}>
-            <Text style={styles.priceLabel}>{booking.washType} Wash:</Text>
-            <Text style={styles.subPrice}>
+            <Text style={[styles.priceLabel, { color: colors.text }]}>
+              {booking.washType} Wash:
+            </Text>
+            <Text style={[styles.subPrice, { color: colors.primary }]}>
               ₦{booking.price.toLocaleString()}
             </Text>
           </View>
           <View style={styles.priceSection}>
-            <Text style={styles.priceLabel}>Service Charge:</Text>
-            <Text style={styles.subPrice}>₦100</Text>
+            <Text style={[styles.priceLabel, { color: colors.text }]}>
+              Service Charge:
+            </Text>
+            <Text style={[styles.subPrice, { color: colors.primary }]}>
+              ₦100
+            </Text>
           </View>
           <View style={styles.priceSection}>
-            <Text style={styles.priceLabel}>Total Amount</Text>
-            <Text style={styles.priceValue}>
+            <Text style={[styles.priceLabel, { color: colors.text }]}>
+              Total Amount
+            </Text>
+            <Text style={[styles.priceValue, { color: colors.primary }]}>
               ₦{(booking.price + 100).toLocaleString()}
             </Text>
           </View>
@@ -308,9 +372,13 @@ export default function BookingConfirmationScreen() {
         </View>
 
         {/* Payment Info */}
-        <View style={styles.paymentInfo}>
+        <View
+          style={[styles.paymentInfo, { backgroundColor: colors.surfaceAlt }]}
+        >
           <Ionicons name="shield-checkmark-outline" size={20} color="#4CAF50" />
-          <Text style={styles.paymentInfoText}>
+          <Text
+            style={[styles.paymentInfoText, { color: colors.textSecondary }]}
+          >
             Secure payment powered by Paystack
           </Text>
         </View>
@@ -334,7 +402,6 @@ const styles = StyleSheet.create({
   backButton: {
     width: 35,
     height: 35,
-    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 100,
@@ -345,7 +412,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -360,7 +426,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: "#666",
     marginBottom: 20,
   },
   iconContainer: {
@@ -371,14 +436,11 @@ const styles = StyleSheet.create({
 
   successSubtitle: {
     fontSize: 16,
-    color: "#666",
   },
   card: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 20,
     marginBottom: 20,
-    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -387,7 +449,6 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1F2D33",
     marginBottom: 20,
   },
   infoSection: {
@@ -403,17 +464,14 @@ const styles = StyleSheet.create({
   infoHeaderText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   infoText: {
     fontSize: 14,
-    color: "#1F2D33",
     fontWeight: "500",
     marginBottom: 4,
   },
   infoSubtext: {
     fontSize: 14,
-    color: "#666",
   },
   vehicleInfo: {
     flexDirection: "row",
@@ -423,7 +481,6 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 8,
-    backgroundColor: "#F5F5F5",
   },
   vehicleDetails: {
     flex: 1,
@@ -432,21 +489,17 @@ const styles = StyleSheet.create({
   vehicleName: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#1F2D33",
     marginBottom: 4,
   },
   vehiclePlate: {
     fontSize: 14,
-    color: "#666",
     marginBottom: 2,
   },
   vehicleColor: {
     fontSize: 14,
-    color: "#666",
   },
   divider: {
     height: 1,
-    backgroundColor: "#E0E0E0",
     marginVertical: 16,
   },
   priceSection: {
@@ -457,17 +510,14 @@ const styles = StyleSheet.create({
   priceLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   priceValue: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#F77C0B",
   },
   subPrice: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#F77C0B",
   },
   buttonContainer: {
     gap: 12,
@@ -479,12 +529,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
     padding: 16,
-    backgroundColor: "#E8F5E9",
     borderRadius: 8,
   },
   paymentInfoText: {
     fontSize: 14,
-    color: "#4CAF50",
     fontWeight: "500",
   },
 });

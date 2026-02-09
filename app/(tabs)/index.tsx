@@ -38,19 +38,15 @@ export default function HomeScreen() {
 
   const outlets = outletsData?.data ?? [];
 
-  function handleLogout() {
-    logout();
-  }
-
   return (
     <SafeAreaView
       style={[
         styles.container,
-        { backgroundColor: "#F8F8F8", marginBottom: -20 },
+        { backgroundColor: colors.background, marginBottom: -20 },
       ]}
       edges={["top", "bottom"]}
     >
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={colors.statusBarStyle} />
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.profileSection}>
@@ -64,16 +60,23 @@ export default function HomeScreen() {
               style={styles.avatar}
             />
           </View>
-          <Text style={styles.greeting}>Hi, {user?.name?.split(" ")[0]}</Text>
+          <Text style={[styles.greeting, { color: colors.text }]}>
+            Hi, {user?.name?.split(" ")[0]}
+          </Text>
         </View>
         <TouchableOpacity style={styles.notificationButton}>
-          <Ionicons name="notifications" size={24} color="#000" />
-          <View style={styles.notificationDot} />
+          <Ionicons name="notifications" size={24} color={colors.text} />
+          <View
+            style={[
+              styles.notificationDot,
+              { backgroundColor: colors.notificationDot },
+            ]}
+          />
         </TouchableOpacity>
       </View>
       <ScrollView
         contentContainerStyle={{
-          backgroundColor: "#F8F8F8",
+          backgroundColor: colors.background,
         }}
         showsVerticalScrollIndicator={false}
       >
@@ -87,19 +90,34 @@ export default function HomeScreen() {
         </View>
 
         {/* Quick Actions Card */}
-        <View style={styles.quickActionsCard}>
+        <View
+          style={[
+            styles.quickActionsCard,
+            {
+              backgroundColor: colors.card,
+              borderLeftColor: colors.cardBorderLeft,
+              shadowColor: colors.shadow,
+            },
+          ]}
+        >
           {/* Location Header */}
           <View style={styles.locationHeader}>
             <View style={styles.locationLeft}>
-              <Ionicons
-                name="location-outline"
-                size={24}
-                color={colors.secondary}
-              />
+              <Ionicons name="location-outline" size={24} color={colors.text} />
               <View style={styles.locationTextContainer}>
-                <Text style={styles.locationLabel}>Location</Text>
                 <Text
-                  style={[styles.locationAddress, { color: colors.secondary }]}
+                  style={[
+                    styles.locationLabel,
+                    { color: colors.textSecondary },
+                  ]}
+                >
+                  Location
+                </Text>
+                <Text
+                  style={[
+                    styles.locationAddress,
+                    { color: colors.textSecondary },
+                  ]}
                 >
                   Admiralty Way, Lekki Phase 1, Lagos
                 </Text>
@@ -109,7 +127,7 @@ export default function HomeScreen() {
               <Ionicons
                 name="chevron-down"
                 size={24}
-                color={colors.secondary}
+                color={colors.textSecondary}
               />
             </View>
           </View>
@@ -117,7 +135,10 @@ export default function HomeScreen() {
           {/* Dashed Divider */}
           <View style={styles.dashedDivider}>
             {[...Array(20)].map((_, i) => (
-              <View key={i} style={styles.dash} />
+              <View
+                key={i}
+                style={[styles.dash, { backgroundColor: colors.dash }]}
+              />
             ))}
           </View>
 
@@ -127,8 +148,10 @@ export default function HomeScreen() {
               style={styles.actionButton}
               onPress={() => router.push("/(screens)/select-car")}
             >
-              <Ionicons name="car" size={32} color={colors.secondary} />
-              <Text style={[styles.actionText, { color: colors.secondary }]}>
+              <Ionicons name="car" size={32} color={colors.textSecondary} />
+              <Text
+                style={[styles.actionText, { color: colors.textSecondary }]}
+              >
                 Book
               </Text>
             </TouchableOpacity>
@@ -137,22 +160,36 @@ export default function HomeScreen() {
               style={styles.actionButton}
               onPress={() => router.push("/(screens)/outlets")}
             >
-              <Entypo name="location" size={24} color={colors.secondary} />
-              <Text style={[styles.actionText, { color: colors.secondary }]}>
+              <Entypo name="location" size={24} color={colors.textSecondary} />
+              <Text
+                style={[styles.actionText, { color: colors.textSecondary }]}
+              >
                 Outlets
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.actionButton}>
-              <Ionicons name="briefcase" size={28} color={colors.secondary} />
-              <Text style={[styles.actionText, { color: colors.secondary }]}>
+              <Ionicons
+                name="briefcase"
+                size={28}
+                color={colors.textSecondary}
+              />
+              <Text
+                style={[styles.actionText, { color: colors.textSecondary }]}
+              >
                 Services
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.actionButton}>
-              <Ionicons name="help-circle" size={32} color={colors.secondary} />
-              <Text style={[styles.actionText, { color: colors.secondary }]}>
+              <Ionicons
+                name="help-circle"
+                size={32}
+                color={colors.textSecondary}
+              />
+              <Text
+                style={[styles.actionText, { color: colors.textSecondary }]}
+              >
                 Help
               </Text>
             </TouchableOpacity>
@@ -161,7 +198,7 @@ export default function HomeScreen() {
 
         {/* Status */}
         <View style={styles.statusSection}>
-          <Text style={[styles.statusHeading, { color: colors.secondary }]}>
+          <Text style={[styles.statusHeading, { color: colors.textSecondary }]}>
             Status
           </Text>
           <Carousel
@@ -188,8 +225,14 @@ export default function HomeScreen() {
                 style={[
                   styles.dot,
                   index === currentIndex
-                    ? styles.dotActive
-                    : styles.dotInactive,
+                    ? [
+                        styles.dotActive,
+                        { backgroundColor: colors.primaryLight },
+                      ]
+                    : [
+                        styles.dotInactive,
+                        { backgroundColor: colors.dotInactive },
+                      ],
                 ]}
               />
             ))}
@@ -203,7 +246,11 @@ export default function HomeScreen() {
               Outlets near you
             </Text>
             <TouchableOpacity onPress={() => router.push("/(screens)/outlets")}>
-              <Text style={styles.viewAllText}>View all</Text>
+              <Text
+                style={[styles.viewAllText, { color: colors.textSecondary }]}
+              >
+                View all
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -213,7 +260,9 @@ export default function HomeScreen() {
             </View>
           ) : outlets.length === 0 ? (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No outlets available</Text>
+              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+                No outlets available
+              </Text>
             </View>
           ) : (
             <ScrollView
@@ -274,7 +323,6 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#000",
   },
   notificationButton: {
     width: 40,
@@ -291,7 +339,6 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#FF3B30",
   },
   slideshowContainer: {
     paddingHorizontal: 10,
@@ -306,13 +353,10 @@ const styles = StyleSheet.create({
   quickActionsCard: {
     marginHorizontal: 10,
     marginTop: 16,
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     borderLeftWidth: 6,
-    borderLeftColor: "#FF8C00",
     paddingVertical: 20,
     paddingHorizontal: 2,
-    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -339,7 +383,6 @@ const styles = StyleSheet.create({
   },
   locationLabel: {
     fontSize: 14,
-    color: "#666",
     marginBottom: 4,
   },
   locationAddress: {
@@ -363,7 +406,6 @@ const styles = StyleSheet.create({
   dash: {
     width: 12,
     height: 2,
-    backgroundColor: "#D1D5DB",
     borderRadius: 1,
   },
   actionsRow: {
@@ -409,12 +451,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   dotActive: {
-    backgroundColor: "#FF8C00",
     width: 24,
   },
-  dotInactive: {
-    backgroundColor: "#D1D5DB",
-  },
+  dotInactive: {},
   outletsSection: {
     marginTop: 24,
     marginBottom: 20,
@@ -433,7 +472,6 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     fontSize: 14,
-    color: "#666",
     fontWeight: "500",
   },
   outletsScrollContent: {
@@ -451,6 +489,5 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: "#666",
   },
 });

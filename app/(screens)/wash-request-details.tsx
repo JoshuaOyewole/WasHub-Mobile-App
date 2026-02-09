@@ -81,12 +81,21 @@ export default function WashRequestDetailsScreen() {
   const getStatusIcon = (status: string, isCompleted: boolean) => {
     if (isCompleted) {
       return (
-        <View style={styles.completedIcon}>
-          <Ionicons name="checkmark" size={16} color="#FFFFFF" />
+        <View
+          style={[styles.completedIcon, { backgroundColor: colors.primary }]}
+        >
+          <Ionicons name="checkmark" size={16} color={colors.white} />
         </View>
       );
     }
-    return <View style={styles.pendingIcon} />;
+    return (
+      <View
+        style={[
+          styles.pendingIcon,
+          { borderColor: colors.border, backgroundColor: colors.card },
+        ]}
+      />
+    );
   };
 
   const getTimelineItemStyle = (index: number) => {
@@ -121,7 +130,7 @@ export default function WashRequestDetailsScreen() {
         style={[styles.container, { backgroundColor: colors.background }]}
       >
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#F77C0B" />
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       </SafeAreaView>
     );
@@ -133,14 +142,16 @@ export default function WashRequestDetailsScreen() {
         style={[styles.container, { backgroundColor: colors.background }]}
       >
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>
+          <Text style={[styles.errorText, { color: colors.error }]}>
             Failed to load wash request details
           </Text>
           <TouchableOpacity
-            style={styles.retryButton}
+            style={[styles.retryButton, { backgroundColor: colors.primary }]}
             onPress={() => refetch()}
           >
-            <Text style={styles.retryButtonText}>Retry</Text>
+            <Text style={[styles.retryButtonText, { color: colors.white }]}>
+              Retry
+            </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -152,7 +163,7 @@ export default function WashRequestDetailsScreen() {
       style={[styles.container, { backgroundColor: colors.background }]}
     >
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <TouchableOpacity
           onPress={() => router.back()}
           style={styles.backButton}
@@ -174,51 +185,99 @@ export default function WashRequestDetailsScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Wash Info Card */}
-        <View style={[styles.infoCard, { backgroundColor: "#FFFFFF" }]}>
+        <View style={[styles.infoCard, { backgroundColor: colors.card }]}>
           <View style={styles.infoRow}>
-            <View style={styles.infoIconContainer}>
-              <MaterialIcons name="local-car-wash" size={20} color="#F77C0B" />
+            <View
+              style={[
+                styles.infoIconContainer,
+                { backgroundColor: colors.surfaceAlt },
+              ]}
+            >
+              <MaterialIcons
+                name="local-car-wash"
+                size={20}
+                color={colors.primary}
+              />
             </View>
             <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Service</Text>
-              <Text style={styles.infoValue}>
+              <Text style={[styles.infoLabel, { color: colors.textMuted }]}>
+                Service
+              </Text>
+              <Text style={[styles.infoValue, { color: colors.text }]}>
                 {washRequest.outletName} - {washRequest.serviceType}
               </Text>
             </View>
           </View>
 
           <View style={styles.infoRow}>
-            <View style={styles.infoIconContainer}>
-              <Ionicons name="calendar-outline" size={20} color="#F77C0B" />
+            <View
+              style={[
+                styles.infoIconContainer,
+                { backgroundColor: colors.surfaceAlt },
+              ]}
+            >
+              <Ionicons
+                name="calendar-outline"
+                size={20}
+                color={colors.primary}
+              />
             </View>
             <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Date</Text>
-              <Text style={styles.infoValue}>
+              <Text style={[styles.infoLabel, { color: colors.textMuted }]}>
+                Date
+              </Text>
+              <Text style={[styles.infoValue, { color: colors.text }]}>
                 {formatDate(washRequest.createdAt)}
               </Text>
             </View>
           </View>
 
           <View style={styles.infoRow}>
-            <View style={styles.infoIconContainer}>
-              <Ionicons name="location-outline" size={20} color="#F77C0B" />
+            <View
+              style={[
+                styles.infoIconContainer,
+                { backgroundColor: colors.surfaceAlt },
+              ]}
+            >
+              <Ionicons
+                name="location-outline"
+                size={20}
+                color={colors.primary}
+              />
             </View>
             <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Location</Text>
-              <Text style={styles.infoValue}>{washRequest.outletLocation}</Text>
+              <Text style={[styles.infoLabel, { color: colors.textMuted }]}>
+                Location
+              </Text>
+              <Text style={[styles.infoValue, { color: colors.text }]}>
+                {washRequest.outletLocation}
+              </Text>
             </View>
           </View>
           <View style={styles.infoRow}>
-            <View style={styles.infoIconContainer}>
-              <MaterialIcons name="local-car-wash" size={20} color="#F77C0B" />
+            <View
+              style={[
+                styles.infoIconContainer,
+                { backgroundColor: colors.surfaceAlt },
+              ]}
+            >
+              <MaterialIcons
+                name="local-car-wash"
+                size={20}
+                color={colors.primary}
+              />
             </View>
             <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Vehicle</Text>
-              <Text style={styles.infoValue}>
+              <Text style={[styles.infoLabel, { color: colors.textMuted }]}>
+                Vehicle
+              </Text>
+              <Text style={[styles.infoValue, { color: colors.text }]}>
                 {washRequest.vehicleInfo.vehicleMake}{" "}
                 {washRequest.vehicleInfo.vehicleModel}
               </Text>
-              <Text style={styles.vehicleSubText}>
+              <Text
+                style={[styles.vehicleSubText, { color: colors.textMuted }]}
+              >
                 {washRequest.vehicleInfo.licensePlate}
               </Text>
             </View>
@@ -232,18 +291,25 @@ export default function WashRequestDetailsScreen() {
             textAlign: "center",
             fontWeight: "600",
             marginBottom: 8,
+            color: colors.text,
           }}
         >
           Wash Code
         </Text>
-        <View style={[styles.washCodeCard, { backgroundColor: "#fff" }]}>
-          <Text style={styles.washCodeText}>{washRequest.washCode}</Text>
-          <Text style={styles.washCodeHint}>Show this code at the outlet</Text>
+        <View style={[styles.washCodeCard, { backgroundColor: colors.card }]}>
+          <Text style={[styles.washCodeText, { color: colors.primary }]}>
+            {washRequest.washCode}
+          </Text>
+          <Text style={[styles.washCodeHint, { color: colors.textMuted }]}>
+            Show this code at the outlet
+          </Text>
         </View>
 
         {/* Timeline */}
-        <View style={[styles.timelineCard, { backgroundColor: "#FFFFFF" }]}>
-          <Text style={styles.sectionTitle}>Wash Status</Text>
+        <View style={[styles.timelineCard, { backgroundColor: colors.card }]}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+            Wash Status
+          </Text>
 
           {washRequest.steps.map((step, index) => {
             const statusKey =
@@ -269,7 +335,9 @@ export default function WashRequestDetailsScreen() {
                       style={[
                         styles.timelineLine,
                         {
-                          backgroundColor: isCompleted ? "#F77C0B" : "#E0E0E0",
+                          backgroundColor: isCompleted
+                            ? colors.primary
+                            : colors.border,
                         },
                       ]}
                     />
@@ -281,7 +349,9 @@ export default function WashRequestDetailsScreen() {
                     style={[
                       styles.timelineTitle,
                       {
-                        color: isCompleted ? "#1F2D33" : "#B0B0B0",
+                        color: isCompleted
+                          ? colors.text
+                          : colors.textPlaceholder,
                         fontWeight: isCompleted ? "600" : "400",
                       },
                     ]}
@@ -289,7 +359,9 @@ export default function WashRequestDetailsScreen() {
                     {step}
                   </Text>
                   {time && (
-                    <Text style={styles.timelineTime}>
+                    <Text
+                      style={[styles.timelineTime, { color: colors.primary }]}
+                    >
                       {formatDate(
                         washRequest.statusTimeline[index]?.timestamp || "",
                       )}{" "}
@@ -297,37 +369,72 @@ export default function WashRequestDetailsScreen() {
                     </Text>
                   )}
                   {index === 0 && (
-                    <Text style={styles.timelineDescription}>
+                    <Text
+                      style={[
+                        styles.timelineDescription,
+                        { color: colors.textMuted },
+                      ]}
+                    >
                       Waiting for the vendor to confirm your wash.
                     </Text>
                   )}
                   {index === 1 && isCompleted && (
-                    <Text style={styles.timelineDescription}>
+                    <Text
+                      style={[
+                        styles.timelineDescription,
+                        { color: colors.textMuted },
+                      ]}
+                    >
                       A car wash agent is confirming your vehicle details.
                     </Text>
                   )}
                   {index === 2 && isCompleted && (
-                    <Text style={styles.timelineDescription}>
+                    <Text
+                      style={[
+                        styles.timelineDescription,
+                        { color: colors.textMuted },
+                      ]}
+                    >
                       Vehicle details confirmed.
                     </Text>
                   )}
                   {index === 3 && isCompleted && (
-                    <Text style={styles.timelineDescription}>
+                    <Text
+                      style={[
+                        styles.timelineDescription,
+                        { color: colors.textMuted },
+                      ]}
+                    >
                       Your vehicle is currently being washed.
                     </Text>
                   )}
                   {index === 4 && isCompleted && (
-                    <Text style={styles.timelineDescription}>
+                    <Text
+                      style={[
+                        styles.timelineDescription,
+                        { color: colors.textMuted },
+                      ]}
+                    >
                       Drying, interior cleaning, and tire polishing in progress.
                     </Text>
                   )}
                   {index === 5 && isCompleted && (
-                    <Text style={styles.timelineDescription}>
+                    <Text
+                      style={[
+                        styles.timelineDescription,
+                        { color: colors.textMuted },
+                      ]}
+                    >
                       Your car wash is complete, proceed to the pickup area.
                     </Text>
                   )}
                   {index === 6 && isCompleted && (
-                    <Text style={styles.timelineDescription}>
+                    <Text
+                      style={[
+                        styles.timelineDescription,
+                        { color: colors.textMuted },
+                      ]}
+                    >
                       Thank you for using our service!
                     </Text>
                   )}
@@ -338,11 +445,15 @@ export default function WashRequestDetailsScreen() {
         </View>
         {/* Review Section - Only show for completed washes that haven't been reviewed */}
         {washRequest.status === "completed" && !washRequest.userRating && (
-          <View style={[styles.reviewCard, { backgroundColor: "#FFFFFF" }]}>
+          <View style={[styles.reviewCard, { backgroundColor: colors.card }]}>
             <View style={styles.reviewHeader}>
-              <Ionicons name="star" size={28} color="#F77C0B" />
-              <Text style={styles.reviewTitle}>How was your wash?</Text>
-              <Text style={styles.reviewSubtitle}>
+              <Ionicons name="star" size={28} color={colors.primary} />
+              <Text style={[styles.reviewTitle, { color: colors.text }]}>
+                How was your wash?
+              </Text>
+              <Text
+                style={[styles.reviewSubtitle, { color: colors.textMuted }]}
+              >
                 Share your feedback and help us improve
               </Text>
             </View>
@@ -363,7 +474,7 @@ export default function WashRequestDetailsScreen() {
                   key={star}
                   name="star-outline"
                   size={32}
-                  color="#D1D5DB"
+                  color={colors.border}
                 />
               ))}
             </TouchableOpacity>
@@ -373,23 +484,27 @@ export default function WashRequestDetailsScreen() {
         {/* Show review if already submitted */}
 
         {/* Price */}
-        <View style={[styles.priceCard, { backgroundColor: "#FFFFFF" }]}>
+        <View style={[styles.priceCard, { backgroundColor: colors.card }]}>
           <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>Total Amount</Text>
-            <Text style={styles.priceAmount}>
+            <Text style={[styles.priceLabel, { color: colors.textMuted }]}>
+              Total Amount
+            </Text>
+            <Text style={[styles.priceAmount, { color: colors.text }]}>
               &#8358;{washRequest.price.toLocaleString()}
             </Text>
           </View>
           <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>Payment Status</Text>
+            <Text style={[styles.priceLabel, { color: colors.textMuted }]}>
+              Payment Status
+            </Text>
             <View
               style={[
                 styles.paymentBadge,
                 {
                   backgroundColor:
                     washRequest.paymentStatus === "paid"
-                      ? "#E7F7EF"
-                      : "#FFF5EB",
+                      ? colors.primaryLight
+                      : colors.surfaceAlt,
                 },
               ]}
             >
@@ -399,8 +514,8 @@ export default function WashRequestDetailsScreen() {
                   {
                     color:
                       washRequest.paymentStatus === "paid"
-                        ? "#067647"
-                        : "#F77C0B",
+                        ? colors.success
+                        : colors.primary,
                   },
                 ]}
               >
@@ -434,7 +549,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#E0E0E0",
   },
   backButton: {
     padding: 4,
@@ -457,12 +571,10 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: "#D92D20",
     fontWeight: "600",
     textAlign: "center",
   },
   retryButton: {
-    backgroundColor: "#F77C0B",
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 8,
@@ -470,7 +582,6 @@ const styles = StyleSheet.create({
   retryButtonText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#FFFFFF",
   },
   scrollView: {
     flex: 1,
@@ -481,12 +592,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     gap: 16,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  infoRow: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 12,
@@ -495,7 +600,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#FFF5EB",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -504,28 +608,23 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 12,
-    color: "#7D7D7D",
     marginBottom: 4,
   },
   infoValue: {
     fontSize: 15,
     fontWeight: "500",
-    color: "#1F2D33",
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1F2D33",
     marginBottom: 12,
   },
   vehicleText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   vehicleSubText: {
     fontSize: 14,
-    color: "#7D7D7D",
     marginTop: 4,
   },
   washCodeCard: {
@@ -548,18 +647,15 @@ const styles = StyleSheet.create({
   },
   washCodeLabel: {
     fontSize: 14,
-    color: "#333333",
     fontWeight: "500",
   },
   washCodeText: {
     fontSize: 32,
     fontWeight: "700",
-    color: "#F77C0B",
     letterSpacing: 8,
   },
   washCodeHint: {
     fontSize: 12,
-    color: "#7D7D7D",
     marginTop: 8,
   },
   timelineCard: {
@@ -585,7 +681,6 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "#F77C0B",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -594,8 +689,6 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#E0E0E0",
-    backgroundColor: "#FFFFFF",
   },
   timelineLine: {
     width: 2,
@@ -612,12 +705,10 @@ const styles = StyleSheet.create({
   },
   timelineTime: {
     fontSize: 12,
-    color: "#F77C0B",
     marginBottom: 4,
   },
   timelineDescription: {
     fontSize: 13,
-    color: "#7D7D7D",
     lineHeight: 18,
   },
   priceCard: {
@@ -640,12 +731,10 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     fontSize: 14,
-    color: "#7D7D7D",
   },
   priceAmount: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#1F2D33",
   },
   paymentBadge: {
     paddingHorizontal: 12,
@@ -677,12 +766,10 @@ const styles = StyleSheet.create({
   reviewTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1F2D33",
     textAlign: "center",
   },
   reviewSubtitle: {
     fontSize: 13,
-    color: "#7D7D7D",
     textAlign: "center",
   },
   starsContainer: {
@@ -691,7 +778,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   reviewButton: {
-    backgroundColor: "#F77C0B",
     paddingVertical: 14,
     paddingHorizontal: 32,
     borderRadius: 8,
@@ -701,7 +787,6 @@ const styles = StyleSheet.create({
   reviewButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#FFFFFF",
   },
   submittedRatingContainer: {
     alignItems: "center",
@@ -711,23 +796,19 @@ const styles = StyleSheet.create({
   submittedRatingLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   submittedReviewContainer: {
     width: "100%",
     padding: 16,
-    backgroundColor: "#F8F8F8",
     borderRadius: 8,
   },
   submittedReviewLabel: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#1F2D33",
     marginBottom: 8,
   },
   submittedReviewText: {
     fontSize: 14,
-    color: "#7D7D7D",
     lineHeight: 20,
   },
 });

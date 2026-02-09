@@ -3,7 +3,8 @@ import FormField from "@/components/ui/form-field";
 import FormPicker from "@/components/ui/form-picker";
 import ImageUpload from "@/components/ui/image-upload";
 import { useToast } from "@/contexts/ToastContext";
-import { createVehicle } from "@/lib/api/vehicles";
+import { useTheme } from "@/hooks/useTheme";
+import { createVehicle, uploadVehicleImage } from "@/lib/api/vehicles";
 import { Feather } from "@expo/vector-icons";
 import React, { useRef, useState } from "react";
 import {
@@ -50,6 +51,7 @@ export default function AddVehicleModal({
   onSave,
 }: AddVehicleModalProps) {
   const { toast } = useToast();
+  const colors = useTheme();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<VehicleData>({
     vehicleType: "",
@@ -156,33 +158,46 @@ export default function AddVehicleModal({
       transparent
       onRequestClose={handleClose}
     >
-      <View style={styles.modalOverlay}>
+      <View
+        style={[styles.modalOverlay, { backgroundColor: colors.modalOverlay }]}
+      >
         <Animated.View
           style={[
             styles.modalContent,
+            { backgroundColor: colors.card },
             {
               transform: [{ translateY }],
             },
           ]}
         >
           <KeyboardAvoidingView
-            style={styles.container}
+            style={[styles.container, { backgroundColor: colors.card }]}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
             {/* Header */}
-            <View style={styles.header} {...panResponder.panHandlers}>
-              <View style={styles.headerHandle} />
+            <View
+              style={[styles.header, { borderBottomColor: colors.borderLight }]}
+              {...panResponder.panHandlers}
+            >
+              <View
+                style={[
+                  styles.headerHandle,
+                  { backgroundColor: colors.divider },
+                ]}
+              />
               <View style={styles.headerContent}>
-                <Text style={styles.headerTitle}>New vehicle</Text>
+                <Text style={[styles.headerTitle, { color: colors.text }]}>
+                  New vehicle
+                </Text>
                 <TouchableOpacity
                   style={styles.closeButton}
                   onPress={handleClose}
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
-                  <Feather name="x" size={24} color="#F77C0B" />
+                  <Feather name="x" size={24} color={colors.primary} />
                 </TouchableOpacity>
               </View>
-              <Text style={styles.subtitle}>
+              <Text style={[styles.subtitle, { color: colors.textMuted }]}>
                 Please, type in details of your vehicle.
               </Text>
             </View>
@@ -257,11 +272,14 @@ export default function AddVehicleModal({
                 onImageSelected={(uri) =>
                   setFormData({ ...formData, photo: uri })
                 }
+                uploadFn={uploadVehicleImage}
               />
             </ScrollView>
 
             {/* Footer */}
-            <View style={styles.footer}>
+            <View
+              style={[styles.footer, { borderTopColor: colors.borderLight }]}
+            >
               <Button
                 title="Save"
                 onPress={handleSave}
@@ -281,30 +299,25 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
     height: "95%",
-    backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: "hidden",
   },
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
   },
   header: {
     paddingTop: 8,
     paddingHorizontal: 20,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
   },
   headerHandle: {
     width: 40,
     height: 4,
-    backgroundColor: "#E0E0E0",
     borderRadius: 2,
     alignSelf: "center",
     marginBottom: 16,
@@ -319,7 +332,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   closeButton: {
     position: "absolute",
@@ -332,7 +344,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 13,
-    color: "#7D7D7D",
     textAlign: "center",
   },
   scrollView: {
@@ -346,6 +357,5 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: Platform.OS === "ios" ? 30 : 20,
     borderTopWidth: 1,
-    borderTopColor: "#F0F0F0",
   },
 });

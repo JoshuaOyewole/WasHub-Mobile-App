@@ -2,14 +2,15 @@ import Button from "@/components/ui/button";
 import EmptyState from "@/components/ui/empty-state";
 import { useBooking } from "@/contexts/BookingContext";
 import { useToast } from "@/contexts/ToastContext";
+import { useTheme } from "@/hooks/useTheme";
 import {
-  fetchVehicles,
-  removeVehicleFromWash,
-  type Vehicle,
+    fetchVehicles,
+    removeVehicleFromWash,
+    type Vehicle,
 } from "@/lib/api/vehicles";
 import {
-  WashRequest as ApiWashRequest,
-  fetchWashRequests,
+    WashRequest as ApiWashRequest,
+    fetchWashRequests,
 } from "@/lib/api/washRequests";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,16 +19,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  Modal,
-  Platform,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    Modal,
+    Platform,
+    RefreshControl,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -47,6 +48,7 @@ export default function Request() {
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const { toast } = useToast();
+  const colors = useTheme();
   const queryClient = useQueryClient();
   const { setCarId, clearBooking, setOutletId, setWashType, setPrice } =
     useBooking();
@@ -268,18 +270,32 @@ export default function Request() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       {/* Tabs */}
-      <View style={styles.tabsContainer}>
+      <View
+        style={[
+          styles.tabsContainer,
+          { backgroundColor: colors.card, shadowColor: colors.shadow },
+        ]}
+      >
         <TouchableOpacity
-          style={[styles.tab, activeTab === "my-wash" && styles.activeTab]}
+          style={[
+            styles.tab,
+            activeTab === "my-wash" && [
+              styles.activeTab,
+              { backgroundColor: colors.secondary },
+            ],
+          ]}
           onPress={() => setActiveTab("my-wash")}
           activeOpacity={0.7}
         >
           <Text
             style={[
               styles.tabText,
-              activeTab === "my-wash" && styles.activeTabText,
+              { color: colors.textMuted },
+              activeTab === "my-wash" && { color: colors.white },
             ]}
           >
             My Cart
@@ -290,14 +306,21 @@ export default function Request() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.tab, activeTab === "scheduled" && styles.activeTab]}
+          style={[
+            styles.tab,
+            activeTab === "scheduled" && [
+              styles.activeTab,
+              { backgroundColor: colors.secondary },
+            ],
+          ]}
           onPress={() => setActiveTab("scheduled")}
           activeOpacity={0.7}
         >
           <Text
             style={[
               styles.tabText,
-              activeTab === "scheduled" && styles.activeTabText,
+              { color: colors.textMuted },
+              activeTab === "scheduled" && { color: colors.white },
             ]}
           >
             Scheduled
@@ -311,14 +334,21 @@ export default function Request() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.tab, activeTab === "ongoing" && styles.activeTab]}
+          style={[
+            styles.tab,
+            activeTab === "ongoing" && [
+              styles.activeTab,
+              { backgroundColor: colors.secondary },
+            ],
+          ]}
           onPress={() => setActiveTab("ongoing")}
           activeOpacity={0.7}
         >
           <Text
             style={[
               styles.tabText,
-              activeTab === "ongoing" && styles.activeTabText,
+              { color: colors.textMuted },
+              activeTab === "ongoing" && { color: colors.white },
             ]}
           >
             Ongoing
@@ -332,14 +362,21 @@ export default function Request() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.tab, activeTab === "completed" && styles.activeTab]}
+          style={[
+            styles.tab,
+            activeTab === "completed" && [
+              styles.activeTab,
+              { backgroundColor: colors.secondary },
+            ],
+          ]}
           onPress={() => setActiveTab("completed")}
           activeOpacity={0.7}
         >
           <Text
             style={[
               styles.tabText,
-              activeTab === "completed" && styles.activeTabText,
+              { color: colors.textMuted },
+              activeTab === "completed" && { color: colors.white },
             ]}
           >
             Completed
@@ -357,13 +394,17 @@ export default function Request() {
       {isLoading || isLoadingWishlist ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#F77C0B" />
-          <Text style={styles.loadingText}>Loading wash requests...</Text>
+          <Text style={[styles.loadingText, { color: colors.textMuted }]}>
+            Loading wash requests...
+          </Text>
         </View>
       ) : isError || isErrorWishlist ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Failed to load data</Text>
+          <Text style={[styles.errorText, { color: colors.error }]}>
+            Failed to load data
+          </Text>
           <TouchableOpacity
-            style={styles.retryButton}
+            style={[styles.retryButton, { backgroundColor: colors.primary }]}
             onPress={() => {
               refetch();
               refetchWishlist();
@@ -406,34 +447,60 @@ export default function Request() {
               wishlistVehicles.map((vehicle) => (
                 <TouchableOpacity
                   key={vehicle._id}
-                  style={styles.requestCard}
+                  style={[
+                    styles.requestCard,
+                    {
+                      backgroundColor: colors.card,
+                      shadowColor: colors.shadow,
+                    },
+                  ]}
                   onLongPress={() => handleLongPressVehicle(vehicle)}
                   delayLongPress={500}
                   activeOpacity={0.9}
                 >
                   <View style={styles.requestInfo}>
-                    <Text style={styles.requestTitle}>
+                    <Text style={[styles.requestTitle, { color: colors.text }]}>
                       {vehicle.vehicleMake} {vehicle.vehicleModel}
                     </Text>
-                    <Text style={styles.requestService}>
+                    <Text
+                      style={[
+                        styles.requestService,
+                        { color: colors.textPlaceholder },
+                      ]}
+                    >
                       {vehicle.vehicleYear}
                     </Text>
-                    <Text style={styles.requestService}>
+                    <Text
+                      style={[
+                        styles.requestService,
+                        { color: colors.textPlaceholder },
+                      ]}
+                    >
                       {vehicle.plateNumber}
                     </Text>
                   </View>
                   <View style={styles.actionsContainer}>
                     {/* Delete Button - Top Right */}
                     <TouchableOpacity
-                      style={styles.deleteIconButton}
+                      style={[
+                        styles.deleteIconButton,
+                        { backgroundColor: colors.errorBg },
+                      ]}
                       onPress={() => handleLongPressVehicle(vehicle)}
                       activeOpacity={0.7}
                     >
-                      <MaterialIcons name="delete" size={16} color="#FF3B30" />
+                      <MaterialIcons
+                        name="delete"
+                        size={16}
+                        color={colors.error}
+                      />
                     </TouchableOpacity>
                     <View style={styles.requestActions}>
                       <TouchableOpacity
-                        style={styles.washNowButton}
+                        style={[
+                          styles.washNowButton,
+                          { backgroundColor: colors.primary },
+                        ]}
                         onPress={() => handleWashNow(vehicle._id)}
                         activeOpacity={0.8}
                       >
@@ -448,13 +515,13 @@ export default function Request() {
                   <View
                     key={request._id}
                     style={{
-                      backgroundColor: "#ffffff",
+                      backgroundColor: colors.card,
                       flexDirection: "row",
                       gap: 12,
                       paddingVertical: 2,
                       borderRadius: 10,
                       marginBottom: 12,
-                      shadowColor: "#000",
+                      shadowColor: colors.shadow,
                       shadowOffset: { width: 0, height: 1 },
                       shadowOpacity: 0.1,
                       shadowRadius: 2,
@@ -474,11 +541,16 @@ export default function Request() {
                             gap: 4,
                           }}
                         >
-                          <Text style={styles.requestTitle}>
+                          <Text
+                            style={[
+                              styles.requestTitle,
+                              { color: colors.text },
+                            ]}
+                          >
                             {request.vehicleInfo.vehicleMake}{" "}
                             {request.vehicleInfo.vehicleModel} -
                           </Text>
-                          <Text style={{ color: "#F77C0B" }}>
+                          <Text style={{ color: colors.primary }}>
                             {" "}
                             {capitalizeFirstLetter(request.serviceType)}
                           </Text>
@@ -487,10 +559,20 @@ export default function Request() {
                         {/*  
                           {capitalizeFirstLetter(request.serviceType)}
                         </Text> */}
-                        <Text style={styles.requestLocation}>
+                        <Text
+                          style={[
+                            styles.requestLocation,
+                            { color: colors.textSecondary },
+                          ]}
+                        >
                           {request.outletName}, {request.outletLocation}
                         </Text>
-                        <Text style={styles.requestService}>
+                        <Text
+                          style={[
+                            styles.requestService,
+                            { color: colors.textPlaceholder },
+                          ]}
+                        >
                           Completed on: {formatDate(request.completedAt || "")}
                         </Text>
                       </View>
@@ -501,7 +583,7 @@ export default function Request() {
                       <TouchableOpacity
                         style={{
                           ...styles.viewButton,
-                          backgroundColor: "#E4E4E4",
+                          backgroundColor: colors.divider,
                           width: 42,
                           height: 42,
                           flex: 0,
@@ -515,7 +597,7 @@ export default function Request() {
                         <Ionicons
                           name="reload-outline"
                           size={24}
-                          color="#6F7273"
+                          color={colors.iconMuted}
                         />
                       </TouchableOpacity>
                     </View>
@@ -525,33 +607,59 @@ export default function Request() {
                 filteredRequests.map((request) => (
                   <TouchableOpacity
                     key={request._id}
-                    style={styles.requestCard}
+                    style={[
+                      styles.requestCard,
+                      {
+                        backgroundColor: colors.card,
+                        shadowColor: colors.shadow,
+                      },
+                    ]}
                     onPress={() => handleViewRequest(request._id)}
                     activeOpacity={0.7}
                   >
                     <View style={styles.requestInfo}>
-                      <Text style={styles.requestTitle}>
+                      <Text
+                        style={[styles.requestTitle, { color: colors.text }]}
+                      >
                         {request.vehicleInfo.vehicleMake}{" "}
                         {request.vehicleInfo.vehicleModel}
                       </Text>
-                      <Text style={styles.requestService}>
+                      <Text
+                        style={[
+                          styles.requestService,
+                          { color: colors.textPlaceholder },
+                        ]}
+                      >
                         {capitalizeFirstLetter(request.serviceType)}
                       </Text>
-                      <Text style={styles.requestLocation}>
+                      <Text
+                        style={[
+                          styles.requestLocation,
+                          { color: colors.textSecondary },
+                        ]}
+                      >
                         {request.outletLocation}
                       </Text>
-                      <Text style={styles.requestWashCode}>
+                      <Text
+                        style={[
+                          styles.requestWashCode,
+                          { color: colors.primary },
+                        ]}
+                      >
                         {request.createdAt
                           ? formatDate(request.createdAt)
                           : "N/A"}
                       </Text>
                     </View>
                     <View style={styles.requestActions}>
-                      <Text style={styles.priceText}>
+                      <Text style={[styles.priceText, { color: colors.text }]}>
                         &#8358;{request.price.toLocaleString()}
                       </Text>
                       <TouchableOpacity
-                        style={styles.viewButton}
+                        style={[
+                          styles.viewButton,
+                          { backgroundColor: colors.secondary },
+                        ]}
                         onPress={() => handleViewRequest(request._id)}
                         activeOpacity={0.8}
                       >
@@ -570,16 +678,25 @@ export default function Request() {
         animationType="fade"
         onRequestClose={handleCancelRemove}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <MaterialIcons name="delete" size={16} color="#FF3B30" />
+        <View
+          style={[
+            styles.modalOverlay,
+            { backgroundColor: colors.modalOverlay },
+          ]}
+        >
+          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+            <View
+              style={[styles.modalHeader, { backgroundColor: colors.errorBg }]}
+            >
+              <MaterialIcons name="delete" size={16} color={colors.error} />
             </View>
 
-            <Text style={styles.modalTitle}>Remove from Cart?</Text>
-            <Text style={styles.modalMessage}>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>
+              Remove from Cart?
+            </Text>
+            <Text style={[styles.modalMessage, { color: colors.textMuted }]}>
               Do you want to remove{" "}
-              <Text style={styles.vehicleName}>
+              <Text style={[styles.vehicleName, { color: colors.text }]}>
                 {selectedVehicle?.vehicleMake} {selectedVehicle?.vehicleModel}
               </Text>{" "}
               from your wash cart?
@@ -587,15 +704,25 @@ export default function Request() {
 
             <View style={styles.modalActions}>
               <TouchableOpacity
-                style={[styles.modalButton, styles.cancelButton]}
+                style={[
+                  styles.modalButton,
+                  styles.cancelButton,
+                  { backgroundColor: colors.surface },
+                ]}
                 onPress={handleCancelRemove}
                 disabled={removeFromCartMutation.isPending}
               >
-                <Text style={styles.cancelButtonText}>No</Text>
+                <Text style={[styles.cancelButtonText, { color: colors.text }]}>
+                  No
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.modalButton, styles.confirmButton]}
+                style={[
+                  styles.modalButton,
+                  styles.confirmButton,
+                  { backgroundColor: colors.error },
+                ]}
                 onPress={handleConfirmRemove}
                 disabled={removeFromCartMutation.isPending}
               >
@@ -616,11 +743,9 @@ export default function Request() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F8F8",
     marginTop: 20,
   },
   tabsContainer: {
-    backgroundColor: "#FFFFFF",
     flexDirection: "row",
     paddingHorizontal: 2,
     paddingVertical: Platform.OS === "ios" ? 10 : 7,
@@ -628,7 +753,6 @@ const styles = StyleSheet.create({
     rowGap: 6,
     borderRadius: 10,
     marginHorizontal: 10,
-    shadowColor: "#00000033",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
@@ -643,18 +767,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  activeTab: {
-    backgroundColor: "#1F2D33",
-  },
+  activeTab: {},
   tabText: {
     fontSize: 13,
     fontWeight: "500",
-    color: "#7D7D7D",
     textAlign: "center",
   },
-  activeTabText: {
-    color: "#FFFFFF",
-  },
+  activeTabText: {},
   badgeText: {
     fontSize: 12,
     fontWeight: "600",
@@ -667,7 +786,6 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 14,
-    color: "#7D7D7D",
     fontWeight: "500",
   },
   errorContainer: {
@@ -679,12 +797,10 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: "#D92D20",
     fontWeight: "600",
     textAlign: "center",
   },
   retryButton: {
-    backgroundColor: "#F77C0B",
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 8,
@@ -711,12 +827,8 @@ const styles = StyleSheet.create({
   requestCard: {
     flexDirection: "row",
     justifyContent: "space-between",
-    // alignItems: "center",
-    backgroundColor: "#FFFFFF",
     borderRadius: 12,
-    //paddingRight: 12,
     marginBottom: 12,
-    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -733,18 +845,15 @@ const styles = StyleSheet.create({
   requestTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1F2D33",
     marginBottom: 4,
   },
   requestService: {
     fontWeight: "500",
     marginBottom: 4,
     fontSize: 14,
-    color: "#B0B0B0",
   },
   requestWashCode: {
     fontSize: 11,
-    color: "#F77C0B",
     fontWeight: "600",
     marginTop: 4,
   },
@@ -758,12 +867,10 @@ const styles = StyleSheet.create({
   },
   requestDate: {
     fontSize: 11,
-    color: "#B0B0B0",
     marginTop: 4,
   },
   requestLocation: {
     fontSize: 14,
-    color: "#666",
     flexWrap: "wrap",
     flexShrink: 1,
   },
@@ -776,7 +883,6 @@ const styles = StyleSheet.create({
   priceText: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#1F2D33",
     textAlign: "right",
     paddingRight: 10,
   },
@@ -784,12 +890,10 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 18,
-    backgroundColor: "#FFE5E5",
     justifyContent: "center",
     alignItems: "center",
   },
   washNowButton: {
-    backgroundColor: "#F77C0B",
     padding: 10,
     borderRadius: 20,
     marginRight: 8,
@@ -801,7 +905,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   viewButton: {
-    backgroundColor: "#1F2D33",
     padding: 10,
     borderRadius: 20,
     marginRight: 8,
@@ -813,7 +916,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   statusBadge: {
-    backgroundColor: "#F77C0B",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
@@ -827,13 +929,11 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
   modalContent: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 24,
     width: "100%",
@@ -844,7 +944,6 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: "#FFE5E5",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 16,
@@ -852,19 +951,16 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#1F2D33",
     marginBottom: 8,
   },
   modalMessage: {
     fontSize: 14,
-    color: "#7D7D7D",
     textAlign: "center",
     marginBottom: 24,
     lineHeight: 20,
   },
   vehicleName: {
     fontWeight: "600",
-    color: "#1F2D33",
   },
   modalActions: {
     flexDirection: "row",
@@ -878,16 +974,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  cancelButton: {
-    backgroundColor: "#F5F5F5",
-  },
-  confirmButton: {
-    backgroundColor: "#FF3B30",
-  },
+  cancelButton: {},
+  confirmButton: {},
   cancelButtonText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#1F2D33",
   },
   confirmButtonText: {
     fontSize: 15,

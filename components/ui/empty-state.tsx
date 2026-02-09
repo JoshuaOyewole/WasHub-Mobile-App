@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import React from "react";
 import {
     Image,
@@ -18,11 +19,18 @@ export default function EmptyState({
   title,
   description,
 }: EmptyStateProps) {
+  const colors = useTheme();
   return (
     <View style={styles.container}>
       <Image source={image} style={styles.image} resizeMode="contain" />
-      {title && <Text style={styles.title}>{title}</Text>}
-      {description && <Text style={styles.description}>{description}</Text>}
+      {title && (
+        <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+      )}
+      {description && (
+        <Text style={[styles.description, { color: colors.textMuted }]}>
+          {description}
+        </Text>
+      )}
     </View>
   );
 }
@@ -42,12 +50,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1F2D33",
     marginBottom: 8,
   },
   description: {
     fontSize: 14,
-    color: "#7D7D7D",
     textAlign: "center",
     paddingHorizontal: 40,
   },

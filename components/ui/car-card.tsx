@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import { Feather } from "@expo/vector-icons";
 import React from "react";
 import {
@@ -25,12 +26,19 @@ type CarCardProps = {
 };
 
 export default function CarCard({ car, onPress }: CarCardProps) {
+  const colors = useTheme();
   const progressColor = car.washProgress < 50 ? "#F77C0B" : "#9ACD32";
-  // const progressColor = "#9ACD32";
 
   return (
     <TouchableOpacity
-      style={[styles.container, car.isSelected && styles.selectedContainer]}
+      style={[
+        styles.container,
+        { backgroundColor: colors.card, shadowColor: colors.shadow },
+        car.isSelected && [
+          styles.selectedContainer,
+          { backgroundColor: colors.surface },
+        ],
+      ]}
       onPress={() => onPress?.(car)}
       activeOpacity={0.7}
     >
@@ -43,28 +51,42 @@ export default function CarCard({ car, onPress }: CarCardProps) {
           resizeMode="cover"
         />
         {car.isSelected && (
-          <View style={styles.checkmarkContainer}>
-            <Feather name="check" size={20} color="#FFFFFF" />
+          <View
+            style={[
+              styles.checkmarkContainer,
+              { backgroundColor: colors.primary },
+            ]}
+          >
+            <Feather name="check" size={20} color={colors.white} />
           </View>
         )}
       </View>
 
       {/* Car Details */}
       <View style={styles.detailsContainer}>
-        <Text style={styles.brand}>{car.brand}</Text>
+        <Text style={[styles.brand, { color: colors.text }]}>{car.brand}</Text>
 
         <View style={styles.infoRow}>
-          <Feather name="navigation" size={14} color="#7D7D7D" />
-          <Text style={styles.model}>{car.model}</Text>
+          <Feather name="navigation" size={14} color={colors.textMuted} />
+          <Text style={[styles.model, { color: colors.textMuted }]}>
+            {car.model}
+          </Text>
         </View>
 
         <View style={styles.infoRow}>
-          <Feather name="credit-card" size={14} color="#7D7D7D" />
-          <Text style={styles.licensePlate}>{car.licensePlate}</Text>
+          <Feather name="credit-card" size={14} color={colors.textMuted} />
+          <Text style={[styles.licensePlate, { color: colors.textMuted }]}>
+            {car.licensePlate}
+          </Text>
         </View>
 
         {/* Progress Bar */}
-        <View style={styles.progressBarContainer}>
+        <View
+          style={[
+            styles.progressBarContainer,
+            { backgroundColor: colors.progressTrack },
+          ]}
+        >
           <View
             style={[
               styles.progressBar,
@@ -84,13 +106,11 @@ export default function CarCard({ car, onPress }: CarCardProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 12,
     marginBottom: 12,
     borderWidth: 2,
     borderColor: "transparent",
-    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -99,9 +119,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  selectedContainer: {
-    backgroundColor: "#f6f6f6",
-  },
+  selectedContainer: {},
   imageContainer: {
     width: 120,
     height: 90,
@@ -120,7 +138,6 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#F77C0B",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -132,7 +149,6 @@ const styles = StyleSheet.create({
   brand: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1F2D33",
     marginBottom: 4,
   },
   infoRow: {
@@ -142,17 +158,14 @@ const styles = StyleSheet.create({
   },
   model: {
     fontSize: 13,
-    color: "#7D7D7D",
     marginLeft: 6,
   },
   licensePlate: {
     fontSize: 13,
-    color: "#7D7D7D",
     marginLeft: 6,
   },
   progressBarContainer: {
     height: 4,
-    backgroundColor: "#E8E8E8",
     borderRadius: 2,
     overflow: "hidden",
     marginTop: 4,

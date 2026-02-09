@@ -1,3 +1,4 @@
+import { useTheme } from "@/hooks/useTheme";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -6,6 +7,7 @@ import { Image, StyleSheet, View } from "react-native";
 
 export default function SplashScreen() {
   const router = useRouter();
+  const colors = useTheme();
   const { authStep, isInitialized } = useAuthStore();
   const [token, setToken] = useState<string | null>(null);
   const [isTokenLoaded, setIsTokenLoaded] = useState(false);
@@ -56,7 +58,7 @@ export default function SplashScreen() {
   }, [authStep, isInitialized, isTokenLoaded, token, router]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.surface }]}>
       <Image source={require("../../assets/images/icon.png")} />
     </View>
   );
@@ -65,7 +67,6 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1F2D33",
     justifyContent: "center",
     alignItems: "center",
   },

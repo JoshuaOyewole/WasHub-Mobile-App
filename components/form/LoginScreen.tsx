@@ -11,19 +11,19 @@ import { Link, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import {
-  Controller,
-  useForm,
-  type Resolver,
-  type SubmitHandler,
+    Controller,
+    useForm,
+    type Resolver,
+    type SubmitHandler,
 } from "react-hook-form";
 import {
-  ActivityIndicator,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Image,
+    Pressable,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import FormInput from "../ui/text-input";
 
@@ -208,7 +208,7 @@ const LoginScreen = () => {
               <Checkbox
                 value={value}
                 onValueChange={onChange}
-                color={value ? colors.secondaryButton : undefined}
+                color={value ? colors.button : undefined}
                 style={{ width: 18, height: 18, borderRadius: 4 }}
               />
               <Text
@@ -216,7 +216,7 @@ const LoginScreen = () => {
                   {
                     fontWeight: "600",
                     fontSize: 14,
-                    color: "#17143380",
+                    color: colors.textMuted,
                     lineHeight: 20,
                   },
                 ]}
@@ -230,7 +230,7 @@ const LoginScreen = () => {
         <Link
           href={"/forgetPassword"}
           style={{
-            color: "#EF1010",
+            color: colors.error,
             fontWeight: "500",
             fontSize: 14,
             textDecorationLine: "underline",
@@ -244,7 +244,7 @@ const LoginScreen = () => {
       <Pressable
         onPress={handleSubmit(onSubmit)}
         disabled={isSubmitting || isPending}
-        style={[style.submitBtn, { backgroundColor: colors.secondaryButton }]}
+        style={[style.submitBtn, { backgroundColor: colors.button }]}
       >
         {isSubmitting || isPending ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
@@ -284,7 +284,7 @@ const LoginScreen = () => {
             {
               fontWeight: "600",
               fontSize: 14,
-              color: "#17143380",
+              color: colors.textMuted,
             },
           ]}
         >
@@ -305,7 +305,7 @@ const LoginScreen = () => {
       {/* Implement the OR here */}
       <View style={style.dividerContainer}>
         <View style={[style.divider, { backgroundColor: colors.border }]} />
-        <Text style={[style.dividerText, { color: colors.gray500 }]}>OR</Text>
+        <Text style={[style.dividerText, { color: colors.textMuted }]}>OR</Text>
         <View style={[style.divider, { backgroundColor: colors.border }]} />
       </View>
       {/* GOOGLE SIGNUP */}
@@ -314,8 +314,8 @@ const LoginScreen = () => {
         style={[
           style.submitBtn,
           {
-            backgroundColor: "#fff",
-            borderColor: "#007AFF38",
+            backgroundColor: colors.card,
+            borderColor: colors.borderLight,
             borderWidth: 1,
             height: 50,
             marginTop: 0,

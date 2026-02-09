@@ -5,29 +5,9 @@
 
 import { Platform } from "react-native";
 
-const tintColorLight = "#F77C0B";
-const tintColorDark = "#fff";
+import { Colors as ThemeColors } from "@/hooks/useTheme";
 
-export const Colors = {
-  light: {
-    text: "#11181C",
-    background: "#fff",
-    tint: tintColorLight,
-    icon: "#687076",
-    tabIconDefault: "#687076",
-    tabIconSelected: tintColorLight,
-    inactiveTint: "#1F2D33",
-  },
-  dark: {
-    text: "#ECEDEE",
-    background: "#151718",
-    tint: tintColorDark,
-    icon: "#9BA1A6",
-    tabIconDefault: "#9BA1A6",
-    tabIconSelected: tintColorDark,
-    inactiveTint: "#1F2D33",
-  },
-};
+export const Colors = ThemeColors;
 
 export const Fonts = Platform.select({
   ios: {
