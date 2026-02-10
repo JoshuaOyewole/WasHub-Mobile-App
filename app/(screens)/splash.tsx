@@ -58,7 +58,9 @@ export default function SplashScreen() {
   }, [authStep, isInitialized, isTokenLoaded, token, router]);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.surface }]}>
+    <View
+      style={[styles.container, { backgroundColor: colors.splashBackground }]}
+    >
       <Image source={require("../../assets/images/icon.png")} />
     </View>
   );

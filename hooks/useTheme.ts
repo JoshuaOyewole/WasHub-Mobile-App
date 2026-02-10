@@ -13,6 +13,7 @@ const sharedColors = {
   errorBg: "#FFE5E5",
   success: "#34C759",
   warning: "#FF9500",
+  splashBackground: "#1F2D33",
 };
 
 export const Colors = {
