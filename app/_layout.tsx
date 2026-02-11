@@ -12,9 +12,13 @@ import {
 } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "react-native-reanimated";
+
+// Keep the native splash screen visible while we resolve auth
+SplashScreen.preventAutoHideAsync();
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -34,27 +38,38 @@ export const unstable_settings = {
 };
 
 function AppContent() {
-  const { user, isInitialized, authStep } = useAuthStore();
   const router = useRouter();
+  const [hasHydrated, setHasHydrated] = useState(
+    useAuthStore.persist.hasHydrated(),
+  );
 
   useDeepLink();
 
-  // Initialize auth on app launch
+  // Wait for Zustand persist hydration before bootstrapping auth
   useEffect(() => {
-    bootstrapAuth();
+    const unsub = useAuthStore.persist.onFinishHydration(() => {
+      setHasHydrated(true);
+    });
+    return unsub;
   }, []);
 
-  // After initialization, navigate based on auth state
+  // Initialize auth, then hide splash and navigate — all in one chain
   useEffect(() => {
-    if (!isInitialized) return;
+    if (!hasHydrated) return;
 
-    // Small delay to allow splash screen animation
-    const timer = setTimeout(() => {
+    const init = async () => {
+      await bootstrapAuth();
+
+      // Read state directly from store — don't rely on re-render
+      const { user, authStep } = useAuthStore.getState();
+
+      // Hide the native splash screen
+      await SplashScreen.hideAsync();
+
       if (user) {
         console.log("User authenticated, redirecting to /(tabs)");
         router.replace("/(tabs)");
       } else {
-        // Navigate based on authStep
         switch (authStep) {
           case "LOGIN":
             router.replace("/(auth)/login");
@@ -72,14 +87,14 @@ function AppContent() {
             router.replace("/(auth)/forgetPassword");
             break;
           default:
-            router.replace("/(screens)/splash");
+            router.replace("/(auth)/login");
             break;
         }
       }
-    }, 900);
+    };
 
-    return () => clearTimeout(timer);
-  }, [isInitialized, user, authStep, router]);
+    init();
+  }, [hasHydrated, router]);
 
   return (
     <Stack>

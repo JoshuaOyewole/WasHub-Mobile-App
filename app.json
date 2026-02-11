@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "wasHub",
-    "slug": "wasHub",
+    "slug": "washub",
     "version": "1.0.0",
     "runtimeVersion": {
       "policy": "appVersion"
@@ -46,7 +46,6 @@
         "expo-splash-screen",
         {
           "resizeMode": "contain",
-          //"backgroundColor": "#1F2D33",
           "imageWidth": 200,
           "dark": {
             "image": "./assets/images/splash-icon-dark.png",
@@ -67,9 +66,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "fa42185e-8e4c-4956-ae03-28da3e61d395"
+        "projectId": "9e3ba92c-b23a-42fb-a741-5cdfdccaa5cb"
       }
     },
-    "owner": "orisfinatech"
+    "owner": "bashtek"
   }
 }

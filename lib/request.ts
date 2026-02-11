@@ -62,11 +62,13 @@ function createApiClient() {
         originalRequest._retry = true;
 
         try {
-          // Clear auth state using logout
-          const { logout } = useAuthStore.getState();
-          await logout();
-
-          console.log("❌ Unauthorized: Please login again");
+          // Only logout if there was a token (user was actually logged in)
+          const token = await SecureStore.getItemAsync("auth_token");
+          if (token) {
+            const { logout } = useAuthStore.getState();
+            await logout();
+            console.log("❌ Unauthorized: Please login again");
+          }
         } catch (err) {
           console.error("Error handling 401:", err);
         }

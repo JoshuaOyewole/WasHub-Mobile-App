@@ -13,6 +13,7 @@ const sharedColors = {
   errorBg: "#FFE5E5",
   success: "#34C759",
   warning: "#FF9500",
+  inputBorder: "#d8d2d2",
   splashBackground: "#1F2D33",
 };
 
@@ -24,6 +25,10 @@ export const Colors = {
     surface: "#F5F5F5",
     surfaceAlt: "#FFF5E6",
     modalOverlay: "rgba(0, 0, 0, 0.5)",
+
+    //Buttons
+    secondaryButtonBackground: "#1F2D33",
+    secondaryButtonText: "#FFFFFF",
 
     // Text
     text: "#1F2D33",
@@ -37,7 +42,6 @@ export const Colors = {
     border: "#E8E8E8",
     borderLight: "#EFEFF0",
     divider: "#E4E4E4",
-    inputBorder: "#e7e5e5",
 
     // Icons
     icon: "#687076",
@@ -94,7 +98,6 @@ export const Colors = {
     border: "#38383A",
     borderLight: "#2C2C2E",
     divider: "#38383A",
-    inputBorder: "#38383A",
 
     // Icons
     icon: "#8E8E93",
@@ -128,6 +131,10 @@ export const Colors = {
     notificationDot: "#FF453A",
     switchTrackOff: "#38383A",
     switchTrackOn: "#F39C4C",
+
+    //Buttons
+    secondaryButtonBackground: "#FFFFFF",
+    secondaryButtonText: "#1F2D33",
 
     ...sharedColors,
   },

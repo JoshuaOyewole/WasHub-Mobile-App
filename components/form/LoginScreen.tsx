@@ -11,19 +11,19 @@ import { Link, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import {
-    Controller,
-    useForm,
-    type Resolver,
-    type SubmitHandler,
+  Controller,
+  useForm,
+  type Resolver,
+  type SubmitHandler,
 } from "react-hook-form";
 import {
-    ActivityIndicator,
-    Image,
-    Pressable,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import FormInput from "../ui/text-input";
 
@@ -216,7 +216,7 @@ const LoginScreen = () => {
                   {
                     fontWeight: "600",
                     fontSize: 14,
-                    color: colors.textMuted,
+                    color: colors.secondaryButtonBackground,
                     lineHeight: 20,
                   },
                 ]}
@@ -244,16 +244,22 @@ const LoginScreen = () => {
       <Pressable
         onPress={handleSubmit(onSubmit)}
         disabled={isSubmitting || isPending}
-        style={[style.submitBtn, { backgroundColor: colors.button }]}
+        style={[
+          style.submitBtn,
+          { backgroundColor: colors.secondaryButtonBackground },
+        ]}
       >
         {isSubmitting || isPending ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <ActivityIndicator size="small" color={colors.buttonText} />
+            <ActivityIndicator
+              size="small"
+              color={colors.secondaryButtonText}
+            />
             <Text
               style={{
                 fontWeight: "600",
                 fontSize: 16,
-                color: colors.buttonText,
+                color: colors.secondaryButtonText,
               }}
             >
               Signing in...
@@ -264,7 +270,7 @@ const LoginScreen = () => {
             style={{
               fontWeight: "600",
               fontSize: 16,
-              color: colors.buttonText,
+              color: colors.secondaryButtonText,
             }}
           >
             Sign In
@@ -304,9 +310,26 @@ const LoginScreen = () => {
 
       {/* Implement the OR here */}
       <View style={style.dividerContainer}>
-        <View style={[style.divider, { backgroundColor: colors.border }]} />
-        <Text style={[style.dividerText, { color: colors.textMuted }]}>OR</Text>
-        <View style={[style.divider, { backgroundColor: colors.border }]} />
+        <View
+          style={[
+            style.divider,
+            { backgroundColor: colors.secondaryButtonBackground },
+          ]}
+        />
+        <Text
+          style={[
+            style.dividerText,
+            { color: colors.secondaryButtonBackground },
+          ]}
+        >
+          OR
+        </Text>
+        <View
+          style={[
+            style.divider,
+            { backgroundColor: colors.secondaryButtonBackground },
+          ]}
+        />
       </View>
       {/* GOOGLE SIGNUP */}
       <Pressable

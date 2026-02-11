@@ -29,7 +29,9 @@ export default function FormInput({
         {label && (
           <Text style={[style.formLabel, { color: colors.text }]}>{label}</Text>
         )}
-        <View style={style.inputContainer}>
+        <View
+          style={[style.inputContainer, { borderColor: colors.inputBorder }]}
+        >
           {leftIcon && <View style={style.leftIconContainer}>{leftIcon}</View>}
           <TextInput
             {...props}
@@ -37,7 +39,7 @@ export default function FormInput({
             onChangeText={handleChange}
             style={[
               style.formInput,
-              { borderColor: colors.border, color: colors.text, flex: 1 },
+              { borderColor: colors.inputBorder, color: colors.text, flex: 1 },
             ]}
             autoCapitalize="none"
           />
