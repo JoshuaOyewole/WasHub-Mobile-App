@@ -1,17 +1,17 @@
 import { useTheme } from "@/hooks/useTheme";
 import React from "react";
 import {
-    ActivityIndicator,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    TouchableOpacityProps,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableOpacityProps,
 } from "react-native";
 
 type ButtonProps = {
   title: string;
   onPress: () => void;
-  variant?: "primary" | "secondary" | "link";
+  variant?: "primary" | "secondary" | "link" | "outline";
   loading?: boolean;
   disabled?: boolean;
 } & Omit<TouchableOpacityProps, "onPress">;
@@ -27,6 +27,7 @@ export default function Button({
   const colors = useTheme();
   const isPrimary = variant === "primary";
   const isLink = variant === "link";
+  const isOutline = variant === "outline";
   return (
     <TouchableOpacity
       style={[
@@ -35,10 +36,21 @@ export default function Button({
           ? [styles.primaryButton, { backgroundColor: colors.button }]
           : isLink
             ? styles.linkButton
-            : [
-                styles.secondaryButton,
-                { backgroundColor: colors.card, borderColor: colors.secondary },
-              ],
+            : isOutline
+              ? [
+                  {
+                    backgroundColor: "transparent",
+                    borderColor: colors.outlineButton,
+                    borderWidth: 1,
+                  },
+                ]
+              : [
+                  styles.secondaryButton,
+                  {
+                    backgroundColor: colors.secondaryButtonBackground,
+                    borderColor: colors.secondary,
+                  },
+                ],
         (disabled || loading) && styles.disabledButton,
       ]}
       onPress={onPress}
@@ -55,10 +67,12 @@ export default function Button({
           style={[
             styles.buttonText,
             isPrimary
-              ? [styles.primaryButtonText, { color: colors.buttonText }]
+              ? [{ color: colors.buttonText }]
               : isLink
                 ? [styles.linkButtonText, { color: colors.text }]
-                : [styles.secondaryButtonText, { color: colors.secondary }],
+                : isOutline
+                  ? [{ color: colors.outlineButtonText }]
+                  : [{ color: colors.secondaryButtonText }],
           ]}
         >
           {title}
@@ -83,12 +97,11 @@ const styles = StyleSheet.create({
   disabledButton: {
     opacity: 0.5,
   },
+
   buttonText: {
     fontSize: 16,
     fontWeight: "600",
   },
-  primaryButtonText: {},
-  secondaryButtonText: {},
   linkButton: {
     backgroundColor: "transparent",
   },

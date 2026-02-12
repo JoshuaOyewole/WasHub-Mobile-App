@@ -8,15 +8,15 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    TextInput,
-    View,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  TextInput,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -127,6 +127,7 @@ export default function ChangePassword() {
                   styles.input,
                   styles.inputWithIcon,
                   {
+                    borderColor: colors.inputBorder,
                     backgroundColor: colors.inputBackground,
                     color: colors.text,
                   },
@@ -142,6 +143,7 @@ export default function ChangePassword() {
                 onPress={() => setShowCurrent((prev) => !prev)}
                 style={({ pressed }) => [
                   styles.eyeButton,
+                  { top: 6 },
                   pressed && styles.eyePressed,
                 ]}
               >
@@ -169,6 +171,7 @@ export default function ChangePassword() {
                   styles.input,
                   styles.inputWithIcon,
                   {
+                    borderColor: colors.inputBorder,
                     backgroundColor: colors.inputBackground,
                     color: colors.text,
                   },
@@ -205,6 +208,7 @@ export default function ChangePassword() {
                   styles.input,
                   styles.inputWithIcon,
                   {
+                    borderColor: colors.inputBorder,
                     backgroundColor: colors.inputBackground,
                     color: colors.text,
                   },
@@ -231,6 +235,7 @@ export default function ChangePassword() {
               title={isSaving ? "Updating..." : "Change password"}
               onPress={handleSubmit}
               disabled={isSaving}
+              variant="secondary"
             />
           </View>
 
@@ -319,6 +324,7 @@ const styles = StyleSheet.create({
   },
   inputWithIcon: {
     paddingRight: 44,
+    borderWidth: 1,
   },
   eyeButton: {
     position: "absolute",

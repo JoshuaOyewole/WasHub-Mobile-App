@@ -22,11 +22,15 @@ import { statusData } from "@/lib/data";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const { user, logout } = useAuthStore();
+  const { user } = useAuthStore();
   const colors = useTheme();
+  const insets = useSafeAreaInsets();
   const [currentIndex, setCurrentIndex] = useState(0);
   const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -42,7 +46,10 @@ export default function HomeScreen() {
     <SafeAreaView
       style={[
         styles.container,
-        { backgroundColor: colors.background, marginBottom: -20 },
+        {
+          backgroundColor: colors.background,
+          paddingBottom: Platform.OS === "ios" ? 0 : -109,
+        },
       ]}
       edges={["top", "bottom"]}
     >
@@ -95,7 +102,7 @@ export default function HomeScreen() {
             styles.quickActionsCard,
             {
               backgroundColor: colors.card,
-              borderLeftColor: colors.cardBorderLeft,
+              borderLeftColor: colors.cardBorderLeftPrimary,
               shadowColor: colors.shadow,
             },
           ]}
@@ -354,7 +361,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginTop: 16,
     borderRadius: 16,
-    borderLeftWidth: 6,
+    borderLeftWidth: 4,
     paddingVertical: 20,
     paddingHorizontal: 2,
     shadowOffset: {

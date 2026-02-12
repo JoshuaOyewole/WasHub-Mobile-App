@@ -2,6 +2,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
 import { useState, type ReactNode } from "react";
 import {
+  Alert,
   Platform,
   Pressable,
   ScrollView,
@@ -24,6 +25,20 @@ export default function Profile() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { user, logout } = useAuthStore();
   const colors = useTheme();
+
+  const handleLogout = async () => {
+    Alert.alert("Log out", "Are you sure you want to log out?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Log out",
+        style: "destructive",
+        onPress: async () => {
+          await logout();
+          router.replace("/(auth)/login");
+        },
+      },
+    ]);
+  };
   return (
     <SafeAreaView
       style={[
@@ -77,7 +92,7 @@ export default function Profile() {
           <SettingRow
             icon="person"
             title="Edit Profile"
-            subtitle="Change profile picture"
+            subtitle="Change profile information"
             onPress={() => router.push("/(screens)/edit-profile")}
           />
           <Divider />
@@ -140,7 +155,7 @@ export default function Profile() {
             titleColor="#E25D5D"
             iconColor="#E25D5D"
             iconBackground={colors.errorBg}
-            onPress={logout}
+            onPress={handleLogout}
           />
         </ThemedView>
       </ScrollView>
@@ -172,20 +187,16 @@ function SettingRow({
   iconBackground,
 }: SettingRowProps) {
   const colors = useTheme();
-  const resolvedIconBackground = iconBackground ?? colors.primaryLight;
+  //const resolvedIconBackground = iconBackground ?? colors.primaryLight;
   return (
     <Pressable
       onPress={onPress}
       style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
     >
       <View
-        style={[styles.iconWrap, { backgroundColor: resolvedIconBackground }]}
+        style={[styles.iconWrap, { backgroundColor: colors.iconBackground }]}
       >
-        <MaterialIcons
-          name={icon as any}
-          size={20}
-          color={colors.resolvedIconColor}
-        />
+        <MaterialIcons name={icon as any} size={20} color={colors.iconColor} />
       </View>
       <View style={styles.rowText}>
         <ThemedText

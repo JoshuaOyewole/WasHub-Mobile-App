@@ -12,8 +12,7 @@ const sharedColors = {
   error: "#FF3B30",
   errorBg: "#FFE5E5",
   success: "#34C759",
-  warning: "#FF9500",
-  inputBorder: "#d8d2d2",
+
   splashBackground: "#1F2D33",
 };
 
@@ -29,11 +28,12 @@ export const Colors = {
     //Buttons
     secondaryButtonBackground: "#1F2D33",
     secondaryButtonText: "#FFFFFF",
-
+    outlineButton: "#1F2D33",
+    outlineButtonText: "#1F2D33",
     // Text
     text: "#1F2D33",
     textSecondary: "#666666",
-    textMuted: "#7D7D7D",
+    textMuted: "#757171",
     textPlaceholder: "#B0B0B0",
     title: "#1C1C1E",
     subtitle: "#4A4A4A",
@@ -47,6 +47,8 @@ export const Colors = {
     icon: "#687076",
     iconMuted: "#7D7D7D",
     resolvedIconColor: "#F28B3C",
+    iconColor: "#F77C0B",
+    iconBackground: "#F77C0B12",
     // Tab bar
     tabBar: "#FFFFFF",
     tabIconDefault: "#687076",
@@ -69,13 +71,16 @@ export const Colors = {
     progressTrack: "#E8E8E8",
     dash: "#D1D5DB",
     dotInactive: "#D1D5DB",
-    cardBorderLeft: "#FF8C00",
+    cardBorderLeftSecondary: "#1F2D33",
+    cardBorderLeftPrimary: "#F77C0B",
     stepInactive: "#D3D3D3",
     chevron: "#C7C7CC",
     notificationDot: "#FF3B30",
     switchTrackOff: "#E5E7EB",
     switchTrackOn: "#F39C4C",
 
+    //Input
+    inputBorder: "#1F2D33",
     ...sharedColors,
   },
   dark: {
@@ -88,7 +93,7 @@ export const Colors = {
 
     // Text
     text: "#E5E5E7",
-    textSecondary: "#ABABAB",
+    textSecondary: "#ffffff",
     textMuted: "#8E8E93",
     textPlaceholder: "#636366",
     title: "#FFFFFF",
@@ -103,6 +108,9 @@ export const Colors = {
     icon: "#8E8E93",
     iconMuted: "#8E8E93",
     resolvedIconColor: "#ffffff",
+    iconBackground: "#F77C0B12",
+    iconColor: "#F77C0B",
+
     // Tab bar
     tabBar: "#1C1C1E",
     tabIconDefault: "#8E8E93",
@@ -118,7 +126,7 @@ export const Colors = {
 
     // Form
     formHeading: "#FFFFFF",
-    inputBackground: "#2C2C2E",
+    inputBackground: "transparent",
     link: "#B0B0B0",
 
     // Components
@@ -135,6 +143,14 @@ export const Colors = {
     //Buttons
     secondaryButtonBackground: "#FFFFFF",
     secondaryButtonText: "#1F2D33",
+    outlineButton: "#ffffff",
+    outlineButtonText: "#ffffff",
+
+    cardBorderLeftSecondary: "#ffffff",
+    cardBorderLeftPrimary: "#F77C0B",
+
+    //Input
+    inputBorder: "#e5e5e772",
 
     ...sharedColors,
   },

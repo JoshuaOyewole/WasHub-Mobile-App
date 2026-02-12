@@ -3,12 +3,12 @@ import { Car } from "@/components/ui/car-card";
 import { useTheme } from "@/hooks/useTheme";
 import React, { useRef } from "react";
 import {
-    Animated,
-    Modal,
-    PanResponder,
-    StyleSheet,
-    TouchableOpacity,
-    View,
+  Animated,
+  Modal,
+  PanResponder,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 type CarActionsModalProps = {
@@ -114,7 +114,7 @@ export default function CarActionsModal({
               <Button
                 title="View car details"
                 onPress={handleViewDetails}
-                variant="secondary"
+                variant="outline"
               />
             </View>
           </TouchableOpacity>

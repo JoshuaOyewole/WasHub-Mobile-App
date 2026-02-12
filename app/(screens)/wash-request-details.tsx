@@ -2,21 +2,21 @@ import ReviewModal from "@/components/ui/review-modal";
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import {
-    fetchWashRequestById,
-    submitWashReview,
-    WashRequest,
+  fetchWashRequestById,
+  submitWashReview,
+  WashRequest,
 } from "@/lib/api/washRequests";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -187,100 +187,28 @@ export default function WashRequestDetailsScreen() {
         {/* Wash Info Card */}
         <View style={[styles.infoCard, { backgroundColor: colors.card }]}>
           <View style={styles.infoRow}>
-            <View
+            <Text style={[styles.infoValue, { color: colors.text }]}>
+              {washRequest.outletName} - {washRequest.serviceType}
+            </Text>
+            <Text style={[styles.infoLabel, { color: colors.textMuted }]}>
+              {washRequest.outletLocation}
+            </Text>
+            <Text style={[styles.infoLabel, { color: colors.textMuted }]}>
+              {formatDate(washRequest.createdAt)}
+            </Text>
+            <Text
               style={[
-                styles.infoIconContainer,
-                { backgroundColor: colors.surfaceAlt },
+                styles.infoValue,
+                { color: colors.text },
+                { marginTop: 12 },
               ]}
             >
-              <MaterialIcons
-                name="local-car-wash"
-                size={20}
-                color={colors.primary}
-              />
-            </View>
-            <View style={styles.infoContent}>
-              <Text style={[styles.infoLabel, { color: colors.textMuted }]}>
-                Service
-              </Text>
-              <Text style={[styles.infoValue, { color: colors.text }]}>
-                {washRequest.outletName} - {washRequest.serviceType}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.infoRow}>
-            <View
-              style={[
-                styles.infoIconContainer,
-                { backgroundColor: colors.surfaceAlt },
-              ]}
-            >
-              <Ionicons
-                name="calendar-outline"
-                size={20}
-                color={colors.primary}
-              />
-            </View>
-            <View style={styles.infoContent}>
-              <Text style={[styles.infoLabel, { color: colors.textMuted }]}>
-                Date
-              </Text>
-              <Text style={[styles.infoValue, { color: colors.text }]}>
-                {formatDate(washRequest.createdAt)}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.infoRow}>
-            <View
-              style={[
-                styles.infoIconContainer,
-                { backgroundColor: colors.surfaceAlt },
-              ]}
-            >
-              <Ionicons
-                name="location-outline"
-                size={20}
-                color={colors.primary}
-              />
-            </View>
-            <View style={styles.infoContent}>
-              <Text style={[styles.infoLabel, { color: colors.textMuted }]}>
-                Location
-              </Text>
-              <Text style={[styles.infoValue, { color: colors.text }]}>
-                {washRequest.outletLocation}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.infoRow}>
-            <View
-              style={[
-                styles.infoIconContainer,
-                { backgroundColor: colors.surfaceAlt },
-              ]}
-            >
-              <MaterialIcons
-                name="local-car-wash"
-                size={20}
-                color={colors.primary}
-              />
-            </View>
-            <View style={styles.infoContent}>
-              <Text style={[styles.infoLabel, { color: colors.textMuted }]}>
-                Vehicle
-              </Text>
-              <Text style={[styles.infoValue, { color: colors.text }]}>
-                {washRequest.vehicleInfo.vehicleMake}{" "}
-                {washRequest.vehicleInfo.vehicleModel}
-              </Text>
-              <Text
-                style={[styles.vehicleSubText, { color: colors.textMuted }]}
-              >
-                {washRequest.vehicleInfo.licensePlate}
-              </Text>
-            </View>
+              {washRequest.vehicleInfo.vehicleMake}{" "}
+              {washRequest.vehicleInfo.vehicleModel}
+            </Text>
+            <Text style={[styles.vehicleSubText, { color: colors.textMuted }]}>
+              {washRequest.vehicleInfo.licensePlate}
+            </Text>
           </View>
         </View>
 
@@ -290,13 +218,22 @@ export default function WashRequestDetailsScreen() {
             ...styles.washCodeLabel,
             textAlign: "center",
             fontWeight: "600",
-            marginBottom: 8,
+            marginTop: 8,
             color: colors.text,
           }}
         >
           Wash Code
         </Text>
-        <View style={[styles.washCodeCard, { backgroundColor: colors.card }]}>
+        <View
+          style={[
+            styles.infoCard,
+            {
+              backgroundColor: colors.card,
+              justifyContent: "center",
+              alignItems: "center",
+            },
+          ]}
+        >
           <Text style={[styles.washCodeText, { color: colors.primary }]}>
             {washRequest.washCode}
           </Text>
@@ -514,7 +451,7 @@ export default function WashRequestDetailsScreen() {
                   {
                     color:
                       washRequest.paymentStatus === "paid"
-                        ? colors.success
+                        ? colors.white
                         : colors.primary,
                   },
                 ]}
@@ -590,9 +527,10 @@ const styles = StyleSheet.create({
     margin: 16,
     padding: 16,
     borderRadius: 12,
-    gap: 16,
+    //gap: 16,
     shadowColor: "#000",
-    flexDirection: "row",
+    flexDirection: "column",
+    flex: 1,
     alignItems: "flex-start",
     gap: 12,
   },
@@ -627,30 +565,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 4,
   },
-  washCodeCard: {
-    margin: 16,
-    marginTop: 0,
-    paddingBottom: 20,
-    paddingTop: 10,
-    borderRadius: 12,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+  infoRow: {
+    flex: 1,
   },
-  washCodeHeader: {
-    alignItems: "center",
-    gap: 2,
-    marginBottom: 16,
-  },
+
   washCodeLabel: {
     fontSize: 14,
     fontWeight: "500",
   },
   washCodeText: {
     fontSize: 32,
+    textAlign: "center",
     fontWeight: "700",
     letterSpacing: 8,
   },

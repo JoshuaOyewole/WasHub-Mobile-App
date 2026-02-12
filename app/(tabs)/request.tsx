@@ -4,13 +4,13 @@ import { useBooking } from "@/contexts/BookingContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import {
-    fetchVehicles,
-    removeVehicleFromWash,
-    type Vehicle,
+  fetchVehicles,
+  removeVehicleFromWash,
+  type Vehicle,
 } from "@/lib/api/vehicles";
 import {
-    WashRequest as ApiWashRequest,
-    fetchWashRequests,
+  WashRequest as ApiWashRequest,
+  fetchWashRequests,
 } from "@/lib/api/washRequests";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,16 +19,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Modal,
-    Platform,
-    RefreshControl,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Modal,
+  Platform,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -424,6 +424,7 @@ export default function Request() {
               title={
                 activeTab === "my-wash" ? "Add car to wash" : "Book a wash"
               }
+              variant="secondary"
               onPress={handleAddCarToWash}
             />
           </View>

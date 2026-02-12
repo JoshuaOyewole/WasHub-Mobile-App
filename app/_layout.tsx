@@ -16,6 +16,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import "react-native-reanimated";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // Keep the native splash screen visible while we resolve auth
 SplashScreen.preventAutoHideAsync();
@@ -99,7 +100,10 @@ function AppContent() {
   return (
     <Stack>
       <Stack.Screen name="(screens)" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(auth)"
+        options={{ headerShown: false, gestureEnabled: false }}
+      />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="(modals)" options={{ headerShown: false }} />
     </Stack>
@@ -110,18 +114,21 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ToastProvider>
-        <BookingProvider>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <AppContent />
-            <StatusBar style="auto" />
-            <ToastOverlay />
-          </ThemeProvider>
-        </BookingProvider>
-      </ToastProvider>
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <ToastProvider>
+          <BookingProvider>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <StatusBar style="auto" />
+              <AppContent />
+
+              <ToastOverlay />
+            </ThemeProvider>
+          </BookingProvider>
+        </ToastProvider>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }

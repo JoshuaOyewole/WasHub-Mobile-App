@@ -16,7 +16,7 @@ export default function StatusCard({ item }: { item: (typeof statusData)[0] }) {
           {
             backgroundColor: colors.card,
             shadowColor: colors.shadow,
-            borderLeftColor: colors.cardBorderLeft,
+            borderLeftColor: colors.cardBorderLeftSecondary,
           },
         ]}
       >
@@ -155,7 +155,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  stepActive: {},
+  stepActive: {
+    borderRadius: 16,
+  },
   stepInactive: {},
   stepNumberActive: {
     fontSize: 14,
