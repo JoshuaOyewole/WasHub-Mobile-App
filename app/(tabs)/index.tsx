@@ -48,7 +48,7 @@ export default function HomeScreen() {
         styles.container,
         {
           backgroundColor: colors.background,
-          paddingBottom: Platform.OS === "ios" ? 0 : -109,
+          paddingBottom: Platform.OS === "ios" ? -50 : -109,
         },
       ]}
       edges={["top", "bottom"]}

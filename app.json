@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "wasHub",
-    "slug": "washub",
+    "name": "Washub",
+    "slug": "Washub",
     "version": "1.0.0",
     "runtimeVersion": {
       "policy": "appVersion"
@@ -10,7 +10,7 @@
       "enabled": true,
       "checkAutomatically": "ON_LOAD",
       "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/fa42185e-8e4c-4956-ae03-28da3e61d395"
+      "url": "https://u.expo.dev/9e3ba92c-b23a-42fb-a741-5cdfdccaa5cb"
     },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -37,7 +37,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.orisfinatech.wasHub",
+      "package": "com.basktek.washub",
       "softwareKeyboardLayoutMode": "pan"
     },
     "web": {

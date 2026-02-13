@@ -31,6 +31,9 @@ interface AuthState {
   // app
   isInitialized: boolean;
 
+  //Notifications
+  notificationsEnabled: boolean;
+
   // actions
   setUser: (user: User | null) => void;
   setAuthStep: (step: AuthStep) => void;
@@ -38,6 +41,7 @@ interface AuthState {
   saveCredentials: (email: string) => Promise<void>;
   getCredentials: () => Promise<{ email: string } | null>;
   clearCredentials: () => Promise<void>;
+  setNotificationsEnabled: (enabled: boolean) => void;
   logout: () => Promise<void>;
 }
 
@@ -47,11 +51,14 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       authStep: null,
       isInitialized: false,
+      notificationsEnabled: false,
 
       setUser: (user) => set({ user }),
       setAuthStep: (step) => set({ authStep: step }),
       setInitialized: () => set({ isInitialized: true }),
 
+      setNotificationsEnabled: (enabled) =>
+        set({ notificationsEnabled: enabled }),
       saveCredentials: async (email: string) => {
         try {
           await SecureStore.setItemAsync("saved_email", email);
@@ -99,6 +106,7 @@ export const useAuthStore = create<AuthState>()(
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
         authStep: state.authStep, // ✅ Only persist authStep, NOT user
+        notificationsEnabled: state.notificationsEnabled, // ✅ Persist notificationsEnabled
       }),
     },
   ),

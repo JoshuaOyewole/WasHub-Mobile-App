@@ -1,6 +1,6 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import {
   Alert,
   Platform,
@@ -22,8 +22,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Profile() {
   const router = useRouter();
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const { user, logout } = useAuthStore();
+  const { user, logout, notificationsEnabled, setNotificationsEnabled } =
+    useAuthStore();
   const colors = useTheme();
 
   const handleLogout = async () => {
@@ -39,6 +39,7 @@ export default function Profile() {
       },
     ]);
   };
+
   return (
     <SafeAreaView
       style={[
@@ -242,7 +243,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingTop: 18,
     paddingBottom: 32,
     gap: 16,
