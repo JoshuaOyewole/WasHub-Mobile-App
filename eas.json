@@ -14,7 +14,7 @@
         "APP_VARIANT": "preview"
       },
       "channel": "preview",
-      "autoIncrement": true,
+      "autoIncrement": false,
       "android": {
         "buildType": "apk"
       }
