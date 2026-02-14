@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 18,
     fontWeight: "600",
-    fontFamily: Fonts.rounded,
+    fontFamily: Fonts.regular,
   },
   headerSpacer: {
     width: 36,

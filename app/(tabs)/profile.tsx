@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     textAlign: "center",
-    fontFamily: Fonts.rounded,
+    fontFamily: Fonts.regular,
     fontSize: 20,
   },
   profileCard: {

@@ -96,7 +96,10 @@ const Outlets = () => {
           />
         </View>
         <TouchableOpacity
-          style={[styles.filterButton, { backgroundColor: colors.surface }]}
+          style={[
+            styles.filterButton,
+            { backgroundColor: colors.filterButton },
+          ]}
         >
           <Ionicons name="options-outline" size={20} color={colors.white} />
         </TouchableOpacity>

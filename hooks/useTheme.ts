@@ -30,6 +30,8 @@ export const Colors = {
     secondaryButtonText: "#FFFFFF",
     outlineButton: "#1F2D33",
     outlineButtonText: "#1F2D33",
+    filterButton: "#1F2D33",
+
     // Text
     text: "#1F2D33",
     textSecondary: "#666666",
@@ -85,7 +87,87 @@ export const Colors = {
   },
   dark: {
     // Backgrounds
-    background: "#1F2D33",
+    background: "#F8F8F8",
+    card: "#FFFFFF",
+    surface: "#F5F5F5",
+    surfaceAlt: "#FFF5E6",
+    modalOverlay: "rgba(0, 0, 0, 0.5)",
+
+    //Buttons
+    secondaryButtonBackground: "#1F2D33",
+    secondaryButtonText: "#FFFFFF",
+    outlineButton: "#1F2D33",
+    outlineButtonText: "#1F2D33",
+    filterButton: "#1F2D33",
+
+    // Text
+    text: "#1F2D33",
+    textSecondary: "#666666",
+    textMuted: "#757171",
+    textPlaceholder: "#B0B0B0",
+    title: "#1C1C1E",
+    subtitle: "#4A4A4A",
+
+    // Borders & Dividers
+    border: "#E8E8E8",
+    borderLight: "#EFEFF0",
+    divider: "#E4E4E4",
+
+    // Icons
+    icon: "#687076",
+    iconMuted: "#7D7D7D",
+    resolvedIconColor: "#F28B3C",
+    iconColor: "#F77C0B",
+    iconBackground: "#F77C0B12",
+    // Tab bar
+    tabBar: "#FFFFFF",
+    tabIconDefault: "#687076",
+    tabIconSelected: "#F77C0B",
+    tint: "#F77C0B",
+    inactiveTint: "#1F2D33",
+
+    // Shadows
+    shadow: "#000000",
+
+    // StatusBar
+    statusBarStyle: "dark-content" as "dark-content" | "light-content",
+
+    // Form
+    formHeading: "#171433",
+    inputBackground: "#F5F5F5",
+    link: "#1F2D33",
+
+    // Components
+    progressTrack: "#E8E8E8",
+    dash: "#D1D5DB",
+    dotInactive: "#D1D5DB",
+    cardBorderLeftSecondary: "#1F2D33",
+    cardBorderLeftPrimary: "#F77C0B",
+    stepInactive: "#D3D3D3",
+    chevron: "#C7C7CC",
+    notificationDot: "#FF3B30",
+    switchTrackOff: "#E5E7EB",
+    switchTrackOn: "#F39C4C",
+
+    //Input
+    inputBorder: "#1F2D33",
+
+    ...sharedColors,
+  },
+};
+
+export type ThemeColors = typeof Colors.light;
+
+export function useTheme(): ThemeColors {
+  const colorScheme = useColorScheme();
+  return Colors[colorScheme === "dark" ? "dark" : "light"];
+}
+
+/* 
+
+///DARK CARS
+ // Backgrounds
+    background: "#000",
     card: "#1C1C1E",
     surface: "#2C2C2E",
     surfaceAlt: "#2C2215",
@@ -145,20 +227,10 @@ export const Colors = {
     secondaryButtonText: "#1F2D33",
     outlineButton: "#ffffff",
     outlineButtonText: "#ffffff",
-
+    filterButton: "#adacac3e",
     cardBorderLeftSecondary: "#ffffff",
     cardBorderLeftPrimary: "#F77C0B",
 
     //Input
     inputBorder: "#e5e5e772",
-
-    ...sharedColors,
-  },
-};
-
-export type ThemeColors = typeof Colors.light;
-
-export function useTheme(): ThemeColors {
-  const colorScheme = useColorScheme();
-  return Colors[colorScheme === "dark" ? "dark" : "light"];
-}
+*/
