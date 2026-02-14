@@ -31,13 +31,13 @@ export default function Booking() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isActionsModalVisible, setIsActionsModalVisible] = useState(false);
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Use React Query for fetching vehicles with automatic caching and refetching
   const {
     data: vehiclesResponse,
     isLoading,
     refetch,
-    isRefetching,
   } = useQuery({
     queryKey: ["vehicles"],
     queryFn: () => fetchVehicles(),
@@ -171,8 +171,12 @@ export default function Booking() {
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
-            refreshing={isRefetching}
-            onRefresh={() => refetch()}
+            refreshing={refreshing}
+            onRefresh={async () => {
+              setRefreshing(true);
+              await refetch();
+              setRefreshing(false);
+            }}
             tintColor="#F77C0B"
           />
         }

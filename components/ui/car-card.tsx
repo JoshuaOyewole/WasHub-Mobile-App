@@ -2,12 +2,12 @@ import { useTheme } from "@/hooks/useTheme";
 import { Feather } from "@expo/vector-icons";
 import React from "react";
 import {
-    Image,
-    ImageSourcePropType,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  ImageSourcePropType,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export type Car = {
@@ -44,12 +44,7 @@ export default function CarCard({ car, onPress }: CarCardProps) {
     >
       {/* Car Image */}
       <View style={styles.imageContainer}>
-        <Image
-          //  source={{uri:car.image ?? require("../../assets/images/toyota_prado.png")}}
-          source={require("../../assets/images/toyota_prado.png")}
-          style={styles.image}
-          resizeMode="cover"
-        />
+        <Image source={car.image} style={styles.image} resizeMode="cover" />
         {car.isSelected && (
           <View
             style={[

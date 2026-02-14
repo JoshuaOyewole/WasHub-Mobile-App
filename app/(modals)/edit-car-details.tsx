@@ -45,7 +45,7 @@ export default function EditCarDetailsModal() {
   const colors = useTheme();
   const queryClient = useQueryClient();
   const translateY = useRef(new Animated.Value(0)).current;
-
+  const [uploadingVehicleImage, setUploadingVehicleImage] = useState(false);
   // Fetch vehicle data with React Query
   const {
     data: vehicleResponse,
@@ -293,22 +293,29 @@ export default function EditCarDetailsModal() {
             />
 
             <ImageUpload
-              label="Add Photo"
+              label="Add Photo (Max 1MB)"
               value={formData.photo}
               onImageSelected={(uri) =>
                 setFormData({ ...formData, photo: uri })
               }
               uploadFn={uploadVehicleImage}
+              onUploadingChange={setUploadingVehicleImage}
             />
           </ScrollView>
 
           {/* Footer */}
           <View style={[styles.footer, { borderTopColor: colors.borderLight }]}>
             <Button
-              title={updateMutation.isPending ? "Saving..." : "Save"}
+              title={
+                uploadingVehicleImage
+                  ? "Uploading image..."
+                  : updateMutation.isPending
+                    ? "Saving..."
+                    : "Save"
+              }
               onPress={handleSave}
               variant="primary"
-              disabled={updateMutation.isPending}
+              disabled={updateMutation.isPending || uploadingVehicleImage}
             />
           </View>
         </KeyboardAvoidingView>

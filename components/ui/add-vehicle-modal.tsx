@@ -4,7 +4,7 @@ import FormPicker from "@/components/ui/form-picker";
 import ImageUpload from "@/components/ui/image-upload";
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
-import { createVehicle, uploadVehicleImage } from "@/lib/api/vehicles";
+import { createVehicle } from "@/lib/api/vehicles";
 import { Feather } from "@expo/vector-icons";
 import React, { useRef, useState } from "react";
 import {
@@ -53,6 +53,8 @@ export default function AddVehicleModal({
   const { toast } = useToast();
   const colors = useTheme();
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
   const [formData, setFormData] = useState<VehicleData>({
     vehicleType: "",
     make: "",
@@ -112,6 +114,7 @@ export default function AddVehicleModal({
 
     try {
       setLoading(true);
+
       const response = await createVehicle({
         vehicleType: formData.vehicleType,
         vehicleMake: formData.make,
@@ -119,7 +122,7 @@ export default function AddVehicleModal({
         vehicleYear: formData.year,
         vehicleColor: formData.color,
         plateNumber: formData.plateNumber,
-        image: formData.photo || undefined,
+        imageUri: formData.photo || undefined,
       });
 
       if (response.status) {
@@ -267,12 +270,13 @@ export default function AddVehicleModal({
               />
 
               <ImageUpload
-                label="Add Photo"
+                label="Add Photo (Max 1MB)"
                 value={formData.photo}
                 onImageSelected={(uri) =>
                   setFormData({ ...formData, photo: uri })
                 }
-                uploadFn={uploadVehicleImage}
+                uploadFn={async (localUri) => localUri}
+                onUploadingChange={setUploadingImage}
               />
             </ScrollView>
 
@@ -281,11 +285,17 @@ export default function AddVehicleModal({
               style={[styles.footer, { borderTopColor: colors.borderLight }]}
             >
               <Button
-                title="Save"
+                title={
+                  uploadingImage
+                    ? "Uploading image..."
+                    : loading
+                      ? "Saving..."
+                      : "Save"
+                }
                 onPress={handleSave}
                 variant="primary"
                 loading={loading}
-                disabled={loading}
+                disabled={loading || uploadingImage}
               />
             </View>
           </KeyboardAvoidingView>

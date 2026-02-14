@@ -4,30 +4,30 @@ import { Fonts } from "@/constants/theme";
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import {
-    deleteAccount,
-    fetchUserProfile,
-    updateUserProfile,
-    uploadProfileImage,
+  deleteAccount,
+  fetchUserProfile,
+  updateUserProfile,
+  uploadProfileImage,
 } from "@/lib/api";
 import { useAuthStore } from "@/store/useAuthStore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import DateTimePicker, {
-    type DateTimePickerEvent,
+  type DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    View,
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -143,6 +143,7 @@ export default function EditProfile() {
       try {
         setIsUploading(true);
         const response = await uploadProfileImage(result.assets[0].uri);
+
         if (response.status && response.data?.url) {
           setForm((prev) => ({ ...prev, profileImage: response.data!.url }));
           if (response.data?.user) {

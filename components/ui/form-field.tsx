@@ -33,7 +33,12 @@ export default function FormField({
         placeholderTextColor={colors.textPlaceholder}
         style={[
           styles.input,
-          { backgroundColor: colors.inputBackground, color: colors.text },
+          {
+            backgroundColor: colors.inputBackground,
+            color: colors.text,
+            borderWidth: 1,
+            borderColor: colors.inputBorder,
+          },
         ]}
         {...props}
       />

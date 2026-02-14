@@ -62,12 +62,38 @@ export const createVehicle = async (payload: {
   vehicleYear: string;
   vehicleColor?: string;
   plateNumber: string;
-  image?: string;
+  imageUri?: string; // local file URI from image picker
 }) => {
+  const { imageUri, ...fields } = payload;
+
+  const formData = new FormData();
+
+  // Append text fields
+  Object.entries(fields).forEach(([key, value]) => {
+    if (value !== undefined) {
+      formData.append(key, value);
+    }
+  });
+
+  // Append image file if provided
+  if (imageUri) {
+    const fileExtension = imageUri.split(".").pop()?.toLowerCase() || "jpg";
+    const mimeType = `image/${fileExtension === "jpg" ? "jpeg" : fileExtension}`;
+
+    formData.append("image", {
+      uri: imageUri,
+      type: mimeType,
+      name: `vehicle_${Date.now()}.${fileExtension}`,
+    } as any);
+  }
+
   const config: AxiosRequestConfig = {
     method: "POST",
     url: `/vehicles`,
-    data: payload,
+    data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   };
 
   const response = await makeRequest(config);

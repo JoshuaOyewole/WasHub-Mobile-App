@@ -17,6 +17,8 @@ type ImageUploadProps = {
   value: string | null;
   onImageSelected: (uri: string) => void;
   uploadFn: (localUri: string, oldImageUrl?: string) => Promise<string>;
+  onUploadingChange?: (uploading: boolean) => void;
+  maxSizeMB?: number;
 };
 
 export default function ImageUpload({
@@ -24,10 +26,17 @@ export default function ImageUpload({
   value,
   onImageSelected,
   uploadFn,
+  onUploadingChange,
+  maxSizeMB = 2,
 }: ImageUploadProps) {
   const { toast } = useToast();
   const colors = useTheme();
   const [uploading, setUploading] = useState(false);
+
+  const setUploadingState = (state: boolean) => {
+    setUploading(state);
+    onUploadingChange?.(state);
+  };
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -49,25 +58,39 @@ export default function ImageUpload({
     });
 
     if (!result.canceled && result.assets[0]) {
-      const localUri = result.assets[0].uri;
+      const asset = result.assets[0];
+      const localUri = asset.uri;
+
+      // Client-side file size check
+      if (asset.fileSize && asset.fileSize > maxSizeMB * 1024 * 1024) {
+        toast(
+          "error",
+          "Image Too Large",
+          `Please select an image smaller than ${maxSizeMB}MB.`,
+        );
+        return;
+      }
 
       try {
-        setUploading(true);
+        setUploadingState(true);
 
         // Upload via the provided upload function, passing old URL for cleanup
         const imageUrl = await uploadFn(localUri, value || undefined);
 
         // Pass the uploaded URL back
         onImageSelected(imageUrl);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error uploading image:", error);
-        toast(
-          "error",
-          "Upload Failed",
-          "Failed to upload image. Please try again.",
-        );
+
+        // Surface specific server errors (e.g. file too large from multer)
+        const message =
+          error?.response?.data?.error ||
+          error?.message ||
+          "Failed to upload image. Please try again.";
+
+        toast("error", "Upload Failed", message);
       } finally {
-        setUploading(false);
+        setUploadingState(false);
       }
     }
   };

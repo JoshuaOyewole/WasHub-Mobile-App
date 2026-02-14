@@ -5,17 +5,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef } from "react";
 import {
-    ActivityIndicator,
-    Animated,
-    Image,
-    KeyboardAvoidingView,
-    PanResponder,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Animated,
+  Image,
+  KeyboardAvoidingView,
+  PanResponder,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function CarDetailsModal() {
@@ -91,10 +91,6 @@ export default function CarDetailsModal() {
     });
   };
 
-  const handleClose = () => {
-    router.back();
-  };
-
   // Don't render if user is not authenticated
   if (!user) {
     return null;
@@ -168,7 +164,15 @@ export default function CarDetailsModal() {
                       { backgroundColor: colors.inputBackground },
                     ]}
                   >
-                    <Text style={[styles.fieldText, { color: colors.text }]}>
+                    <Text
+                      style={[
+                        styles.fieldText,
+                        {
+                          color: colors.text,
+                          borderColor: colors.inputBorder,
+                        },
+                      ]}
+                    >
                       {carDetails.vehicleMake}
                     </Text>
                   </View>
@@ -184,10 +188,18 @@ export default function CarDetailsModal() {
                   <View
                     style={[
                       styles.fieldValue,
-                      { backgroundColor: colors.inputBackground },
+                      {
+                        backgroundColor: colors.inputBackground,
+                        borderColor: colors.inputBorder,
+                      },
                     ]}
                   >
-                    <Text style={[styles.fieldText, { color: colors.text }]}>
+                    <Text
+                      style={[
+                        styles.fieldText,
+                        { color: colors.text, borderColor: colors.inputBorder },
+                      ]}
+                    >
                       {carDetails.vehicleModel}
                     </Text>
                   </View>
@@ -196,7 +208,13 @@ export default function CarDetailsModal() {
                 {/* Car Year */}
                 <View style={styles.fieldContainer}>
                   <Text
-                    style={[styles.fieldLabel, { color: colors.textSecondary }]}
+                    style={[
+                      styles.fieldLabel,
+                      {
+                        color: colors.textSecondary,
+                        borderColor: colors.inputBorder,
+                      },
+                    ]}
                   >
                     Car Year
                   </Text>
@@ -206,7 +224,12 @@ export default function CarDetailsModal() {
                       { backgroundColor: colors.inputBackground },
                     ]}
                   >
-                    <Text style={[styles.fieldText, { color: colors.text }]}>
+                    <Text
+                      style={[
+                        styles.fieldText,
+                        { color: colors.text, borderColor: colors.inputBorder },
+                      ]}
+                    >
                       {carDetails.vehicleYear}
                     </Text>
                   </View>
@@ -215,7 +238,13 @@ export default function CarDetailsModal() {
                 {/* Car Color */}
                 <View style={styles.fieldContainer}>
                   <Text
-                    style={[styles.fieldLabel, { color: colors.textSecondary }]}
+                    style={[
+                      styles.fieldLabel,
+                      {
+                        color: colors.textSecondary,
+                        borderColor: colors.inputBorder,
+                      },
+                    ]}
                   >
                     Car Color
                   </Text>
@@ -225,7 +254,12 @@ export default function CarDetailsModal() {
                       { backgroundColor: colors.inputBackground },
                     ]}
                   >
-                    <Text style={[styles.fieldText, { color: colors.text }]}>
+                    <Text
+                      style={[
+                        styles.fieldText,
+                        { color: colors.text, borderColor: colors.inputBorder },
+                      ]}
+                    >
                       {carDetails.vehicleColor || "N/A"}
                     </Text>
                   </View>
@@ -241,10 +275,17 @@ export default function CarDetailsModal() {
                   <View
                     style={[
                       styles.fieldValue,
-                      { backgroundColor: colors.inputBackground },
+                      {
+                        backgroundColor: colors.inputBackground,
+                      },
                     ]}
                   >
-                    <Text style={[styles.fieldText, { color: colors.text }]}>
+                    <Text
+                      style={[
+                        styles.fieldText,
+                        { color: colors.text, borderColor: colors.inputBorder },
+                      ]}
+                    >
                       {carDetails.plateNumber}
                     </Text>
                   </View>
@@ -263,7 +304,12 @@ export default function CarDetailsModal() {
                       { backgroundColor: colors.inputBackground },
                     ]}
                   >
-                    <Text style={[styles.fieldText, { color: colors.text }]}>
+                    <Text
+                      style={[
+                        styles.fieldText,
+                        { color: colors.text, borderColor: colors.inputBorder },
+                      ]}
+                    >
                       {carDetails.vehicleType}
                     </Text>
                   </View>
@@ -360,13 +406,16 @@ const styles = StyleSheet.create({
   },
   fieldValue: {
     borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    minHeight: 48,
     justifyContent: "center",
   },
   fieldText: {
     fontSize: 14,
+    borderWidth: 1,
+    minHeight: 48,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    flex: 1,
+    paddingVertical: 14,
   },
   photoContainer: {
     borderRadius: 8,
