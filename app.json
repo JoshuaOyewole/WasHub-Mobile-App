@@ -49,6 +49,7 @@
       [
         "expo-splash-screen",
         {
+          "image": "./assets/images/splash-icon-light.png",
           "resizeMode": "contain",
           "imageWidth": 200,
           "dark": {
