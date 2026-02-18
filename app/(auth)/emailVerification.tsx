@@ -1,5 +1,6 @@
 import FormInput from "@/components/ui/text-input";
 import { useTheme } from "@/hooks/useTheme";
+import { emailVerificationSchema } from "@/lib/schema/validationSchema";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -20,7 +21,12 @@ export default function EmailVerification() {
   };
 
   const handleSubmit = () => {
-    console.log("Form submitted:", form);
+    const parsed = emailVerificationSchema.safeParse({ email: form.email });
+    if (!parsed.success) {
+      console.log("Validation failed:", parsed.error.issues[0]?.message);
+      return;
+    }
+    console.log("Form submitted:", parsed.data);
   };
 
   const handleGoogleSignin = () => {
@@ -88,11 +94,11 @@ export default function EmailVerification() {
           />
 
           <Pressable
-            onPress={() => handleSubmit}
+            onPress={handleSubmit}
             style={[
               style.submitBtn,
               {
-                backgroundColor: colors.secondaryButton,
+                backgroundColor: colors.secondaryButtonBackground,
               },
             ]}
           >

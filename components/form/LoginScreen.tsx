@@ -2,7 +2,7 @@
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import { useLoginMutation } from "@/lib/api/useAuthMutations";
-import { loginSchema, LoginSchema } from "@/lib/schema/validationSchema";
+import { loginSchema, type LoginSchema } from "@/lib/schema/validationSchema";
 import { useAuthStore } from "@/store/useAuthStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -228,7 +228,7 @@ const LoginScreen = () => {
         />
 
         <Link
-          href={"/forgetPassword"}
+          href={"/(auth)/forgetPassword"}
           style={{
             color: colors.error,
             fontWeight: "500",
@@ -313,13 +313,13 @@ const LoginScreen = () => {
         <View
           style={[
             style.divider,
-            { backgroundColor: colors.secondaryButtonBackground },
+            { backgroundColor: colors.gray200 },
           ]}
         />
         <Text
           style={[
             style.dividerText,
-            { color: colors.secondaryButtonBackground },
+            { color: colors.gray500 },
           ]}
         >
           OR
@@ -327,7 +327,7 @@ const LoginScreen = () => {
         <View
           style={[
             style.divider,
-            { backgroundColor: colors.secondaryButtonBackground },
+            { backgroundColor: colors.gray200 },
           ]}
         />
       </View>
@@ -337,10 +337,10 @@ const LoginScreen = () => {
         style={[
           style.submitBtn,
           {
-            backgroundColor: colors.card,
+           // backgroundColor: colors.card,
             borderColor: colors.borderLight,
             borderWidth: 1,
-            height: 50,
+            height: 47,
             marginTop: 0,
           },
         ]}
@@ -354,11 +354,11 @@ const LoginScreen = () => {
         >
           <Image
             source={require("../../assets/images/Google.png")}
-            style={{ width: 30, height: 30 }}
+            style={{ width: 20, height: 20 }}
           />
           <Text
             style={{
-              fontWeight: "600",
+              fontWeight: "500",
               fontSize: 16,
               color: colors.link,
             }}

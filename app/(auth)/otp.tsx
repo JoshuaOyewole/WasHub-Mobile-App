@@ -2,27 +2,27 @@ import Button from "@/components/ui/button";
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import { register, sendOTP, verifyOTP } from "@/lib/api";
-import { useAuthStore } from "@/store/useAuthStore";
+import { otpSchema } from "@/lib/schema/validationSchema";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import {
-    ActivityIndicator,
-    Keyboard,
-    Pressable,
-    StatusBar,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Keyboard,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import OTPTextView from "react-native-otp-textinput";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function OTP() {
-  const Colors = useTheme();
+  const colors = useTheme();
   const router = useRouter();
-  const { setAuthStep } = useAuthStore();
+//  const { setAuthStep } = useAuthStore();
   const { toast } = useToast();
   const [otp, setOtp] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -165,17 +165,14 @@ export default function OTP() {
   };
 
   const handleVerify = () => {
-    if (otp.length !== 6) {
-      toast("error", "Error", "Please enter a 6-digit OTP");
+    const parsed = otpSchema.safeParse({ email, otp });
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
+      toast("error", "Error", firstIssue?.message || "Invalid OTP details");
       return;
     }
 
-    if (!email) {
-      toast("error", "Error", "Email not found");
-      return;
-    }
-
-    verifyOTPMutation.mutate({ email, otp });
+    verifyOTPMutation.mutate(parsed.data);
   };
 
   const resendOTP = () => {
@@ -187,14 +184,14 @@ export default function OTP() {
   };
   return (
     <SafeAreaView
-      style={[style.container, { backgroundColor: Colors.background }]}
+      style={[style.container, { backgroundColor: colors.background }]}
     >
       <StatusBar />
       {/* OTP Screen Content Goes Here */}
       <View
         style={{ flex: 1, rowGap: 10, marginTop: 80, alignItems: "center" }}
       >
-        <Text style={[style.formSubHeader, { color: Colors.formHeading }]}>
+        <Text style={[style.formSubHeader, { color: colors.formHeading }]}>
           Enter the 6 digit otp we sent to {email || "your email"} to verify
           your email.
         </Text>
@@ -211,13 +208,13 @@ export default function OTP() {
             handleTextChange={handleTextChange}
             inputCount={6}
             keyboardType="numeric"
-            tintColor={Colors.text}
-            offTintColor={Colors.border}
+            tintColor={colors.text}
+            offTintColor={colors.border}
             style={[
               style.otpInput,
               {
-                borderColor: Colors.border,
-                color: Colors.text,
+                borderColor: colors.border,
+                color: colors.text,
                 fontSize: 20,
                 textAlign: "center",
               },
@@ -236,7 +233,7 @@ export default function OTP() {
           style={[
             style.submitBtn,
             {
-              backgroundColor: Colors.secondaryButton,
+              backgroundColor: colors.secondaryButtonBackground,
               opacity:
                 verifyOTPMutation.isPending ||
                 registerMutation.isPending ||
@@ -254,13 +251,13 @@ export default function OTP() {
           {verifyOTPMutation.isPending ||
           registerMutation.isPending ||
           resendOTPMutation.isPending ? (
-            <ActivityIndicator size="small" color={Colors.buttonText} />
+            <ActivityIndicator size="small" color={colors.buttonText} />
           ) : (
             <Text
               style={{
                 fontWeight: "600",
                 fontSize: 16,
-                color: Colors.buttonText,
+                color: colors.buttonText,
               }}
             >
               {" "}

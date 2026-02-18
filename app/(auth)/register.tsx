@@ -2,6 +2,12 @@ import FormInput from "@/components/ui/text-input";
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import { checkEmail, sendOTP } from "@/lib/api";
+import {
+  isPasswordComplex,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+  registerSchema,
+} from "@/lib/schema/validationSchema";
 import { useAuthStore } from "@/store/useAuthStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -10,14 +16,14 @@ import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
-    ActivityIndicator,
-    Image,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -35,6 +41,14 @@ export default function Register() {
     phoneNumber: "",
   });
   const [showPassword, setShowPassword] = React.useState(false);
+  const isPasswordValidated =
+    isPasswordComplex(form.password) &&
+    form.password.length >= PASSWORD_MIN_LENGTH &&
+    form.password.length <= PASSWORD_MAX_LENGTH;
+  const isConfirmPasswordValidated =
+    form.confirmPassword.length > 0 && form.password === form.confirmPassword;
+  const showPasswordInstruction =
+    !(isPasswordValidated && isConfirmPasswordValidated);
 
   // Mutation for checking if email exists
   const checkEmailMutation = useMutation({
@@ -114,35 +128,10 @@ export default function Register() {
   };
 
   const handleSubmit = async () => {
-    // Validate form
-    if (
-      !form.firstName ||
-      !form.lastName ||
-      !form.email ||
-      !form.password ||
-      !form.confirmPassword ||
-      !form.phoneNumber
-    ) {
-      toast("error", "Error", "Please fill in all fields");
-      return;
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(form.email)) {
-      toast("error", "Error", "Please enter a valid email address");
-      return;
-    }
-
-    // Validate password match
-    if (form.password !== form.confirmPassword) {
-      toast("error", "Error", "Passwords do not match");
-      return;
-    }
-
-    // Validate password length
-    if (form.password.length < 6) {
-      toast("error", "Error", "Password must be at least 6 characters");
+    const parsed = registerSchema.safeParse(form);
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
+      toast("error", "Error", firstIssue?.message || "Invalid form input");
       return;
     }
 
@@ -239,6 +228,17 @@ export default function Register() {
               />
             }
           />
+          {showPasswordInstruction && (
+            <Text
+              style={{
+                fontSize: 12,
+                marginTop: -8,
+                color: colors.error,
+              }}
+            >
+              Password must contain at least one uppercase letter, one lowercase and number.
+            </Text>
+          )}
           <FormInput
             label="Confirm Password"
             handleChange={(text) => handleChange("confirmPassword", text)}
@@ -342,7 +342,7 @@ export default function Register() {
             style={[
               style.submitBtn,
               {
-                backgroundColor: colors.secondaryButton,
+                backgroundColor: colors.secondaryButtonBackground,
                 opacity:
                   checkEmailMutation.isPending || sendOTPMutation.isPending
                     ? 0.7
@@ -412,10 +412,10 @@ export default function Register() {
             style={[
               style.submitBtn,
               {
-                backgroundColor: colors.card,
+              //  backgroundColor: colors.card,
                 borderColor: colors.borderLight,
                 borderWidth: 1,
-                height: 50,
+                height: 47,
                 marginTop: 0,
               },
             ]}
@@ -429,7 +429,7 @@ export default function Register() {
             >
               <Image
                 source={require("../../assets/images/Google.png")}
-                style={{ width: 30, height: 30 }}
+                style={{ width: 20, height: 20 }}
               />
               <Text
                 style={{

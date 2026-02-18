@@ -2,6 +2,7 @@ import FormInput from "@/components/ui/text-input";
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import { forgotPassword } from "@/lib/api";
+import { forgotPasswordSchema } from "@/lib/schema/validationSchema";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
@@ -23,11 +24,6 @@ export default function ForgetPassword() {
   const [email, setEmail] = React.useState("");
   const [emailSent, setEmailSent] = React.useState(false);
   const { toast } = useToast();
-  // Email validation regex
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
 
   // Mutation for forgot password
   const forgotPasswordMutation = useMutation({
@@ -49,17 +45,14 @@ export default function ForgetPassword() {
   });
 
   const handleSubmit = () => {
-    if (!email.trim()) {
-      toast("error", "Required", "Please enter your email address");
+    const parsed = forgotPasswordSchema.safeParse({ email });
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
+      toast("error", "Invalid Email", firstIssue?.message || "Please enter a valid email address");
       return;
     }
 
-    if (!validateEmail(email)) {
-      toast("error", "Invalid Email", "Please enter a valid email address");
-      return;
-    }
-
-    forgotPasswordMutation.mutate(email);
+    forgotPasswordMutation.mutate(parsed.data.email);
   };
 
   const handleBackToLogin = () => {
@@ -122,14 +115,14 @@ export default function ForgetPassword() {
             <Ionicons
               name="arrow-back"
               size={16}
-              color={colors.secondaryButton}
+              color={colors.secondaryButtonBackground}
               style={{ marginRight: 8 }}
             />
             <Text
               style={{
                 fontWeight: "600",
                 fontSize: 16,
-                color: colors.secondaryButton,
+                color: colors.secondaryButtonBackground,
               }}
             >
               Back to Login
@@ -210,7 +203,7 @@ export default function ForgetPassword() {
               {
                 backgroundColor: forgotPasswordMutation.isPending
                   ? colors.text + "40"
-                  : colors.secondaryButton,
+                  : colors.secondaryButtonBackground,
               },
             ]}
           >

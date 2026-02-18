@@ -1,11 +1,11 @@
 import { useTheme } from "@/hooks/useTheme";
 import React from "react";
 import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableOpacityProps,
+    ActivityIndicator,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    TouchableOpacityProps,
 } from "react-native";
 
 type ButtonProps = {
@@ -47,7 +47,7 @@ export default function Button({
               : [
                   styles.secondaryButton,
                   {
-                    backgroundColor: colors.secondaryButtonBackground,
+                    backgroundColor: colors.secondaryButtonBackgroundBackground,
                     borderColor: colors.secondary,
                   },
                 ],
@@ -72,7 +72,7 @@ export default function Button({
                 ? [styles.linkButtonText, { color: colors.text }]
                 : isOutline
                   ? [{ color: colors.outlineButtonText }]
-                  : [{ color: colors.secondaryButtonText }],
+                  : [{ color: colors.secondaryButtonBackgroundText }],
           ]}
         >
           {title}

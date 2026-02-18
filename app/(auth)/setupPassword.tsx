@@ -2,6 +2,7 @@ import FormInput from "@/components/ui/text-input";
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import { resetPassword } from "@/lib/api";
+import { setupPasswordSchema } from "@/lib/schema/validationSchema";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useMutation } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -66,22 +67,10 @@ export default function SetupPassword() {
   };
 
   const handleSubmit = () => {
-    if (!form.pwd || !form.confirmPwd) {
-      toast("error", "Required", "Please fill in all password fields");
-      return;
-    }
-
-    if (form.pwd.length < 6) {
-      toast(
-        "error",
-        "Invalid Password",
-        "Password must be at least 6 characters long"
-      );
-      return;
-    }
-
-    if (form.pwd !== form.confirmPwd) {
-      toast("error", "Password Mismatch", "Passwords do not match");
+    const parsed = setupPasswordSchema.safeParse(form);
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
+      toast("error", "Invalid Password", firstIssue?.message || "Invalid password input");
       return;
     }
 
@@ -94,7 +83,7 @@ export default function SetupPassword() {
       return;
     }
 
-    resetPasswordMutation.mutate(form.pwd);
+    resetPasswordMutation.mutate(parsed.data.pwd);
   };
 
   // Check if token exists
@@ -214,9 +203,10 @@ export default function SetupPassword() {
             style={[
               style.submitBtn,
               {
-                backgroundColor: resetPasswordMutation.isPending
-                  ? colors.text + "40"
-                  : colors.secondaryButton,
+                //backgroundColor: resetPasswordMutation.isPending
+                 //</View> ? colors.text + "40"
+                  //: colors.secondaryButtonBackground,
+                  backgroundColor: "#1F2D33",
               },
             ]}
           >

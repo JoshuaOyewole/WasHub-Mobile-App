@@ -12,7 +12,8 @@ const sharedColors = {
   error: "#FF3B30",
   errorBg: "#FFE5E5",
   success: "#34C759",
-
+  gray500: "#A6A6A6",
+  gray200: "#E8E8E8",
   splashBackground: "#1F2D33",
 };
 
@@ -42,7 +43,7 @@ export const Colors = {
 
     // Borders & Dividers
     border: "#E8E8E8",
-    borderLight: "#EFEFF0",
+    borderLight: "#007AFF38",
     divider: "#E4E4E4",
 
     // Icons
