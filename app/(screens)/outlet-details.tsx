@@ -1,20 +1,21 @@
+import { Fonts } from "@/constants/theme";
 import { useBooking } from "@/contexts/BookingContext";
 import { useTheme } from "@/hooks/useTheme";
 import { fetchOutletById, IOutlet } from "@/lib/api";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import {
   ActivityIndicator,
-  Image,
+  Animated,
+  Dimensions,
   Pressable,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -25,6 +26,8 @@ export default function OutletDetailsScreen() {
   const router = useRouter();
   const { setOutletId } = useBooking();
   const params = useLocalSearchParams<{ outletId: string }>();
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const collapseThreshold = Dimensions.get("window").height * 0.2;
 
   const { data: outletData, isLoading } = useQuery({
     queryKey: ["outlet", params.outletId],
@@ -52,6 +55,42 @@ export default function OutletDetailsScreen() {
       params: { outletId: outlet._id },
     });
   };
+
+  const heroHeight = scrollY.interpolate({
+    inputRange: [0, collapseThreshold],
+    outputRange: [260, 128],
+    extrapolate: "clamp",
+  });
+
+  const heroImageOpacity = scrollY.interpolate({
+    inputRange: [0, collapseThreshold * 0.9],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+
+  const heroImageScale = scrollY.interpolate({
+    inputRange: [0, collapseThreshold],
+    outputRange: [1, 1.12],
+    extrapolate: "clamp",
+  });
+
+  const expandedContentOpacity = scrollY.interpolate({
+    inputRange: [0, collapseThreshold * 0.7],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+
+  const compactContentOpacity = scrollY.interpolate({
+    inputRange: [collapseThreshold * 0.5, collapseThreshold],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+
+  const compactContentScale = scrollY.interpolate({
+    inputRange: [collapseThreshold * 0.5, collapseThreshold],
+    outputRange: [0.92, 1],
+    extrapolate: "clamp",
+  });
 
   if (isLoading) {
     return (
@@ -94,17 +133,30 @@ export default function OutletDetailsScreen() {
     >
       <StatusBar barStyle={colors.statusBarStyle} />
 
-      <View style={[styles.heroWrap, { backgroundColor: colors.surface }]}>
-        <Image
+      <Animated.View
+        style={[
+          styles.heroWrap,
+          { backgroundColor: colors.surface, height: heroHeight },
+        ]}
+      >
+        <Animated.Image
           source={
             outlet.image
               ? { uri: outlet.image }
               : require("@/assets/images/eko_car_wash_otlet.png")
           }
-          style={styles.heroImage}
+          style={[
+            styles.heroImage,
+            {
+              opacity: heroImageOpacity,
+              transform: [{ scale: heroImageScale }],
+            },
+          ]}
           resizeMode="cover"
         />
-        <View style={styles.heroOverlay} />
+        <Animated.View
+          style={[styles.heroOverlay, { opacity: heroImageOpacity }]}
+        />
         <Pressable
           onPress={() => router.back()}
           style={[
@@ -114,7 +166,10 @@ export default function OutletDetailsScreen() {
         >
           <Ionicons name="chevron-back" size={22} color={colors.text} />
         </Pressable>
-        <View style={styles.heroContent}>
+
+        <Animated.View
+          style={[styles.heroContent, { opacity: expandedContentOpacity }]}
+        >
           <Text style={[styles.heroTitle, { color: colors.white }]}>
             {outlet.name}
           </Text>
@@ -141,12 +196,47 @@ export default function OutletDetailsScreen() {
               </Text>
             </View>
           </View>
-        </View>
-      </View>
+        </Animated.View>
 
-      <ScrollView
+        <Animated.View
+          style={[
+            styles.compactHeader,
+            {
+              opacity: compactContentOpacity,
+              transform: [{ scale: compactContentScale }],
+            },
+          ]}
+          pointerEvents="none"
+        >
+          <Text style={[styles.compactTitle, { color: colors.text }]}>
+            {outlet.name}
+          </Text>
+          <View style={styles.compactMetaRow}>
+            <Ionicons name="location-outline" size={13} color={colors.textMuted} />
+            <Text
+              style={[styles.compactMetaText, { color: colors.textMuted }]}
+              numberOfLines={1}
+            >
+              {outlet.address}, {outlet.state}
+            </Text>
+          </View>
+          <View style={styles.compactRatingRow}>
+            <Ionicons name="star" size={13} color="#FFC107" />
+            <Text style={[styles.compactRatingText, { color: colors.text }]}>
+              {(outlet.rating || 0).toFixed(1)}
+            </Text>
+          </View>
+        </Animated.View>
+      </Animated.View>
+
+      <Animated.ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
       >
         <View style={styles.quickInfoRow}>
           <View
@@ -224,7 +314,7 @@ export default function OutletDetailsScreen() {
                 marginTop: 0,
                 fontSize: 13,
                 color: colors.text,
-                fontWeight: "600",
+                fontFamily: Fonts.subtitle,
               }}
             >
               Working Hours
@@ -354,7 +444,7 @@ export default function OutletDetailsScreen() {
             Book at this outlet
           </Text>
         </TouchableOpacity>
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 }
@@ -365,6 +455,7 @@ const styles = StyleSheet.create({
   },
   heroWrap: {
     height: 260,
+    overflow: "hidden",
   },
   heroImage: {
     width: "100%",
@@ -394,9 +485,41 @@ const styles = StyleSheet.create({
     left: 16,
     right: 16,
   },
+  compactHeader: {
+    position: "absolute",
+    left: 56,
+    right: 16,
+    top: 16,
+    minHeight: 62,
+    justifyContent: "center",
+  },
+  compactTitle: {
+    fontSize: 17,
+    fontFamily: Fonts.title,
+  },
+  compactMetaRow: {
+    marginTop: 2,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  compactMetaText: {
+    fontSize: 12,
+    flex: 1,
+  },
+  compactRatingRow: {
+    marginTop: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  compactRatingText: {
+    fontSize: 12,
+    fontFamily: Fonts.subtitle,
+  },
   heroTitle: {
     fontSize: 22,
-    fontWeight: "700",
+    fontFamily: Fonts.title,
     marginBottom: 8,
   },
   heroMetaRow: {
@@ -424,7 +547,7 @@ const styles = StyleSheet.create({
   },
   heroBadgeText: {
     fontSize: 12,
-    fontWeight: "600",
+    fontFamily: Fonts.subtitle,
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -461,10 +584,11 @@ const styles = StyleSheet.create({
   },
   quickInfoLabel: {
     fontSize: 12,
+    fontFamily: Fonts.body,
   },
   quickInfoValue: {
     fontSize: 12,
-    fontWeight: "600",
+    fontFamily: Fonts.subtitle,
     marginTop: 2,
   },
   sectionCard: {
@@ -485,14 +609,16 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: "700",
+    fontFamily: Fonts.title,
   },
   sectionHint: {
     fontSize: 12,
+    fontFamily: Fonts.body,
   },
   sectionBody: {
     fontSize: 14,
     lineHeight: 20,
+    fontFamily: Fonts.body,
   },
   chipRow: {
     flexDirection: "row",
@@ -509,7 +635,7 @@ const styles = StyleSheet.create({
   },
   chipText: {
     fontSize: 12,
-    fontWeight: "500",
+    fontFamily: Fonts.bodyMedium,
   },
   pricingGrid: {
     flexDirection: "row",
@@ -524,14 +650,16 @@ const styles = StyleSheet.create({
   },
   pricingTitle: {
     fontSize: 13,
+    fontFamily: Fonts.body,
   },
   pricingAmount: {
     fontSize: 16,
-    fontWeight: "700",
+    fontFamily: Fonts.title,
     marginVertical: 6,
   },
   pricingNote: {
     fontSize: 11,
+    fontFamily: Fonts.body,
   },
   mapButton: {
     flexDirection: "row",
@@ -543,7 +671,7 @@ const styles = StyleSheet.create({
   },
   mapButtonText: {
     fontSize: 12,
-    fontWeight: "600",
+    fontFamily: Fonts.subtitle,
   },
   primaryButton: {
     paddingVertical: 16,
@@ -554,7 +682,7 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     fontSize: 15,
-    fontWeight: "700",
+    fontFamily: Fonts.title,
   },
   loadingContainer: {
     flex: 1,
@@ -572,6 +700,6 @@ const styles = StyleSheet.create({
   },
   retryText: {
     fontSize: 13,
-    fontWeight: "600",
+    fontFamily: Fonts.subtitle,
   },
 });

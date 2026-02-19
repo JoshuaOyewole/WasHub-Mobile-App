@@ -1,5 +1,6 @@
 import EmptyState from "@/components/ui/empty-state";
 import SearchInput from "@/components/ui/search-input";
+import { Fonts } from "@/constants/theme";
 import { useBooking } from "@/contexts/BookingContext";
 import { useTheme } from "@/hooks/useTheme";
 import { fetchOutlets, IOutlet } from "@/lib/api";
@@ -130,9 +131,10 @@ export default function CarWashOutletsScreen() {
         >
           <Ionicons name="chevron-back" size={24} color={colors.text} />
         </Pressable>
-        <Text style={[styles.title, { color: colors.text }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>
           Step 2 of 4 - Select wash Outlet
         </Text>
+     
       </View>
 
       {/* Search Field with Continue Button */}
@@ -326,7 +328,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
+   // justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 16,
@@ -339,9 +341,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 100,
   },
-  title: {
+  headerTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: Fonts.subtitle,
+    marginLeft: 20,
   },
   searchContainer: {
     paddingHorizontal: 20,
@@ -371,7 +374,7 @@ const styles = StyleSheet.create({
   },
   continueButtonText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: Fonts.subtitle,
   },
   scrollContent: {
     flexGrow: 1,
@@ -413,13 +416,14 @@ const styles = StyleSheet.create({
   },
   outletName: {
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: Fonts.subtitle,
     marginBottom: 4,
   },
   preselectedBadge: {
     fontSize: 12,
-    fontWeight: "500",
+    fontFamily: Fonts.bodyMedium,
   },
+ 
   outletMeta: {
     flexDirection: "row",
     alignItems: "flex-start",

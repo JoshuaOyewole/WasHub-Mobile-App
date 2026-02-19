@@ -22,6 +22,7 @@ import {
   ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -39,6 +40,7 @@ export default function EditProfile() {
   const { user, setUser, logout } = useAuthStore();
   const { toast } = useToast();
   const colors = useTheme();
+  const isIOS = Platform.OS === "ios";
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -110,7 +112,9 @@ export default function EditProfile() {
     event: DateTimePickerEvent,
     selectedDate?: Date,
   ) => {
-    setShowDatePicker(Platform.OS === "ios");
+    if (!isIOS) {
+      setShowDatePicker(false);
+    }
     if (selectedDate) {
       handleChange("dob", selectedDate.toISOString());
     }
@@ -411,11 +415,11 @@ export default function EditProfile() {
                 color={colors.textMuted}
               />
             </Pressable>
-            {showDatePicker && (
+            {showDatePicker && !isIOS && (
               <DateTimePicker
                 value={parsedDob}
                 mode="date"
-                display={Platform.OS === "ios" ? "spinner" : "default"}
+                display="default"
                 maximumDate={new Date()}
                 minimumDate={new Date(1920, 0, 1)}
                 onChange={handleDateChange}
@@ -436,6 +440,50 @@ export default function EditProfile() {
             </ThemedText>
           </Pressable>
         </ScrollView>
+
+        {showDatePicker && isIOS && (
+          <Modal
+            visible={showDatePicker}
+            transparent
+            animationType="slide"
+            onRequestClose={() => setShowDatePicker(false)}
+          >
+            <View style={styles.dateModalOverlay}>
+              <Pressable
+                style={styles.dateModalBackdrop}
+                onPress={() => setShowDatePicker(false)}
+              />
+              <View
+                style={[
+                  styles.dateModalContent,
+                  {
+                    backgroundColor: colors.card,
+                    borderTopColor: colors.borderLight,
+                  },
+                ]}
+              >
+                <View style={styles.dateModalHeader}>
+                  <Pressable onPress={() => setShowDatePicker(false)}>
+                    <ThemedText
+                      style={[styles.dateModalDoneText, { color: colors.primary }]}
+                    >
+                      Done
+                    </ThemedText>
+                  </Pressable>
+                </View>
+                <DateTimePicker
+                  value={parsedDob}
+                  mode="date"
+                  display="spinner"
+                  maximumDate={new Date()}
+                  minimumDate={new Date(1920, 0, 1)}
+                  onChange={handleDateChange}
+                  textColor={colors.text}
+                />
+              </View>
+            </View>
+          </Modal>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -470,8 +518,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     fontSize: 18,
-    fontWeight: "600",
-    fontFamily: Fonts.regular,
+    fontFamily: Fonts.subtitle,
   },
   saveButton: {
     minWidth: 48,
@@ -540,16 +587,45 @@ const styles = StyleSheet.create({
   },
   dobValue: {
     fontSize: 14,
+    fontFamily: Fonts.body,
+  },
+  dateModalOverlay: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  dateModalBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.28)",
+  },
+  dateModalContent: {
+    borderTopWidth: 1,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    paddingTop: 8,
+    paddingBottom: 24,
+    paddingHorizontal: 16,
+  },
+  dateModalHeader: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginBottom: 6,
+  },
+  dateModalDoneText: {
+    fontSize: 15,
+    fontFamily: Fonts.subtitle,
   },
   deleteButton: {
     marginTop: 24,
+    backgroundColor: "transparent",
+    borderRadius: 50,
+    justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 10,
+    height: 52,
   },
   deleteText: {
-    color: "#E11D48",
+    color: "#EF1010",
     fontSize: 15,
-    fontWeight: "600",
+  fontFamily: Fonts.title,
   },
   deletePressed: {
     opacity: 0.6,

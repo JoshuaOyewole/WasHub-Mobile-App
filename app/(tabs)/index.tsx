@@ -24,13 +24,12 @@ import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import {
   SafeAreaView,
-  useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const { user } = useAuthStore();
   const colors = useTheme();
-  const insets = useSafeAreaInsets();
+ // const insets = useSafeAreaInsets();
   const [currentIndex, setCurrentIndex] = useState(0);
   const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -71,7 +70,7 @@ export default function HomeScreen() {
             Hi, {user?.name?.split(" ")[0]}
           </Text>
         </View>
-        <TouchableOpacity style={styles.notificationButton}>
+        <TouchableOpacity style={styles.notificationButton} onPress={()=>router.push("/(screens)/notifications")}>
           <Ionicons name="notifications" size={24} color={colors.text} />
           <View
             style={[

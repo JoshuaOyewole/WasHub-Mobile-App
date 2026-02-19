@@ -1,3 +1,4 @@
+import AddVehicleModal from "@/components/ui/add-vehicle-modal";
 import CarCard, { Car } from "@/components/ui/car-card";
 import EmptyState from "@/components/ui/empty-state";
 import SearchInput from "@/components/ui/search-input";
@@ -26,7 +27,7 @@ export default function SelectCarScreen() {
   const { setCarId, setOutletId } = useBooking();
   const params = useLocalSearchParams<{ outletId?: string }>();
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
   // If navigating from outlet-details, set the outletId in booking context
   useEffect(() => {
     if (params.outletId) {
@@ -34,14 +35,17 @@ export default function SelectCarScreen() {
     }
   }, [params.outletId]);
 
-  const { data: vehiclesResponse, isLoading } = useQuery({
+  const { data: vehiclesResponse, isLoading, refetch } = useQuery({
     queryKey: ["vehicles"],
     queryFn: () => fetchVehicles(),
     staleTime: 1000 * 60 * 5,
   });
 
   const vehicles: Vehicle[] = vehiclesResponse?.data || [];
-
+  const handleSaveVehicle = async (vehicleData: any) => {
+    // Refresh vehicles list after saving
+    refetch();
+  };
   const cars: Car[] = vehicles.map((vehicle) => ({
     id: vehicle._id,
     brand: vehicle.vehicleMake,
@@ -60,6 +64,14 @@ export default function SelectCarScreen() {
       car.model.toLowerCase().includes(searchQuery.toLowerCase()) ||
       car.licensePlate.toLowerCase().includes(searchQuery.toLowerCase()),
   );
+
+  const openAddVehicleModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeAddVehicleModal = () => {
+    setIsModalVisible(false);
+  };
 
   const handleCarSelect = (car: Car) => {
     setCarId(car.id);
@@ -95,10 +107,18 @@ export default function SelectCarScreen() {
         >
           <Ionicons name="chevron-back" size={24} color={colors.text} />
         </Pressable>
-        <Text style={[styles.title, { color: colors.text }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>
           Step 1 of 4 - Select car
         </Text>
-        <View style={styles.placeholder} />
+        <View style={styles.placeholder}>
+          <Ionicons
+            name="add-circle"
+            size={34}
+            style={{ opacity: 0.8 }}
+            color={colors.primary}
+            onPress={openAddVehicleModal}
+          />
+        </View>
       </View>
 
       {/* Search Field */}
@@ -122,6 +142,8 @@ export default function SelectCarScreen() {
           <EmptyState
             image={require("@/assets/images/no-cars.png")}
             title="No cars found"
+            buttonTitle="Add Car"
+            onButtonPress={openAddVehicleModal}
             description="Add your first car to get started with our wash services"
           />
         ) : (
@@ -131,6 +153,14 @@ export default function SelectCarScreen() {
             ))}
           </View>
         )}
+
+
+        {/* Add Vehicle Modal */}
+        <AddVehicleModal
+          visible={isModalVisible}
+          onClose={closeAddVehicleModal}
+          onSave={handleSaveVehicle}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -156,11 +186,16 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   placeholder: {
-    width: 35,
+    width: 40,
+    justifyContent: "center",
+    height: 40,
+    borderRadius: 100,
+    alignItems: "center",
+     // This is just to take up space and center the title, can be removed if not needed
   },
-  title: {
+  headerTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: 600,
   },
   searchContainer: {
     paddingHorizontal: 20,

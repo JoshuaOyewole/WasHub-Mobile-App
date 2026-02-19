@@ -103,7 +103,7 @@ export default function SelectCarForCart() {
         >
           <Feather name="chevron-left" size={24} color={colors.text} />
         </TouchableOpacity>
-        <Text style={[styles.title, { color: colors.text }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>
           Select car to add to Cart
         </Text>
         <View style={styles.placeholder} />
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 40,
   },
-  title: {
+  headerTitle: {
     fontSize: 18,
     fontWeight: "600",
   },

@@ -6,39 +6,69 @@ import { useDeepLink } from "@/hooks/useDeepLinks";
 import { bootstrapAuth } from "@/lib/auth/bootstrapAuth";
 import { useAuthStore } from "@/store/useAuthStore";
 import {
-  Poppins_100Thin,
-  Poppins_100Thin_Italic,
-  Poppins_200ExtraLight,
-  Poppins_200ExtraLight_Italic,
-  Poppins_300Light,
-  Poppins_300Light_Italic,
-  Poppins_400Regular,
-  Poppins_400Regular_Italic,
-  Poppins_500Medium,
-  Poppins_500Medium_Italic,
-  Poppins_600SemiBold,
-  Poppins_600SemiBold_Italic,
-  Poppins_700Bold,
-  Poppins_700Bold_Italic,
-  Poppins_800ExtraBold,
-  Poppins_800ExtraBold_Italic,
-  Poppins_900Black,
-  Poppins_900Black_Italic,
-  useFonts,
-} from "@expo-google-fonts/poppins";
+  Inter_400Regular,
+  Inter_500Medium,
+} from "@expo-google-fonts/inter";
+import {
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+  PlusJakartaSans_800ExtraBold,
+} from "@expo-google-fonts/plus-jakarta-sans";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useFonts } from "expo-font";
 import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { Platform, Text, TextInput } from "react-native";
+import { Text, TextInput } from "react-native";
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
+const FONT_PATCH_FLAG = "__washub_font_patch_applied__";
+
+const getFontFamilyFromWeight = (fontWeight?: string) => {
+  switch (fontWeight) {
+    case "500":
+      return "Inter_500Medium";
+    case "600":
+      return "PlusJakartaSans_600SemiBold";
+    case "700":
+    case "bold":
+      return "PlusJakartaSans_700Bold";
+    case "800":
+    case "900":
+      return "PlusJakartaSans_800ExtraBold";
+    case "400":
+    default:
+      return "Inter_400Regular";
+  }
+};
+
+const normalizeTextStyle = (style: any): any => {
+  if (!style) return style;
+
+  if (Array.isArray(style)) {
+    return style.map(normalizeTextStyle);
+  }
+
+  if (typeof style === "object") {
+    const normalized: Record<string, any> = { ...style };
+    if (!normalized.fontFamily && normalized.fontWeight) {
+      normalized.fontFamily = getFontFamilyFromWeight(
+        String(normalized.fontWeight),
+      );
+      delete normalized.fontWeight;
+    }
+    return normalized;
+  }
+
+  return style;
+};
 
 // Keep the native splash screen visible while we resolve auth
 SplashScreen.preventAutoHideAsync();
@@ -135,61 +165,55 @@ function AppContent() {
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
-  const isAndroid = Platform.OS === "android";
+  console.log("Color scheme:", colorScheme);
+  const [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
+    PlusJakartaSans_800ExtraBold,
+  });
 
-  const [fontsLoaded, fontError] = useFonts(
-    isAndroid
-      ? {
-          Poppins_100Thin,
-          Poppins_100Thin_Italic,
-          Poppins_200ExtraLight,
-          Poppins_200ExtraLight_Italic,
-          Poppins_300Light,
-          Poppins_300Light_Italic,
-          Poppins_400Regular,
-          Poppins_400Regular_Italic,
-          Poppins_500Medium,
-          Poppins_500Medium_Italic,
-          Poppins_600SemiBold,
-          Poppins_600SemiBold_Italic,
-          Poppins_700Bold,
-          Poppins_700Bold_Italic,
-          Poppins_800ExtraBold,
-          Poppins_800ExtraBold_Italic,
-          Poppins_900Black,
-          Poppins_900Black_Italic,
-        }
-      : {},
-  );
-
-  // Set Poppins as the global default font for all Text and TextInput (Android only)
+  // Set Inter as default and map fontWeight to Inter/Plus Jakarta Sans globally
   useEffect(() => {
-    if (!isAndroid) return;
-    if (fontsLoaded || fontError) {
-      const defaultStyle = { fontFamily: "Poppins_400Regular" };
+    if (!fontsLoaded && !fontError) return;
 
-      const originalTextRender = (Text as any).render;
-      if (originalTextRender) {
-        (Text as any).render = function (props: any, ref: any) {
-          return originalTextRender.call(
-            this,
-            { ...props, style: [defaultStyle, props.style] },
-            ref,
-          );
-        };
-      }
+    const globalScope = globalThis as any;
+    if (globalScope[FONT_PATCH_FLAG]) return;
 
-      const originalTextInputRender = (TextInput as any).render;
-      if (originalTextInputRender) {
-        (TextInput as any).render = function (props: any, ref: any) {
-          return originalTextInputRender.call(
-            this,
-            { ...props, style: [defaultStyle, props.style] },
-            ref,
-          );
-        };
-      }
+    const defaultStyle = { fontFamily: "Inter_400Regular" };
+    const TextComponent = Text as any;
+    const TextInputComponent = TextInput as any;
+
+    const originalTextRender = TextComponent.render;
+    if (originalTextRender) {
+      TextComponent.render = function (props: any, ref: any) {
+        return originalTextRender.call(
+          this,
+          {
+            ...props,
+            style: [defaultStyle, normalizeTextStyle(props.style)],
+          },
+          ref,
+        );
+      };
     }
+
+    const originalTextInputRender = TextInputComponent.render;
+    if (originalTextInputRender) {
+      TextInputComponent.render = function (props: any, ref: any) {
+        return originalTextInputRender.call(
+          this,
+          {
+            ...props,
+            style: [defaultStyle, normalizeTextStyle(props.style)],
+          },
+          ref,
+        );
+      };
+    }
+
+    globalScope[FONT_PATCH_FLAG] = true;
   }, [fontsLoaded, fontError]);
 
   if (!fontsLoaded && !fontError) {

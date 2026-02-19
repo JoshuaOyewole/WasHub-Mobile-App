@@ -279,8 +279,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     fontSize: 18,
-    fontWeight: "600",
-    fontFamily: Fonts.regular,
+    fontFamily: Fonts.subtitle,
   },
   headerSpacer: {
     width: 36,

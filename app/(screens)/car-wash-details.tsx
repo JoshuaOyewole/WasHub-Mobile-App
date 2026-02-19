@@ -1,3 +1,4 @@
+import { Fonts } from "@/constants/theme";
 import { useBooking, WashType } from "@/contexts/BookingContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
@@ -175,7 +176,7 @@ export default function CarWashDetailsScreen() {
         >
           <Ionicons name="chevron-back" size={24} color={colors.text} />
         </Pressable>
-        <Text style={[styles.title, { color: colors.text }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>
           Step 3 of 4 - Wash Details
         </Text>
         <View style={styles.placeholder} />
@@ -418,7 +419,7 @@ export default function CarWashDetailsScreen() {
                     { color: colors.text },
                     selectedTime === time && {
                       color: colors.white,
-                      fontWeight: "500",
+                      fontFamily: Fonts.bodyMedium,
                     },
                   ]}
                 >
@@ -469,11 +470,12 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   placeholder: {
-    width: 35,
+    flex: 0.5,
+     // This is just to take up space and center the title, can be removed if not needed
   },
-  title: {
+  headerTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: Fonts.subtitle,
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -490,7 +492,7 @@ const styles = StyleSheet.create({
   },
   outletName: {
     fontSize: 20,
-    fontWeight: "600",
+    fontFamily: Fonts.subtitle,
     marginBottom: 8,
   },
   ratingContainer: {
@@ -502,7 +504,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: Fonts.subtitle,
     marginBottom: 12,
   },
   servicesGrid: {
@@ -518,10 +520,12 @@ const styles = StyleSheet.create({
   },
   serviceText: {
     fontSize: 14,
+    fontFamily: Fonts.body,
   },
   description: {
     fontSize: 14,
     lineHeight: 20,
+    fontFamily: Fonts.body,
   },
   locationHeader: {
     flexDirection: "row",
@@ -531,11 +535,12 @@ const styles = StyleSheet.create({
   },
   viewMap: {
     fontSize: 14,
-    fontWeight: "500",
+    fontFamily: Fonts.bodyMedium,
   },
   locationText: {
     fontSize: 14,
     lineHeight: 20,
+    fontFamily: Fonts.body,
   },
   dropdown: {
     flexDirection: "row",
@@ -547,6 +552,7 @@ const styles = StyleSheet.create({
   },
   dropdownText: {
     fontSize: 14,
+    fontFamily: Fonts.body,
   },
   dropdownMenu: {
     borderRadius: 8,
@@ -569,11 +575,11 @@ const styles = StyleSheet.create({
   },
   dropdownItemText: {
     fontSize: 14,
-    fontWeight: "500",
+    fontFamily: Fonts.bodyMedium,
   },
   dropdownPriceText: {
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: Fonts.subtitle,
   },
   priceDisplay: {
     flexDirection: "row",
@@ -588,11 +594,11 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     fontSize: 14,
-    fontWeight: "500",
+    fontFamily: Fonts.bodyMedium,
   },
   priceValue: {
     fontSize: 18,
-    fontWeight: "700",
+    fontFamily: Fonts.title,
   },
   calendar: {
     borderRadius: 12,
@@ -618,9 +624,10 @@ const styles = StyleSheet.create({
   selectedTimeSlot: {},
   timeSlotText: {
     fontSize: 14,
+    fontFamily: Fonts.body,
   },
   selectedTimeSlotText: {
-    fontWeight: "500",
+    fontFamily: Fonts.bodyMedium,
   },
   proceedButton: {
     borderRadius: 100,
@@ -631,7 +638,7 @@ const styles = StyleSheet.create({
   proceedButtonDisabled: {},
   proceedButtonText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: Fonts.subtitle,
   },
   loadingContainer: {
     flex: 1,

@@ -8,29 +8,23 @@ import { Colors as ThemeColors } from "@/hooks/useTheme";
 export const Colors = ThemeColors;
 
 /**
- * Poppins font family mapped by weight.
- * Use these constants with `fontFamily` instead of `fontWeight`
- * to avoid synthetic bolding on Android.
+ * Font family tokens.
+ * Inter is used for body text; Plus Jakarta Sans is used for headings.
  */
 export const Fonts = {
-  thin: "Poppins_100Thin",
-  thinItalic: "Poppins_100Thin_Italic",
-  extraLight: "Poppins_200ExtraLight",
-  extraLightItalic: "Poppins_200ExtraLight_Italic",
-  light: "Poppins_300Light",
-  lightItalic: "Poppins_300Light_Italic",
-  regular: "Poppins_400Regular",
-  regularItalic: "Poppins_400Regular_Italic",
-  medium: "Poppins_500Medium",
-  mediumItalic: "Poppins_500Medium_Italic",
-  semiBold: "Poppins_600SemiBold",
-  semiBoldItalic: "Poppins_600SemiBold_Italic",
-  bold: "Poppins_700Bold",
-  boldItalic: "Poppins_700Bold_Italic",
-  extraBold: "Poppins_800ExtraBold",
-  extraBoldItalic: "Poppins_800ExtraBold_Italic",
-  black: "Poppins_900Black",
-  blackItalic: "Poppins_900Black_Italic",
+  body: "Inter_400Regular",
+  bodyMedium: "Inter_500Medium",
+  subtitle: "PlusJakartaSans_600SemiBold",
+  title: "PlusJakartaSans_700Bold",
+  titleStrong: "PlusJakartaSans_800ExtraBold",
+  titleLight: "PlusJakartaSans_500SemiBold",
+
+  // Backward-compatible aliases
+  regular: "Inter_400Regular",
+  medium: "Inter_500Medium",
+  semiBold: "PlusJakartaSans_600SemiBold",
+  bold: "PlusJakartaSans_700Bold",
+  extraBold: "PlusJakartaSans_800ExtraBold",
 } as const;
 
 export type FontFamily = (typeof Fonts)[keyof typeof Fonts];

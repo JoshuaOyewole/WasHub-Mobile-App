@@ -108,6 +108,14 @@ export default function Profile() {
             icon="description"
             title="Terms of Use"
             subtitle="Protect your account now"
+            onPress={() => router.push("/(screens)/terms")}
+          />
+           <Divider />
+          <SettingRow
+            icon="description"
+            title="Privacy Policy"
+            subtitle="Learn how we protect your data"
+            onPress={() => router.push("/(screens)/privacy")}
           />
         </ThemedView>
 
@@ -250,7 +258,7 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     textAlign: "center",
-    fontFamily: Fonts.regular,
+    fontFamily: Fonts.subtitle,
     fontSize: 20,
   },
   profileCard: {
@@ -280,6 +288,7 @@ const styles = StyleSheet.create({
   profileEmail: {
     fontSize: 13,
     marginTop: 2,
+    fontFamily: Fonts.body,
   },
   sectionLabel: {
     fontSize: 14,
@@ -323,6 +332,7 @@ const styles = StyleSheet.create({
   rowSubtitle: {
     fontSize: 12,
     marginTop: 2,
+    fontFamily: Fonts.body,
   },
   rowRight: {
     marginLeft: 12,

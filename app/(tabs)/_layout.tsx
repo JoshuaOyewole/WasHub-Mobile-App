@@ -1,4 +1,5 @@
 import { HapticTab } from "@/components/haptic-tab";
+import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/hooks/useTheme";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -29,8 +30,8 @@ export default function TabLayout() {
           height: (Platform.OS === "ios" ? 60 : 65) + insets.bottom,
         },
         tabBarLabelStyle: {
+          fontFamily: Fonts.title,
           fontSize: Platform.OS === "ios" ? 14 : 12,
-          fontWeight: Platform.OS === "ios" ? "400" : "600",
         },
         headerStyle: {
           backgroundColor: colors.background,
@@ -52,12 +53,8 @@ export default function TabLayout() {
             <Text
               style={{
                 fontSize: Platform.OS === "ios" ? 14 : 12,
-                fontWeight: focused
-                  ? "500"
-                  : Platform.OS === "ios"
-                    ? "400"
-                    : "600",
                 color,
+                fontFamily: focused ? Fonts.subtitle : Fonts.titleLight,  
               }}
             >
               Home
@@ -80,12 +77,8 @@ export default function TabLayout() {
             <Text
               style={{
                 fontSize: Platform.OS === "ios" ? 14 : 12,
-                fontWeight: focused
-                  ? "700"
-                  : Platform.OS === "ios"
-                    ? "400"
-                    : "600",
                 color,
+                fontFamily: focused ? Fonts.subtitle : Fonts.titleLight,  
               }}
             >
               Booking
@@ -108,12 +101,8 @@ export default function TabLayout() {
             <Text
               style={{
                 fontSize: Platform.OS === "ios" ? 14 : 12,
-                fontWeight: focused
-                  ? "700"
-                  : Platform.OS === "ios"
-                    ? "400"
-                    : "600",
                 color,
+                fontFamily: focused ? Fonts.subtitle : Fonts.titleLight,  
               }}
             >
               Request
@@ -136,12 +125,8 @@ export default function TabLayout() {
             <Text
               style={{
                 fontSize: Platform.OS === "ios" ? 14 : 12,
-                fontWeight: focused
-                  ? "700"
-                  : Platform.OS === "ios"
-                    ? "400"
-                    : "600",
                 color,
+                fontFamily: focused ? Fonts.subtitle : Fonts.titleLight, 
               }}
             >
               Profile

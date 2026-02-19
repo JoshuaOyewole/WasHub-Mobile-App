@@ -3,6 +3,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import { register, sendOTP, verifyOTP } from "@/lib/api";
 import { otpSchema } from "@/lib/schema/validationSchema";
+import Ionicons from "@expo/vector-icons/build/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
@@ -187,6 +188,30 @@ export default function OTP() {
       style={[style.container, { backgroundColor: colors.background }]}
     >
       <StatusBar />
+
+      
+            {/* Back Button - Absolute Position */}
+            <Pressable
+              onPress={() => router.back()}
+              style={[
+                style.backButtonAbsolute,
+                { backgroundColor: colors.background },
+              ]}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  padding: 8,
+                  borderRadius: 50,
+                }}
+              >
+                <Ionicons name="chevron-back" size={20} color={colors.text} />
+              {/*   <Text style={{ color: colors.text }}>Back</Text> */}
+              </View>
+            </Pressable>
+
+            
       {/* OTP Screen Content Goes Here */}
       <View
         style={{ flex: 1, rowGap: 10, marginTop: 80, alignItems: "center" }}
@@ -273,6 +298,12 @@ export default function OTP() {
 const style = StyleSheet.create({
   container: {
     flex: 1,
+  },
+   backButtonAbsolute: {
+    position: "absolute",
+    top: 50,
+    left: 0,
+    zIndex: 10,
   },
   formSubHeader: {
     fontSize: 16,
