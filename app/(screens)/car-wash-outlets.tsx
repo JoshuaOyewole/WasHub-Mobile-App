@@ -21,11 +21,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CarWashOutletsScreen() {
   const colors = useTheme();
   const router = useRouter();
+  const inset  = useSafeAreaInsets();
   const { setOutletId, booking } = useBooking();
   const [searchQuery, setSearchQuery] = useState("");
   const scrollViewRef = useRef<ScrollView>(null);
@@ -116,7 +117,7 @@ export default function CarWashOutletsScreen() {
         styles.container,
         {
           backgroundColor: colors.background,
-          paddingBottom: Platform.OS === "ios" ? 20 : 0,
+          paddingBottom: Platform.OS === "ios" ? 20 : 0 + inset.bottom,
         },
       ]}
       edges={["top"]}
@@ -132,7 +133,7 @@ export default function CarWashOutletsScreen() {
           <Ionicons name="chevron-back" size={24} color={colors.text} />
         </Pressable>
         <Text style={[styles.headerTitle, { color: colors.text }]}>
-          Step 2 of 4 - Select wash Outlet
+          Step 2 of 4 - Select Wash Outlet
         </Text>
      
       </View>
@@ -342,7 +343,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: Fonts.subtitle,
     marginLeft: 20,
   },
@@ -415,7 +416,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   outletName: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: Fonts.subtitle,
     marginBottom: 4,
   },
@@ -427,19 +428,19 @@ const styles = StyleSheet.create({
   outletMeta: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 4,
+    gap: 2,
   },
   outletLocation: {
-    fontSize: 14,
+    fontSize: 13,
     marginTop: -2,
   },
   outletActivity: {
-    fontSize: 14,
+    fontSize: 13,
   },
   ratingContainer: {
     flexDirection: "row",
     gap: 2,
-    marginTop: 4,
+    marginTop: 0,
     marginLeft: 18,
   },
   loadingContainer: {

@@ -26,8 +26,10 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { Text, TextInput } from "react-native";
+import { PaystackProvider } from 'react-native-paystack-webview';
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
 
 const FONT_PATCH_FLAG = "__washub_font_patch_applied__";
 
@@ -221,22 +223,25 @@ export default function RootLayout() {
     return null;
   }
 
+  const PAYSTACK_PUBLIC_KEY = process.env.EXPO_PUBLIC_PAYSTACK_KEY || '';
   return (
     <SafeAreaProvider>
-      <QueryClientProvider client={queryClient}>
-        <ToastProvider>
-          <BookingProvider>
-            <ThemeProvider
-              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-            >
-              <StatusBar style="auto" />
-              <AppContent />
+      <PaystackProvider publicKey={PAYSTACK_PUBLIC_KEY} debug={true}>
+        <QueryClientProvider client={queryClient}>
+          <ToastProvider>
+            <BookingProvider>
+              <ThemeProvider
+                value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+              >
+                <StatusBar style="auto" />
+                <AppContent />
 
-              <ToastOverlay />
-            </ThemeProvider>
-          </BookingProvider>
-        </ToastProvider>
-      </QueryClientProvider>
+                <ToastOverlay />
+              </ThemeProvider>
+            </BookingProvider>
+          </ToastProvider>
+        </QueryClientProvider>
+      </PaystackProvider>
     </SafeAreaProvider>
   );
 }

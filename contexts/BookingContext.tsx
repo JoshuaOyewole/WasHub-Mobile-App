@@ -9,6 +9,14 @@ export interface BookingState {
   date: Date | null;
   time: string;
   price: number;
+  paymentIntent: {
+    email: string;
+    reference: string;
+    amount: number;
+    outletName?: string;
+    authorizationUrl: string;
+    accessCode?: string;
+  } | null;
 }
 
 interface BookingContextValue {
@@ -18,6 +26,15 @@ interface BookingContextValue {
   setWashType: (washType: WashType) => void;
   setDateTime: (date: Date, time: string) => void;
   clearBooking: () => void;
+  setPaymentIntent: (paymentIntent: {
+    email: string;
+    reference: string;
+    amount: number;
+    outletName?: string;
+    authorizationUrl: string;
+    accessCode?: string;
+  }) => void;
+  clearPaymentIntent: () => void;
   isBookingValid: () => boolean;
   setPrice: (price: number) => void;
 }
@@ -36,6 +53,7 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({
     date: null,
     time: "",
     price: 0,
+    paymentIntent: null,
   });
 
   const setCarId = useCallback((carId: string) => {
@@ -57,6 +75,24 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({
     setBooking((prev) => ({ ...prev, date, time }));
   }, []);
 
+  const setPaymentIntent = useCallback(
+    (paymentIntent: {
+      email: string;
+      reference: string;
+      amount: number;
+      outletName?: string;
+      authorizationUrl: string;
+      accessCode?: string;
+    }) => {
+      setBooking((prev) => ({ ...prev, paymentIntent }));
+    },
+    [],
+  );
+
+  const clearPaymentIntent = useCallback(() => {
+    setBooking((prev) => ({ ...prev, paymentIntent: null }));
+  }, []);
+
   const clearBooking = useCallback(() => {
     setBooking({
       carId: "",
@@ -65,6 +101,7 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({
       date: null,
       time: "",
       price: 0,
+      paymentIntent: null,
     });
   }, []);
 
@@ -88,6 +125,8 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({
         setOutletId,
         setWashType,
         setDateTime,
+        setPaymentIntent,
+        clearPaymentIntent,
         clearBooking,
         isBookingValid,
       }}

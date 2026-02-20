@@ -2,26 +2,27 @@ import EmptyState from "@/components/ui/empty-state";
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import {
-    addVehicleToWash,
-    fetchVehicles,
-    type Vehicle,
+  addVehicleToWash,
+  fetchVehicles,
+  type Vehicle,
 } from "@/lib/api/vehicles";
 import { Feather } from "@expo/vector-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    ActivityIndicator,
-    Image,
-    Modal,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Image,
+  Modal,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function SelectCarForCart() {
   const colors = useTheme();
@@ -31,7 +32,7 @@ export default function SelectCarForCart() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-
+const insets = useSafeAreaInsets();
   // Fetch vehicles (not in wishlist)
   const {
     data: vehiclesResponse,
@@ -89,10 +90,17 @@ export default function SelectCarForCart() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView  style={[
+            styles.container,
+            {
+              backgroundColor: colors.background,
+              paddingBottom: (Platform.OS === "ios" ? 20 : 0) + insets.bottom || 0,
+            },
+          ]}
+          edges={["top"]}>
       <StatusBar
         barStyle={colors.statusBarStyle}
-        backgroundColor={colors.background}
+       backgroundColor={colors.background}
       />
 
       {/* Header */}
@@ -234,7 +242,7 @@ export default function SelectCarForCart() {
                 { backgroundColor: colors.primaryLight },
               ]}
             >
-              <Feather name="shopping-cart" size={32} color={colors.primary} />
+              <Feather name="shopping-cart" size={32} color={colors.white} />
             </View>
 
             <Text style={[styles.modalTitle, { color: colors.text }]}>
@@ -317,6 +325,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
+    
   },
   loadingContainer: {
     flex: 1,

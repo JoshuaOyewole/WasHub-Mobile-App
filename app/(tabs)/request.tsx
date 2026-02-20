@@ -133,10 +133,12 @@ export default function Request() {
     }
   };
 
-  const handleAddCarToWash = () => {
+  const handleAddCarToWashCart = () => {
     router.push("/(modals)/select-car-for-cart");
   };
-
+  const handleAddCarToWash = () => {
+    router.push("/(screens)/select-car");
+  };
   // Mutation to remove vehicle from cart
   const removeFromCartMutation = useMutation({
     mutationFn: removeVehicleFromWash,
@@ -422,10 +424,12 @@ export default function Request() {
           <View style={styles.buttonContainer}>
             <Button
               title={
-                activeTab === "my-wash" ? "Add car to wash" : "Book a wash"
+                activeTab === "my-wash"
+                  ? "Add Car to wash cart"
+                  : "Book a wash"
               }
               variant="secondary"
-              onPress={handleAddCarToWash}
+              onPress={activeTab === "my-wash" ? handleAddCarToWashCart : handleAddCarToWash}
             />
           </View>
         </View>

@@ -247,11 +247,11 @@ export default function OTP() {
           />
         </View>
         <Button
-          title={canResend ? "Resend OTP" : `Resend OTP in ${countdown}s`}
+          title={canResend ? "Resend otp" : `Resend otp in ${countdown}s`}
           onPress={resendOTP}
           variant="link"
           disabled={!canResend || resendOTPMutation.isPending}
-          accessibilityLabel="Resend OTP"
+          accessibilityLabel="Resend otp button"
         />
         <Pressable
           onPress={handleVerify}

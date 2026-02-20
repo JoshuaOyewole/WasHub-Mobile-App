@@ -326,8 +326,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   rowTitle: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
+    fontFamily: Fonts.mediumtitle,
   },
   rowSubtitle: {
     fontSize: 12,

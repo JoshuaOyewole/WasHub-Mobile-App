@@ -18,8 +18,26 @@ export type StatusTimelineItem = {
 };
 
 export type WashRequest = {
+  transactionReference: string,
+  vehicleInfo: {
+     vehicleId: string,
+    vehicleType: string;
+    vehicleMake: string;
+    licensePlate: string;
+    vehicleModel: string;
+    vehicleColor: string;
+    image?: string;
+  };
+  payment: {
+    paymentStatus: "paid" | "pending";
+    paymentProcessed: boolean;
+    reference: string;
+    authorization_url: string;
+    access_code?: string;
+  };
   _id: string;
   userId: string;
+  userEmail: string;  
   vehicleId: string;
   serviceType: "quick wash" | "premium wash" | "full wash";
   outletId: string;
@@ -30,14 +48,7 @@ export type WashRequest = {
   currentStep: number;
   steps: string[];
   statusTimeline: StatusTimelineItem[];
-  vehicleInfo: {
-    vehicleType: string;
-    vehicleMake: string;
-    licensePlate: string;
-    vehicleModel: string;
-    vehicleColor: string;
-    image?: string;
-  };
+ 
   price: number;
   paymentStatus: "paid" | "pending";
   completedAt?: string;

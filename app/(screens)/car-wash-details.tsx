@@ -20,7 +20,7 @@ import {
   View,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 const WASH_OPTIONS: WashType[] = ["Quick Wash", "Basic", "Premium"];
 
@@ -40,6 +40,7 @@ export default function CarWashDetailsScreen() {
   const colors = useTheme();
   const router = useRouter();
   const { toast } = useToast();
+  const inset = useSafeAreaInsets();
   const params = useLocalSearchParams<{ outletId: string }>();
   const { booking, setWashType, setDateTime, isBookingValid, setPrice } =
     useBooking();
@@ -134,7 +135,7 @@ export default function CarWashDetailsScreen() {
   if (isLoading) {
     return (
       <SafeAreaView
-        style={[styles.container, { backgroundColor: colors.background }]}
+        style={[styles.container, { backgroundColor: colors.background, paddingBottom: Platform.OS === "ios" ? 20 : 0 + inset.bottom }]}
       >
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
@@ -146,7 +147,7 @@ export default function CarWashDetailsScreen() {
   if (!outlet) {
     return (
       <SafeAreaView
-        style={[styles.container, { backgroundColor: colors.background }]}
+        style={[styles.container, { backgroundColor: colors.background, paddingBottom: Platform.OS === "ios" ? 20 : 0 + inset.bottom }]}
       >
         <View style={styles.loadingContainer}>
           <Text style={{ color: colors.text }}>Outlet not found</Text>
@@ -161,7 +162,7 @@ export default function CarWashDetailsScreen() {
         styles.container,
         {
           backgroundColor: colors.background,
-          paddingBottom: Platform.OS === "ios" ? 20 : 0,
+          paddingBottom: inset.bottom,
         },
       ]}
       edges={["top"]}

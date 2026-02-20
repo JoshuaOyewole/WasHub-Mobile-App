@@ -3,55 +3,62 @@ import { useBooking } from "@/contexts/BookingContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useTheme } from "@/hooks/useTheme";
 import { fetchOutletById, IOutlet } from "@/lib/api";
+//import { initiatePayment } from "@/lib/api/transactions";
 import {
-    fetchVehicleById,
-    removeVehicleFromWash,
-    Vehicle,
+  fetchVehicleById,
+  Vehicle,
 } from "@/lib/api/vehicles";
-import { createWashRequest } from "@/lib/api/washRequests";
+
+import {
+  removeVehicleFromWash,
+} from "@/lib/api/vehicles";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useState } from "react";
 import {
-    ActivityIndicator,
-    Image,
-    Platform,
-    Pressable,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Image,
+  Platform,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { createWashRequest } from "@/lib/api/washRequests";
+import { useState } from "react";
+
+
+export const SERVICE_CHARGE = 100;
 export default function BookingConfirmationScreen() {
   const colors = useTheme();
   const router = useRouter();
+  const inset = useSafeAreaInsets();
+  const { booking, setPaymentIntent } = useBooking();
   const { toast } = useToast();
-  const { booking, clearBooking } = useBooking();
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
-  const { data: vehicleData, isLoading: isLoadingVehicle } = useQuery({
-    queryKey: ["vehicle", booking.carId],
-    queryFn: () => fetchVehicleById(booking.carId!),
-    enabled: !!booking.carId,
-  });
-
-  const { data: outletData, isLoading: isLoadingOutlet } = useQuery({
-    queryKey: ["outlet", booking.outletId],
-    queryFn: () => fetchOutletById(booking.outletId!),
-    enabled: !!booking.outletId,
-  });
-
-  const vehicle: Vehicle | undefined = vehicleData?.data;
-  const outlet: IOutlet | undefined = outletData?.data;
+  /*   const mutation = useMutation({
+      mutationFn: (data: {email:string, amount:number}) => initiatePayment(data),
+      mutationKey: ["initiatePayment"],
+      onSuccess: (res) => {
+        console.log("Payment initiation successful:", res);
+        toast("success", "Booking Confirmed", "Your car wash booking has been confirmed!");
+       // router.replace("/(tabs)");
+      },
+      onError: (err) => {
+        console.error("Payment initiation failed:", err);
+        toast("error", "Booking Failed", "There was an issue confirming your booking. Please try again.");
+      },
+    }); */
 
   // Mutation for creating wash request
   const createWashRequestMutation = useMutation({
     mutationFn: createWashRequest,
-    onSuccess: async () => {
+    onSuccess: async (res) => {
       // Remove vehicle from cart after successful booking
       // Only remove if the vehicle is actually in the wishlist
       if (booking.carId && vehicle?.inWishlist) {
@@ -63,15 +70,29 @@ export default function BookingConfirmationScreen() {
           // Don't block the success flow if removal fails
         }
       }
+      //clearBooking();
 
-      toast(
-        "success",
-        "Booking Successful!",
-        "Your car wash has been scheduled",
-      );
-      clearBooking();
+      console.log("Wash request created successfully:", res.data);
+      console.log("Payment details:", res.data.payment);
+
+      /*  toast(
+         "success",
+         "Booking Successful!",
+         "Your car wash has been scheduled",
+       ); */
+
       // Navigate to requests tab to see the new booking
-      router.replace("/(tabs)/request");
+      setPaymentIntent({
+        email: res.data.userEmail,
+        reference: res.data.payment.reference,
+        amount: Number(res.data.price || 0),
+        outletName: outlet?.name,
+        authorizationUrl: res.data.payment.authorization_url,
+        accessCode: res.data.payment.access_code,
+      });
+
+      router.replace("/(screens)/payment");
+
     },
     onError: (error: any) => {
       toast(
@@ -83,15 +104,6 @@ export default function BookingConfirmationScreen() {
     },
   });
 
-  const formatDate = (date: Date | null) => {
-    if (!date) return "N/A";
-    return new Intl.DateTimeFormat("en-US", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }).format(date);
-  };
 
   // Helper to format service type to match backend enum
   // Valid backend enum: ["quick wash", "premium wash", "full wash"]
@@ -110,6 +122,7 @@ export default function BookingConfirmationScreen() {
     return `${type} wash`;
   };
 
+
   const handlePayment = async () => {
     if (!vehicle || !outlet || !booking.carId || !booking.outletId) {
       toast("error", "Invalid Booking", "Missing booking information");
@@ -119,11 +132,6 @@ export default function BookingConfirmationScreen() {
     setIsProcessingPayment(true);
 
     try {
-      // Mock successful payment (Paystack integration will be added later)
-      // Simulate payment processing delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      toast("success", "Payment Successful", "Processing your booking...");
 
       // Create wash request after successful payment
       const washRequestData = {
@@ -132,17 +140,48 @@ export default function BookingConfirmationScreen() {
         outletId: booking.outletId,
         outletName: outlet.name,
         outletLocation: `${outlet.address}, ${outlet.city}, ${outlet.state}`,
-        price: booking.price + 100, // Include service charge
-        paymentStatus: "paid", // Mock successful payment
+        price: booking.price + SERVICE_CHARGE, // Include service charge
         notes: `Scheduled for ${formatDate(booking.date)} at ${booking.time}`,
       };
 
       await createWashRequestMutation.mutateAsync(washRequestData);
     } catch (error: any) {
-      setIsProcessingPayment(false);
+      // setIsProcessingPayment(false);
       console.error("Payment/Booking error:", error);
       toast("error", "Payment Failed", error?.message || "Please try again");
     }
+    finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
+
+
+
+  const { data: vehicleData, isLoading: isLoadingVehicle } = useQuery({
+    queryKey: ["vehicle", booking.carId],
+    queryFn: () => fetchVehicleById(booking.carId!),
+    enabled: !!booking.carId,
+  });
+
+  const { data: outletData, isLoading: isLoadingOutlet } = useQuery({
+    queryKey: ["outlet", booking.outletId],
+    queryFn: () => fetchOutletById(booking.outletId!),
+    enabled: !!booking.outletId,
+  });
+
+  const vehicle: Vehicle | undefined = vehicleData?.data;
+  const outlet: IOutlet | undefined = outletData?.data;
+
+
+  const formatDate = (date: Date | null) => {
+    if (!date) return "N/A";
+    return new Intl.DateTimeFormat("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }).format(date);
   };
 
   const handleEditBooking = () => {
@@ -164,7 +203,7 @@ export default function BookingConfirmationScreen() {
   if (!vehicle || !outlet) {
     return (
       <SafeAreaView
-        style={[styles.container, { backgroundColor: colors.background }]}
+        style={[styles.container, { backgroundColor: colors.background, paddingBottom: inset.bottom }]}
       >
         <View style={styles.loadingContainer}>
           <Text style={[styles.errorText, { color: colors.textSecondary }]}>
@@ -186,7 +225,7 @@ export default function BookingConfirmationScreen() {
         styles.container,
         {
           backgroundColor: colors.background,
-          paddingBottom: Platform.OS === "ios" ? 20 : 0,
+          paddingBottom: Platform.OS === "ios" ? 20 : 0 + inset.bottom,
         },
       ]}
       edges={["top"]}
@@ -341,7 +380,7 @@ export default function BookingConfirmationScreen() {
               Service Charge:
             </Text>
             <Text style={[styles.subPrice, { color: colors.primary }]}>
-              ₦100
+              ₦{SERVICE_CHARGE.toLocaleString()}
             </Text>
           </View>
           <View style={styles.priceSection}>
@@ -349,7 +388,7 @@ export default function BookingConfirmationScreen() {
               Total Amount
             </Text>
             <Text style={[styles.priceValue, { color: colors.primary }]}>
-              ₦{(booking.price + 100).toLocaleString()}
+              ₦{(booking.price + SERVICE_CHARGE).toLocaleString()}
             </Text>
           </View>
         </View>
@@ -357,10 +396,9 @@ export default function BookingConfirmationScreen() {
         {/* Action Buttons */}
         <View style={styles.buttonContainer}>
           <Button
-            title={isProcessingPayment ? "Processing..." : "Proceed to Payment"}
+            title={"Proceed to Payment"}
             onPress={handlePayment}
             variant="primary"
-            loading={isProcessingPayment}
             disabled={isProcessingPayment}
           />
           <Button
