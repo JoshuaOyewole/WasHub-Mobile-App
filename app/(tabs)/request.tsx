@@ -123,13 +123,13 @@ export default function Request() {
   // Get empty state message based on active tab
   const getEmptyStateMessage = () => {
     if (activeTab === "my-wash") {
-      return "Your cart is empty";
+      return { title: "Your cart is empty" , description: "Add cars to your wash cart and book a wash"};
     } else if (activeTab === "scheduled") {
-      return "No scheduled wash";
+      return { title: "No scheduled wash", description: "You have no scheduled washes at the moment" };
     } else if (activeTab === "ongoing") {
-      return "No ongoing wash";
+      return { title: "No ongoing wash", description:"Time to give your car a clean wash" };
     } else {
-      return "No completed wash";
+      return { title: "No completed wash", description: "You have not completed any washes yet" };
     }
   };
 
@@ -273,7 +273,9 @@ export default function Request() {
 
   return (
     <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.background }]}
+      edges={["top"]}
+      style={[styles.container,
+      { backgroundColor: colors.background }]}
     >
       {/* Tabs */}
       <View
@@ -393,62 +395,68 @@ export default function Request() {
       </View>
 
       {/* Content */}
-      {isLoading || isLoadingWishlist ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#F77C0B" />
-          <Text style={[styles.loadingText, { color: colors.textMuted }]}>
-            Loading wash requests...
-          </Text>
-        </View>
-      ) : isError || isErrorWishlist ? (
-        <View style={styles.errorContainer}>
-          <Text style={[styles.errorText, { color: colors.error }]}>
-            Failed to load data
-          </Text>
-          <TouchableOpacity
-            style={[styles.retryButton, { backgroundColor: colors.primary }]}
-            onPress={() => {
-              refetch();
-              refetchWishlist();
-            }}
-          >
-            <Text style={styles.retryButtonText}>Retry</Text>
-          </TouchableOpacity>
-        </View>
-      ) : !hasRequests ? (
-        <View style={styles.emptyContainer}>
-          <EmptyState
-            image={getEmptyStateImage()}
-            title={getEmptyStateMessage()}
-          />
-          <View style={styles.buttonContainer}>
-            <Button
-              title={
-                activeTab === "my-wash"
-                  ? "Add Car to wash cart"
-                  : "Book a wash"
-              }
-              variant="secondary"
-              onPress={activeTab === "my-wash" ? handleAddCarToWashCart : handleAddCarToWash}
-            />
+      <View style={styles.contentArea}>
+        {isLoading || isLoadingWishlist ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#F77C0B" />
+            <Text style={[styles.loadingText, { color: colors.textMuted }]}>
+              Loading wash requests...
+            </Text>
           </View>
-        </View>
-      ) : (
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.contentContainer}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={handleRefresh}
-              colors={["#F77C0B"]}
-              tintColor="#F77C0B"
+        ) : isError || isErrorWishlist ? (
+          <View style={styles.errorContainer}>
+            <Text style={[styles.errorText, { color: colors.error }]}>
+              Failed to load data
+            </Text>
+            <TouchableOpacity
+              style={[styles.retryButton, { backgroundColor: colors.primary }]}
+              onPress={() => {
+                refetch();
+                refetchWishlist();
+              }}
+            >
+              <Text style={styles.retryButtonText}>Retry</Text>
+            </TouchableOpacity>
+          </View>
+        ) : !hasRequests ? (
+          <View style={styles.emptyContainer}>
+            <EmptyState
+              image={getEmptyStateImage()}
+              title={getEmptyStateMessage().title}
+              description={getEmptyStateMessage().description}
             />
-          }
-        >
-          {activeTab === "my-wash"
-            ? // Render wishlist vehicles
+            <View style={styles.buttonContainer}>
+              <Button
+                title={
+                  activeTab === "my-wash"
+                    ? "Add Car to wash cart"
+                    : "Book a wash"
+                }
+                variant="secondary"
+                onPress={
+                  activeTab === "my-wash"
+                    ? handleAddCarToWashCart
+                    : handleAddCarToWash
+                }
+              />
+            </View>
+          </View>
+        ) : (
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.contentContainer}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                colors={["#F77C0B"]}
+                tintColor="#F77C0B"
+              />
+            }
+          >
+            {activeTab === "my-wash"
+              ? // Render wishlist vehicles
               wishlistVehicles.map((vehicle) => (
                 <TouchableOpacity
                   key={vehicle._id}
@@ -515,8 +523,8 @@ export default function Request() {
                   </View>
                 </TouchableOpacity>
               ))
-            : activeTab === "completed"
-              ? filteredRequests.map((request) => (
+              : activeTab === "completed"
+                ? filteredRequests.map((request) => (
                   <View
                     key={request._id}
                     style={{
@@ -608,7 +616,7 @@ export default function Request() {
                     </View>
                   </View>
                 ))
-              : // Render wash requests
+                : // Render wash requests
                 filteredRequests.map((request) => (
                   <TouchableOpacity
                     key={request._id}
@@ -673,8 +681,9 @@ export default function Request() {
                     </View>
                   </TouchableOpacity>
                 ))}
-        </ScrollView>
-      )}
+          </ScrollView>
+        )}
+      </View>
 
       {/* Remove from Cart Modal */}
       <Modal
@@ -761,6 +770,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 3,
     marginBottom: 10,
+    marginTop: 10,
   },
   tab: {
     flex: 1,
@@ -822,10 +832,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     paddingHorizontal: 20,
   },
+  contentArea: {
+    flex: 1,
+  },
   scrollView: {
     flex: 1,
   },
   contentContainer: {
+    flexGrow: 1,
+    minHeight: "100%",
     padding: 20,
   },
   requestCard: {

@@ -14,6 +14,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  useColorScheme,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,6 +24,8 @@ export default function ForgetPassword() {
   const router = useRouter();
   const [email, setEmail] = React.useState("");
   const [emailSent, setEmailSent] = React.useState(false);
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
   const { toast } = useToast();
 
   // Mutation for forgot password
@@ -65,7 +68,11 @@ export default function ForgetPassword() {
       <SafeAreaView
         style={[style.container, { backgroundColor: colors.background }]}
       >
-        <StatusBar />
+        <StatusBar
+          style={isDarkMode ? "light" : "dark"}
+          backgroundColor={isDarkMode ? colors.secondary : colors.background}
+          translucent={false}
+        />
         <View
           style={{
             flex: 1,
@@ -137,7 +144,11 @@ export default function ForgetPassword() {
     <SafeAreaView
       style={[style.container, { backgroundColor: colors.background }]}
     >
-      <StatusBar />
+      <StatusBar
+        style={isDarkMode ? "light" : "dark"}
+        backgroundColor={isDarkMode ? colors.secondary : colors.background}
+        translucent={false}
+      />
 
       {/* Back Button - Absolute Position */}
       <Pressable

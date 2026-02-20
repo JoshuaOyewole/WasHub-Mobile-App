@@ -5,12 +5,14 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function EmailVerification() {
   const colors = useTheme();
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
   const [form, setForm] = React.useState({
     email: "",
     password: "",
@@ -36,7 +38,11 @@ export default function EmailVerification() {
     <SafeAreaView
       style={[style.container, { backgroundColor: colors.background }]}
     >
-      <StatusBar />
+      <StatusBar
+        style={isDarkMode ? "light" : "dark"}
+        backgroundColor={isDarkMode ? colors.secondary : colors.background}
+        translucent={false}
+      />
 
       {/* Back Button - Absolute Position */}
       <Pressable

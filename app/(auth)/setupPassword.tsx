@@ -15,6 +15,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,6 +23,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function SetupPassword() {
   const colors = useTheme();
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
   const params = useLocalSearchParams();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = React.useState(false);
@@ -102,7 +105,11 @@ export default function SetupPassword() {
     <SafeAreaView
       style={[style.container, { backgroundColor: colors.background }]}
     >
-      <StatusBar />
+      <StatusBar
+        style={isDarkMode ? "light" : "dark"}
+        backgroundColor={isDarkMode ? colors.secondary : colors.background}
+        translucent={false}
+      />
 
       {/* Back Button - Absolute Position */}
       <Pressable
@@ -204,9 +211,9 @@ export default function SetupPassword() {
               style.submitBtn,
               {
                 //backgroundColor: resetPasswordMutation.isPending
-                 //</View> ? colors.text + "40"
-                  //: colors.secondaryButtonBackground,
-                  backgroundColor: "#1F2D33",
+                //</View> ? colors.text + "40"
+                //: colors.secondaryButtonBackground,
+                backgroundColor: "#1F2D33",
               },
             ]}
           >

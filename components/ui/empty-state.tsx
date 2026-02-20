@@ -1,7 +1,6 @@
 
 import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/hooks/useTheme";
-import { useRouter } from "expo-router";
 import React from "react";
 import {
   Image,
@@ -29,7 +28,6 @@ export default function EmptyState({
 
 }: EmptyStateProps) {
   const colors = useTheme();
-  const router = useRouter();
 
 
   return (
@@ -65,7 +63,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: Fonts.subtitle,
     marginBottom: 8,
   },

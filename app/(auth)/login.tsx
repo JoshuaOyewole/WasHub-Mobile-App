@@ -2,17 +2,23 @@ import LoginScreen from "@/components/form/LoginScreen";
 import { useTheme } from "@/hooks/useTheme";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Login() {
   const colors = useTheme();
-
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
+  
   return (
     <SafeAreaView
       style={[style.container, { backgroundColor: colors.background }]}
     >
-      <StatusBar />
+      <StatusBar
+        style={isDarkMode ? "light" : "dark"}
+        backgroundColor={isDarkMode ? colors.secondary : colors.background}
+        translucent={false}
+      />
       <ScrollView
         contentContainerStyle={{
           backgroundColor: colors.background,

@@ -399,6 +399,7 @@ export default function BookingConfirmationScreen() {
             title={"Proceed to Payment"}
             onPress={handlePayment}
             variant="primary"
+            loading={isProcessingPayment}
             disabled={isProcessingPayment}
           />
           <Button

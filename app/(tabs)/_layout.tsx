@@ -31,7 +31,7 @@ export default function TabLayout() {
         },
         tabBarLabelStyle: {
           fontFamily: Fonts.title,
-          fontSize: Platform.OS === "ios" ? 14 : 12,
+          fontSize: Platform.OS === "ios" ? 14 : 13,
         },
         headerStyle: {
           backgroundColor: colors.background,

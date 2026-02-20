@@ -23,12 +23,15 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Register() {
   const colors = useTheme();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
   const router = useRouter();
   const { setAuthStep } = useAuthStore();
   const { toast } = useToast();
@@ -153,7 +156,11 @@ export default function Register() {
     <SafeAreaView
       style={[style.container, { backgroundColor: colors.background }]}
     >
-      <StatusBar />
+      <StatusBar
+        style={isDarkMode ? "light" : "dark"}
+        backgroundColor={isDarkMode ? colors.secondary : colors.background}
+        translucent={false}
+      />
       <ScrollView
         contentContainerStyle={{
           backgroundColor: colors.background,

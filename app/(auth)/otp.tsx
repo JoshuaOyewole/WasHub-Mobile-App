@@ -7,14 +7,15 @@ import Ionicons from "@expo/vector-icons/build/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import {
   ActivityIndicator,
   Keyboard,
   Pressable,
-  StatusBar,
   StyleSheet,
   Text,
+  useColorScheme,
   View,
 } from "react-native";
 import OTPTextView from "react-native-otp-textinput";
@@ -23,7 +24,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function OTP() {
   const colors = useTheme();
   const router = useRouter();
-//  const { setAuthStep } = useAuthStore();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
+  //  const { setAuthStep } = useAuthStore();
   const { toast } = useToast();
   const [otp, setOtp] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -187,31 +190,34 @@ export default function OTP() {
     <SafeAreaView
       style={[style.container, { backgroundColor: colors.background }]}
     >
-      <StatusBar />
+      <StatusBar
+        style={isDarkMode ? "light" : "dark"}
+        backgroundColor={isDarkMode ? colors.secondary : colors.background}
+        translucent={false} />
 
-      
-            {/* Back Button - Absolute Position */}
-            <Pressable
-              onPress={() => router.back()}
-              style={[
-                style.backButtonAbsolute,
-                { backgroundColor: colors.background },
-              ]}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  padding: 8,
-                  borderRadius: 50,
-                }}
-              >
-                <Ionicons name="chevron-back" size={20} color={colors.text} />
-              {/*   <Text style={{ color: colors.text }}>Back</Text> */}
-              </View>
-            </Pressable>
 
-            
+      {/* Back Button - Absolute Position */}
+      <Pressable
+        onPress={() => router.back()}
+        style={[
+          style.backButtonAbsolute,
+          { backgroundColor: colors.background },
+        ]}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 8,
+            borderRadius: 50,
+          }}
+        >
+          <Ionicons name="chevron-back" size={20} color={colors.text} />
+          {/*   <Text style={{ color: colors.text }}>Back</Text> */}
+        </View>
+      </Pressable>
+
+
       {/* OTP Screen Content Goes Here */}
       <View
         style={{ flex: 1, rowGap: 10, marginTop: 80, alignItems: "center" }}
@@ -261,8 +267,8 @@ export default function OTP() {
               backgroundColor: colors.secondaryButtonBackground,
               opacity:
                 verifyOTPMutation.isPending ||
-                registerMutation.isPending ||
-                resendOTPMutation.isPending
+                  registerMutation.isPending ||
+                  resendOTPMutation.isPending
                   ? 0.7
                   : 1,
             },
@@ -274,8 +280,8 @@ export default function OTP() {
           }
         >
           {verifyOTPMutation.isPending ||
-          registerMutation.isPending ||
-          resendOTPMutation.isPending ? (
+            registerMutation.isPending ||
+            resendOTPMutation.isPending ? (
             <ActivityIndicator size="small" color={colors.buttonText} />
           ) : (
             <Text
@@ -299,7 +305,7 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
   },
-   backButtonAbsolute: {
+  backButtonAbsolute: {
     position: "absolute",
     top: 50,
     left: 0,
