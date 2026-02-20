@@ -226,7 +226,7 @@ export default function RootLayout() {
   const PAYSTACK_PUBLIC_KEY = process.env.EXPO_PUBLIC_PAYSTACK_KEY || '';
   return (
     <SafeAreaProvider>
-      <PaystackProvider publicKey={PAYSTACK_PUBLIC_KEY} debug={true}>
+      <PaystackProvider publicKey={PAYSTACK_PUBLIC_KEY} debug={process.env.NODE_ENV === "development"}>
         <QueryClientProvider client={queryClient}>
           <ToastProvider>
             <BookingProvider>
